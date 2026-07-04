@@ -1271,20 +1271,36 @@ function initMsgTab(){
     const key=getGeminiKey();
     if(key){
       try{
-        const history=MSG_HISTORY.slice(-10).map(x=>({role:x.role==='sent'?'user':'model',parts:[{text:x.text}]}));
-        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,{
+        // Nur user/model Nachrichten, erste muss user sein
+        const raw=MSG_HISTORY.filter(x=>x.role==='sent'||x.role==='recv');
+        const contents=[];
+        raw.forEach(x=>{
+          const r=x.role==='sent'?'user':'model';
+          // Kein doppeltes gleiche Role hintereinander
+          if(contents.length&&contents[contents.length-1].role===r){
+            contents[contents.length-1].parts[0].text+='\n'+x.text;
+          } else {
+            contents.push({role:r,parts:[{text:x.text}]});
+          }
+        });
+        // Erste muss user sein
+        while(contents.length&&contents[0].role!=='user')contents.shift();
+        if(!contents.length)contents.push({role:'user',parts:[{text:text}]});
+        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key.trim()}`,{
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({
             system_instruction:{parts:[{text:'Du bist eine ruhige, warme Begleiterin namens "Stille". Der Nutzer schreibt dir was er denkt oder fühlt. Antworte sehr kurz (1-2 Sätze), sanft und menschlich. Kein Ratschlag, kein Therapieton. Geh auf das ein was geschrieben steht. Manchmal nur ein Emoji oder "Ich höre dich." Sei wie eine stille Freundin. Antworte immer auf Deutsch.'}]},
-            contents:history
+            contents
           })
         });
         const data=await res.json();
-        const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||'💜';
+        const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||(data.error?null:'💜');
+        if(!reply){throw new Error(data.error?.message||'no reply');}
         typing.remove();
-        const rm={role:'recv',text:reply};MSG_HISTORY.push(rm);renderBubble(reply,'recv');scrollFeed();
+        const rm={role:'recv',text:reply.trim()};MSG_HISTORY.push(rm);renderBubble(rm.text,'recv');scrollFeed();
       }catch(e){
+        console.error('Gemini error:',e);
         typing.remove();
         const fb=FALLBACK_REPLIES[Math.floor(Math.random()*FALLBACK_REPLIES.length)];
         const rm={role:'recv',text:fb};MSG_HISTORY.push(rm);renderBubble(fb,'recv');scrollFeed();
