@@ -241,9 +241,14 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
   <div class="start-sub">Dein persönlicher Ruhepol 🫶</div>
   <div class="start-grid">
     <div class="start-card" onclick="goTab('uebung')">
-      <div class="start-card-icon">⏱️</div>
+      <div class="start-card-icon">🧘</div>
       <div class="start-card-label">Übungen</div>
       <div class="start-card-sub">Grounding & Ablenkung</div>
+    </div>
+    <div class="start-card" onclick="goTab('timer')">
+      <div class="start-card-icon">⏱️</div>
+      <div class="start-card-label">Timer</div>
+      <div class="start-card-sub">Fokus & Pausen</div>
     </div>
     <div class="start-card" onclick="goTab('atem')">
       <div class="start-card-icon">🌬️</div>
@@ -506,6 +511,21 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
     </div>
   </div>
   <div class="divider"></div>
+  <!-- Abschnitt: Chat / Gemini -->
+  <div class="section-title">Chat – KI Verbindung</div>
+  <div class="card" style="gap:0.6rem;">
+    <div style="font-size:0.78rem;color:var(--muted2);line-height:1.5;">Füge einen Gemini API Key ein damit „Stille" im Chat wirklich auf dich eingeht. Key bekommst du kostenlos auf <span style="color:var(--accent);">aistudio.google.com</span></div>
+    <div class="ed-sec">
+      <div class="ed-lbl">Gemini API Key</div>
+      <div style="display:flex;gap:0.4rem;align-items:center;">
+        <input type="password" id="geminiKeyInput" placeholder="AIza..." style="flex:1;">
+        <button class="btn-sm sm-s" onclick="saveGeminiKey()">Speichern</button>
+      </div>
+    </div>
+    <div id="geminiKeyStatus" style="font-size:0.68rem;color:var(--muted);"></div>
+    <button class="btn-sm sm-r" onclick="clearGeminiKey()" style="width:auto;align-self:flex-start;">Key löschen</button>
+  </div>
+  <div class="divider"></div>
   <!-- Abschnitt: Timer-Sound -->
   <div class="section-title">Timer-Sound</div>
   <div id="soundOpts" style="display:flex;flex-direction:column;gap:0.45rem;"></div>
@@ -743,11 +763,15 @@ function rInspo(){
 }
 
 /* INSPO EDITOR */
-const LS_IP='pause_inspo_profiles_v1',LS_IH='pause_inspo_tags_v1';
+const LS_IP='pause_inspo_profiles_v1',LS_IH='pause_inspo_tags_v1',LS_GKEY='pause_gemini_key_v1';
 function loadCustomProfiles(){try{return JSON.parse(localStorage.getItem(LS_IP)||'[]');}catch(e){return[];}}
 function loadCustomTags(){try{return JSON.parse(localStorage.getItem(LS_IH)||'[]');}catch(e){return[];}}
 function saveCustomProfiles(d){try{localStorage.setItem(LS_IP,JSON.stringify(d));}catch(e){}}
 function saveCustomTags(d){try{localStorage.setItem(LS_IH,JSON.stringify(d));}catch(e){}}
+function getGeminiKey(){try{return localStorage.getItem(LS_GKEY)||'';}catch(e){return '';}}
+function saveGeminiKey(){const k=document.getElementById('geminiKeyInput').value.trim();if(!k){toast('Key eingeben.');return;}try{localStorage.setItem(LS_GKEY,k);}catch(e){}document.getElementById('geminiKeyInput').value='';document.getElementById('geminiKeyStatus').textContent='✓ Key gespeichert – Chat ist jetzt aktiv!';document.getElementById('geminiKeyStatus').style.color='var(--accent)';toast('Gemini Key gespeichert ✓');}
+function clearGeminiKey(){try{localStorage.removeItem(LS_GKEY);}catch(e){}document.getElementById('geminiKeyStatus').textContent='Kein Key gespeichert.';document.getElementById('geminiKeyStatus').style.color='var(--muted)';toast('Key gelöscht.');}
+window.saveGeminiKey=saveGeminiKey;window.clearGeminiKey=clearGeminiKey;
 
 function addInspoProfile(){
   const name=document.getElementById('ipName').value.trim();
@@ -806,7 +830,16 @@ window.addInspoProfile=addInspoProfile;
 window.addInspoTag=addInspoTag;
 
 /* EINSTELLUNGEN */
-function rEinst(){const con=document.getElementById('soundOpts');con.innerHTML='';Object.entries(TIMER_SOUNDS).forEach(([id,s])=>{const el=document.createElement('div');el.className='sound-opt'+(id===activeSoundId?' active':'');el.innerHTML=`<span style="font-size:0.85rem;font-weight:500;color:var(--text)">${s.label}</span><span style="color:var(--accent)">${id===activeSoundId?'✓':''}</span>`;el.onclick=()=>{activeSoundId=id;try{localStorage.setItem(LSS,id);}catch(e){}s.fn();rEinst();toast('Sound gesetzt ✓');};con.appendChild(el);});rFarben();}
+function rEinst(){
+  const con=document.getElementById('soundOpts');con.innerHTML='';
+  Object.entries(TIMER_SOUNDS).forEach(([id,s])=>{const el=document.createElement('div');el.className='sound-opt'+(id===activeSoundId?' active':'');el.innerHTML=`<span style="font-size:0.85rem;font-weight:500;color:var(--text)">${s.label}</span><span style="color:var(--accent)">${id===activeSoundId?'✓':''}</span>`;el.onclick=()=>{activeSoundId=id;try{localStorage.setItem(LSS,id);}catch(e){}s.fn();rEinst();toast('Sound gesetzt ✓');};con.appendChild(el);});
+  // Gemini key status
+  const st=document.getElementById('geminiKeyStatus');
+  const inp=document.getElementById('geminiKeyInput');
+  if(st){const k=getGeminiKey();st.textContent=k?'✓ Key vorhanden – Chat aktiv':'Kein Key – Chat nutzt Fallback-Antworten';st.style.color=k?'var(--accent)':'var(--muted)';}
+  if(inp)inp.value='';
+  rFarben();
+}
 
 /* OVERLAY MANAGER */
 const OVC={};
@@ -1214,6 +1247,7 @@ function iTheoJump(){
 /* MESSENGER TAB */
 let MSG_HISTORY=[];
 let msgTabInited=false;
+const FALLBACK_REPLIES=['💜','Ich höre dich.','Okay 🙂','Schreib einfach drauflos.','Hier bin ich.','Das klingt anstrengend.','Ich bin froh dass du schreibst.','Alles gut 🫶','Mach dir keinen Druck.','Mm. 💜','Das ist okay so.','Du musst das nicht alleine tragen.'];
 function initMsgTab(){
   if(msgTabInited)return;
   msgTabInited=true;
@@ -1224,7 +1258,6 @@ function initMsgTab(){
   input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,90)+'px';});
   sendBtn.onclick=sendMsg;
   input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
-  // Render existing history
   MSG_HISTORY.forEach(m=>renderBubble(m.text,m.role,false));
   if(!MSG_HISTORY.length){const m={role:'recv',text:'Hallo 💜 hier kannst du einfach schreiben. Ich höre dir zu.'};MSG_HISTORY.push(m);renderBubble(m.text,'recv',false);}
   scrollFeed();
@@ -1234,19 +1267,39 @@ function initMsgTab(){
     const text=input.value.trim();if(!text)return;
     input.value='';input.style.height='auto';
     const m={role:'sent',text};MSG_HISTORY.push(m);renderBubble(text,'sent');scrollFeed();
-    const typing=document.createElement('div');typing.className='msg-bubble recv';typing.style.cssText='color:var(--muted);font-size:0.8rem;';typing.textContent='…';feed.appendChild(typing);scrollFeed();
-    try{
-      const recent=MSG_HISTORY.slice(-8).map(x=>({role:x.role==='sent'?'user':'assistant',content:x.text}));
-      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:120,system:'Du bist eine ruhige, warme Begleiterin namens "Stille". Der Nutzer schreibt dir einfach was er denkt oder fühlt. Antworte sehr kurz (1-2 Sätze), sanft und menschlich. Kein Ratschlag, kein Therapieton. Geh auf das ein was geschrieben steht. Manchmal nur ein Emoji oder ein kurzes "Ich höre dich." Sei wie eine stille Freundin.',messages:recent})});
-      const data=await res.json();
-      const reply=data.content?.[0]?.text||'💜';
-      typing.remove();
-      const rm={role:'recv',text:reply};MSG_HISTORY.push(rm);renderBubble(reply,'recv');scrollFeed();
-    }catch(e){typing.textContent='💜';setTimeout(()=>typing.remove(),2000);}
+    const typing=document.createElement('div');typing.className='msg-bubble recv';typing.style.cssText='color:var(--muted);font-size:0.9rem;';typing.textContent='…';feed.appendChild(typing);scrollFeed();
+    const key=getGeminiKey();
+    if(key){
+      try{
+        const history=MSG_HISTORY.slice(-10).map(x=>({role:x.role==='sent'?'user':'model',parts:[{text:x.text}]}));
+        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            system_instruction:{parts:[{text:'Du bist eine ruhige, warme Begleiterin namens "Stille". Der Nutzer schreibt dir was er denkt oder fühlt. Antworte sehr kurz (1-2 Sätze), sanft und menschlich. Kein Ratschlag, kein Therapieton. Geh auf das ein was geschrieben steht. Manchmal nur ein Emoji oder "Ich höre dich." Sei wie eine stille Freundin. Antworte immer auf Deutsch.'}]},
+            contents:history
+          })
+        });
+        const data=await res.json();
+        const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||'💜';
+        typing.remove();
+        const rm={role:'recv',text:reply};MSG_HISTORY.push(rm);renderBubble(reply,'recv');scrollFeed();
+      }catch(e){
+        typing.remove();
+        const fb=FALLBACK_REPLIES[Math.floor(Math.random()*FALLBACK_REPLIES.length)];
+        const rm={role:'recv',text:fb};MSG_HISTORY.push(rm);renderBubble(fb,'recv');scrollFeed();
+      }
+    } else {
+      setTimeout(()=>{
+        typing.remove();
+        const fb=FALLBACK_REPLIES[Math.floor(Math.random()*FALLBACK_REPLIES.length)];
+        const rm={role:'recv',text:fb};MSG_HISTORY.push(rm);renderBubble(fb,'recv');scrollFeed();
+      },600+Math.random()*500);
+    }
   }
 }
-/* LEGACY – kept for old overlay references */
 function iMessenger(){initMsgTab();}
+
 
 /* ÜBUNG */
 let aktive=new Set(kats()),history=[];
