@@ -518,7 +518,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
     <div class="ed-sec">
       <div class="ed-lbl">Gemini API Key</div>
       <div style="display:flex;gap:0.4rem;align-items:center;">
-        <input type="password" id="geminiKeyInput" placeholder="AIza..." style="flex:1;">
+        <input type="text" id="geminiKeyInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="AIza..." style="flex:1;">
         <button class="btn-sm sm-s" onclick="saveGeminiKey()">Speichern</button>
       </div>
     </div>
@@ -1302,8 +1302,9 @@ function initMsgTab(){
       }catch(e){
         console.error('Gemini error:',e);
         typing.remove();
-        const fb=FALLBACK_REPLIES[Math.floor(Math.random()*FALLBACK_REPLIES.length)];
-        const rm={role:'recv',text:fb};MSG_HISTORY.push(rm);renderBubble(fb,'recv');scrollFeed();
+        // Zeige Fehlermeldung im Chat
+        const errMsg='⚠️ API-Fehler: '+( e.message||'Unbekannt')+' – Key prüfen in Einstellungen.';
+        const rm={role:'recv',text:errMsg};MSG_HISTORY.push(rm);renderBubble(rm.text,'recv');scrollFeed();
       }
     } else {
       setTimeout(()=>{
