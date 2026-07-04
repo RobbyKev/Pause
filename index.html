@@ -295,10 +295,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
   <button class="tab" data-tab="visuell"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M2 12h4M18 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Visuell</button>
   <button class="tab" data-tab="spiele"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M6 12h4M8 10v4M15 11h.01M17 13h.01"/></svg>Spiele</button>
   <button class="tab" data-tab="inspo"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>Inspo</button>
-  <button class="tab" data-tab="inspo-edit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Inspo+</button>
   <button class="tab" data-tab="messenger"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</button>
-  <button class="tab" data-tab="alle"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Alle</button>
-  <button class="tab" data-tab="editor"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Editor</button>
   <button class="tab" data-tab="einst"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einst.</button>
 </div>
 <div class="screens">
@@ -483,9 +480,37 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
   <div id="editorList"></div>
 </div>
 <div class="screen" id="screen-einst">
+  <!-- Abschnitt: Verwalten -->
+  <div class="section-title">Verwalten</div>
+  <div style="display:flex;flex-direction:column;gap:0.38rem;">
+    <div class="sound-opt" onclick="goTab('editor')" style="cursor:pointer;">
+      <div>
+        <div class="sound-opt-label">✏️ Übungen bearbeiten</div>
+        <div style="font-size:0.68rem;color:var(--muted);margin-top:0.15rem;">Übungen hinzufügen, ändern, löschen</div>
+      </div>
+      <div style="color:var(--muted);">→</div>
+    </div>
+    <div class="sound-opt" onclick="goTab('inspo-edit')" style="cursor:pointer;">
+      <div>
+        <div class="sound-opt-label">🌿 Inspo verwalten</div>
+        <div style="font-size:0.68rem;color:var(--muted);margin-top:0.15rem;">Profile und Hashtags hinzufügen</div>
+      </div>
+      <div style="color:var(--muted);">→</div>
+    </div>
+    <div class="sound-opt" onclick="goTab('alle')" style="cursor:pointer;">
+      <div>
+        <div class="sound-opt-label">📋 Alle Übungen</div>
+        <div style="font-size:0.68rem;color:var(--muted);margin-top:0.15rem;">Übersicht & Schnellauswahl</div>
+      </div>
+      <div style="color:var(--muted);">→</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <!-- Abschnitt: Timer-Sound -->
   <div class="section-title">Timer-Sound</div>
   <div id="soundOpts" style="display:flex;flex-direction:column;gap:0.45rem;"></div>
-  <div class="divider" style="margin-top:0.5rem;"></div>
+  <div class="divider"></div>
+  <!-- Abschnitt: Akzentfarbe -->
   <div class="section-title">Akzentfarbe</div>
   <div id="farbGrid"></div>
 </div>
@@ -601,7 +626,9 @@ function vib(ms){try{if(navigator.vibrate)navigator.vibrate(ms||22);}catch(e){}}
 function beep(freq=600,dur=0.06,vol=0.14,type='square'){try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur+0.01);}catch(e){}}
 function popSound(n=0){try{const freqs=[260,294,330,349,392,440,494,523,587,659];const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(freqs[n%10]*1.5,c.currentTime);o.frequency.exponentialRampToValueAtTime(freqs[n%10]*0.5,c.currentTime+0.1);g.gain.setValueAtTime(0.22,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.13);o.start();o.stop(c.currentTime+0.15);}catch(e){}}
 const TIMER_SOUNDS={chime:{label:'🔔 Glocke (sanft)',fn:()=>{try{const c=new(window.AudioContext||window.webkitAudioContext)();[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*0.22;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.2,t+0.05);g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);o.start(t);o.stop(t+0.95);});}catch(e){}}},bowl:{label:'🫙 Klangschale',fn:()=>{try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.type='sine';o.frequency.value=432;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.3,c.currentTime+0.1);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+4);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+4.1);}catch(e){}}},ding:{label:'✨ Einfaches Ding',fn:()=>beep(880,0.4,0.2,'sine')},none:{label:'🔕 Kein Ton',fn:()=>{}}};
-function playTimerSound(){TIMER_SOUNDS[activeSoundId]?.fn();}
+let _aCtxWarmed=false;
+function warmAudioCtx(){if(_aCtxWarmed)return;try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();g.gain.value=0;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.001);_aCtxWarmed=true;}catch(e){}}
+function playTimerSound(){try{const c=new(window.AudioContext||window.webkitAudioContext)();TIMER_SOUNDS[activeSoundId]?.fn(c);}catch(e){TIMER_SOUNDS[activeSoundId]?.fn();}}
 
 /* TIMER */
 const CIRC=2*Math.PI*62;let tMin=10,tTotal=600,tLeft=600,tRun=false,tIv=null;
@@ -612,7 +639,7 @@ const tRingEl=document.getElementById('tRing'),tValEl=document.getElementById('t
 tRingEl.style.strokeDasharray=CIRC;tRingEl.style.strokeDashoffset=0;
 function uT(){const m=Math.floor(tLeft/60),s=tLeft%60;tValEl.textContent=m+':'+(s<10?'0':'')+s;tRingEl.style.strokeDashoffset=CIRC*(1-tLeft/tTotal);}
 function tDone(){clearInterval(tIv);tRun=false;relWakeLock();document.getElementById('btnStart').textContent='Start';playTimerSound();vib(200);}
-function startT(){if(tRun)return;tRun=true;reqWakeLock();document.getElementById('btnStart').textContent='Pause';tIv=setInterval(()=>{tLeft--;uT();if(tLeft<=0)tDone();},1000);}
+function startT(){if(tRun)return;tRun=true;warmAudioCtx();reqWakeLock();document.getElementById('btnStart').textContent='Pause';tIv=setInterval(()=>{tLeft--;uT();if(tLeft<=0)tDone();},1000);}
 function pauseT(){if(!tRun)return;clearInterval(tIv);tRun=false;relWakeLock();document.getElementById('btnStart').textContent='Weiter';}
 function resetT(){clearInterval(tIv);tRun=false;relWakeLock();tLeft=tTotal;document.getElementById('btnStart').textContent='Start';uT();}
 document.getElementById('btnStart').onclick=()=>{if(!tRun)startT();else pauseT();};
