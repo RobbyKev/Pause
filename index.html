@@ -288,12 +288,14 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
 
 <div class="tabs">
   <button class="tab active" data-tab="uebung"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Übung</button>
+  <button class="tab" data-tab="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/><path d="M9 2h6"/></svg>Timer</button>
   <button class="tab" data-tab="atem"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10"/><path d="M12 8v4"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>Atem</button>
   <button class="tab" data-tab="audio"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Audio</button>
   <button class="tab" data-tab="fidget"><svg viewBox="0 0 24 24"><path d="M7 8h10M7 12h10M7 16h10"/></svg>Fidget</button>
   <button class="tab" data-tab="visuell"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M2 12h4M18 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Visuell</button>
   <button class="tab" data-tab="spiele"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M6 12h4M8 10v4M15 11h.01M17 13h.01"/></svg>Spiele</button>
   <button class="tab" data-tab="inspo"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>Inspo</button>
+  <button class="tab" data-tab="inspo-edit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Inspo+</button>
   <button class="tab" data-tab="messenger"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</button>
   <button class="tab" data-tab="alle"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Alle</button>
   <button class="tab" data-tab="editor"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Editor</button>
@@ -310,27 +312,34 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
     <div class="beschreibung" id="mainBesch"></div>
   </div>
   <div class="counter" id="counter"></div>
-  <div class="timer-wrap">
+  <button class="btn btn-p" id="btnNeu">Neue Übung →</button>
+  <button class="btn btn-g" onclick="goTab('timer')" style="font-size:0.78rem;">⏱ Timer starten</button>
+</div>
+<div class="screen" id="screen-timer">
+  <div class="section-title">Timer</div>
+  <div class="card" style="align-items:center;gap:1rem;">
     <div class="timer-opts">
       <button class="timer-opt" data-min="5">5 Min</button>
       <button class="timer-opt active" data-min="10">10 Min</button>
+      <button class="timer-opt" data-min="20">20 Min</button>
       <button class="timer-opt" data-min="custom">Eigene</button>
-    </div>
-    <div class="t-wrap-big">
-      <svg viewBox="0 0 140 140" width="140" height="140"><circle class="t-track" cx="70" cy="70" r="62"/><circle class="t-ring" id="tRing" cx="70" cy="70" r="62"/></svg>
-      <div class="t-val-big" id="tVal">10:00</div>
     </div>
     <div id="customTimerWrap" style="display:none;flex-direction:column;align-items:center;gap:0.4rem;">
       <div style="font-size:0.7rem;color:var(--muted);">Minuten eingeben</div>
       <input type="number" id="customMin" min="1" max="120" value="3" style="width:80px;text-align:center;font-size:1.1rem;padding:0.5rem;">
       <button class="btn-sm sm-s" onclick="setCustomTimer()">Setzen</button>
     </div>
+    <div class="t-wrap-big">
+      <svg viewBox="0 0 140 140" width="140" height="140"><circle class="t-track" cx="70" cy="70" r="62"/><circle class="t-ring" id="tRing" cx="70" cy="70" r="62"/></svg>
+      <div class="t-val-big" id="tVal">10:00</div>
+    </div>
     <div class="tbts">
       <button class="btn-sm sm-s" id="btnStart">Start</button>
       <button class="btn-sm sm-r" id="btnReset">Reset</button>
     </div>
+    <div id="wakeLockStatus" style="font-size:0.62rem;color:var(--muted);text-align:center;">⏱ Bildschirm bleibt an während der Timer läuft</div>
   </div>
-  <button class="btn btn-p" id="btnNeu">Neue Übung →</button>
+  <button class="btn btn-g" onclick="goTab('uebung')" style="font-size:0.78rem;">← Zurück zur Übung</button>
 </div>
 <div class="screen" id="screen-atem">
   <div class="section-title">Atemübung wählen</div>
@@ -418,6 +427,32 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
 <div class="screen" id="screen-alle">
   <div class="pill-row" id="filterRowAlle"></div>
   <div id="listContainer"></div>
+</div>
+<div class="screen" id="screen-inspo-edit">
+  <div class="section-title">Inspo verwalten</div>
+  <!-- Add Profile -->
+  <div class="card" style="gap:0.6rem;">
+    <div style="font-size:0.72rem;font-weight:600;color:var(--accent);">➕ Profil hinzufügen</div>
+    <div class="ed-sec"><div class="ed-lbl">Name</div><input type="text" id="ipName" placeholder="z.B. Johanna Schmidt"></div>
+    <div class="ed-sec"><div class="ed-lbl">Beschreibung</div><input type="text" id="ipDesc" placeholder="z.B. Ruhige Naturfotos"></div>
+    <div class="ed-sec"><div class="ed-lbl">Instagram-URL</div><input type="text" id="ipUrl" placeholder="https://www.instagram.com/..."></div>
+    <div class="ed-sec"><div class="ed-lbl">Emoji</div><input type="text" id="ipIcon" placeholder="📸" style="width:70px;"></div>
+    <button class="btn-save" onclick="addInspoProfile()">Profil speichern</button>
+  </div>
+  <!-- Add Hashtag -->
+  <div class="card" style="gap:0.6rem;">
+    <div style="font-size:0.72rem;font-weight:600;color:var(--accent);">➕ Hashtag hinzufügen</div>
+    <div class="ed-sec"><div class="ed-lbl">Hashtag (mit #)</div><input type="text" id="ihName" placeholder="#SlowLiving"></div>
+    <div class="ed-sec"><div class="ed-lbl">Beschreibung</div><input type="text" id="ihDesc" placeholder="z.B. Ruhig leben"></div>
+    <div class="ed-sec"><div class="ed-lbl">Emoji</div><input type="text" id="ihIcon" placeholder="🌿" style="width:70px;"></div>
+    <button class="btn-save" onclick="addInspoTag()">Hashtag speichern</button>
+  </div>
+  <!-- Custom Profiles list -->
+  <div class="section-title">Meine Profile</div>
+  <div id="ipList" style="display:flex;flex-direction:column;gap:0.35rem;"></div>
+  <!-- Custom Tags list -->
+  <div class="section-title" style="margin-top:0.5rem;">Meine Hashtags</div>
+  <div id="ihList" style="display:flex;flex-direction:column;gap:0.35rem;"></div>
 </div>
 <div class="screen" id="screen-editor">
   <div class="section-title">Neue Übung</div>
@@ -553,13 +588,13 @@ function kats(){return[...new Set(UB.map(u=>u.k))];}
 let activeSoundId=localStorage.getItem(LSS)||'chime';
 
 /* STARTSCREEN */
-function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst')rEinst();if(name==='inspo')rInspo();if(name==='messenger')initMsgTab();}
+function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst')rEinst();if(name==='inspo')rInspo();if(name==='messenger')initMsgTab();if(name==='inspo-edit')rInspoEdit();}
 function hideStart(){document.getElementById('startScreen').classList.add('hidden');}
 function showStart(){document.getElementById('startScreen').classList.remove('hidden');}
 window.goTab=goTab;window.hideStart=hideStart;window.showStart=showStart;
 
 /* TABS */
-document.querySelectorAll('.tab').forEach(tab=>{tab.onclick=()=>{if(!tab.dataset.tab)return;hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));tab.classList.add('active');const sc=document.getElementById('screen-'+tab.dataset.tab);if(sc)sc.classList.add('active');if(tab.dataset.tab==='alle'){rFA();rL();}if(tab.dataset.tab==='editor'){rEL();pKS();}if(tab.dataset.tab==='einst')rEinst();if(tab.dataset.tab==='inspo')rInspo();if(tab.dataset.tab==='messenger')initMsgTab();};});
+document.querySelectorAll('.tab').forEach(tab=>{tab.onclick=()=>{if(!tab.dataset.tab)return;hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));tab.classList.add('active');const sc=document.getElementById('screen-'+tab.dataset.tab);if(sc)sc.classList.add('active');if(tab.dataset.tab==='alle'){rFA();rL();}if(tab.dataset.tab==='editor'){rEL();pKS();}if(tab.dataset.tab==='einst')rEinst();if(tab.dataset.tab==='inspo')rInspo();if(tab.dataset.tab==='messenger')initMsgTab();if(tab.dataset.tab==='inspo-edit')rInspoEdit();};});
 
 let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
 function vib(ms){try{if(navigator.vibrate)navigator.vibrate(ms||22);}catch(e){}}
@@ -570,13 +605,19 @@ function playTimerSound(){TIMER_SOUNDS[activeSoundId]?.fn();}
 
 /* TIMER */
 const CIRC=2*Math.PI*62;let tMin=10,tTotal=600,tLeft=600,tRun=false,tIv=null;
+let wakeLock=null;
+async function reqWakeLock(){try{if('wakeLock' in navigator){wakeLock=await navigator.wakeLock.request('screen');const el=document.getElementById('wakeLockStatus');if(el)el.textContent='🔆 Bildschirm bleibt an';}}catch(e){}}
+async function relWakeLock(){try{if(wakeLock){await wakeLock.release();wakeLock=null;const el=document.getElementById('wakeLockStatus');if(el)el.textContent='⏱ Bildschirm bleibt an während der Timer läuft';}}catch(e){}}
 const tRingEl=document.getElementById('tRing'),tValEl=document.getElementById('tVal');
 tRingEl.style.strokeDasharray=CIRC;tRingEl.style.strokeDashoffset=0;
 function uT(){const m=Math.floor(tLeft/60),s=tLeft%60;tValEl.textContent=m+':'+(s<10?'0':'')+s;tRingEl.style.strokeDashoffset=CIRC*(1-tLeft/tTotal);}
-function tDone(){clearInterval(tIv);tRun=false;document.getElementById('btnStart').textContent='Start';const c=document.getElementById('mainCard');c.classList.add('done-flash');setTimeout(()=>c.classList.remove('done-flash'),2500);playTimerSound();}
-function startT(){if(tRun)return;tRun=true;document.getElementById('btnStart').textContent='Läuft…';tIv=setInterval(()=>{tLeft--;uT();if(tLeft<=0)tDone();},1000);}
-function resetT(){clearInterval(tIv);tRun=false;tLeft=tTotal;document.getElementById('btnStart').textContent='Start';uT();}
-document.getElementById('btnStart').onclick=startT;document.getElementById('btnReset').onclick=resetT;
+function tDone(){clearInterval(tIv);tRun=false;relWakeLock();document.getElementById('btnStart').textContent='Start';playTimerSound();vib(200);}
+function startT(){if(tRun)return;tRun=true;reqWakeLock();document.getElementById('btnStart').textContent='Pause';tIv=setInterval(()=>{tLeft--;uT();if(tLeft<=0)tDone();},1000);}
+function pauseT(){if(!tRun)return;clearInterval(tIv);tRun=false;relWakeLock();document.getElementById('btnStart').textContent='Weiter';}
+function resetT(){clearInterval(tIv);tRun=false;relWakeLock();tLeft=tTotal;document.getElementById('btnStart').textContent='Start';uT();}
+document.getElementById('btnStart').onclick=()=>{if(!tRun)startT();else pauseT();};
+document.getElementById('btnReset').onclick=resetT;
+function setCustomTimer(){const v=parseInt(document.getElementById('customMin').value);if(v>0&&v<=120){tMin=v;tTotal=v*60;resetT();}}
 document.querySelectorAll('.timer-opt').forEach(b=>{b.onclick=()=>{if(b.dataset.min==='custom'){document.getElementById('customTimerWrap').style.display='flex';document.querySelectorAll('.timer-opt').forEach(x=>x.classList.remove('active'));b.classList.add('active');return;}document.getElementById('customTimerWrap').style.display='none';document.querySelectorAll('.timer-opt').forEach(x=>x.classList.remove('active'));b.classList.add('active');tMin=parseInt(b.dataset.min);tTotal=tMin*60;resetT();};});
 window.setCustomTimer=function(){const v=parseInt(document.getElementById('customMin').value)||5;tMin=v;tTotal=v*60;resetT();toast(v+' Min gesetzt ✓');};
 uT();
@@ -638,9 +679,13 @@ const INSPO_TAGS=[
   {name:'#Miniatureworld',desc:'Tiny World – Miniaturfotografie',icon:'🔍',url:'https://www.instagram.com/explore/tags/miniatureworld'},
 ];
 function rInspo(){
+  const customP=loadCustomProfiles?loadCustomProfiles():[];
+  const allProfiles=[...INSPO_PROFILES,...customP];
   function makeProfileCard(p){const a=document.createElement('a');a.className='inspo-card';a.href=p.url;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=`<div class="inspo-avatar-ph">${p.icon}</div><div class="inspo-info"><div class="inspo-name">${p.name}</div><div class="inspo-desc">${p.desc}</div></div><div class="inspo-arrow">→</div>`;return a;}
-  const pc=document.getElementById('inspoProfiles');pc.innerHTML='';INSPO_PROFILES.forEach(p=>pc.appendChild(makeProfileCard(p)));
-  // Hashtags als kompaktes Grid mit Kategorien
+  const pc=document.getElementById('inspoProfiles');pc.innerHTML='';allProfiles.forEach(p=>pc.appendChild(makeProfileCard(p)));
+  const customT=loadCustomTags?loadCustomTags():[];
+  const allTags=[...INSPO_TAGS,...customT];
+  const tagMap={};allTags.forEach(t=>tagMap[t.name]=t);
   const CATS=[
     {label:'🌿 Natur & Erdung',tags:['#NatureTherapy','#QuietWoods','#SoftNature','#RainyWindow','#BotanicalCalm','#QuietGarden','#Forestphotography','#Cloudphotography','#Winterlandscape']},
     {label:'☕ Slow Living',tags:['#SlowLiving','#CozyVibes','#HyggeMoment','#QuietMoments','#SoftAesthetic','#SlowBaking','#CozyLighting']},
@@ -649,23 +694,89 @@ function rInspo(){
     {label:'🐾 Tiere & Natur',tags:['#Cuteanimal','#Aquarium']},
   ];
   const hc=document.getElementById('inspoHashtags');hc.innerHTML='';
-  const tagMap={};INSPO_TAGS.forEach(t=>tagMap[t.name]=t);
+  // Built-in categories
   CATS.forEach(cat=>{
     const sec=document.createElement('div');sec.style.cssText='display:flex;flex-direction:column;gap:0.4rem;';
     const lbl=document.createElement('div');lbl.style.cssText='font-size:0.62rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);padding-top:0.3rem;';lbl.textContent=cat.label;
     sec.appendChild(lbl);
     const chips=document.createElement('div');chips.style.cssText='display:flex;flex-wrap:wrap;gap:0.35rem;';
-    cat.tags.forEach(name=>{
-      const t=tagMap[name];if(!t)return;
-      const a=document.createElement('a');a.href=t.url;a.target='_blank';a.rel='noopener noreferrer';
-      a.style.cssText='display:inline-flex;align-items:center;gap:0.3rem;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:0.28em 0.75em;font-size:0.72rem;color:var(--text);text-decoration:none;transition:border-color 0.15s;';
-      a.onmouseenter=()=>a.style.borderColor='var(--accent)';a.onmouseleave=()=>a.style.borderColor='';
-      a.innerHTML=`<span>${t.icon}</span><span>${t.name}</span>`;
-      chips.appendChild(a);
-    });
+    cat.tags.forEach(name=>{const t=tagMap[name];if(!t)return;chips.appendChild(makeChip(t));});
     sec.appendChild(chips);hc.appendChild(sec);
   });
+  // Custom tags section
+  if(customT.length){
+    const sec=document.createElement('div');sec.style.cssText='display:flex;flex-direction:column;gap:0.4rem;';
+    const lbl=document.createElement('div');lbl.style.cssText='font-size:0.62rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);padding-top:0.3rem;';lbl.textContent='⭐ Meine Hashtags';
+    sec.appendChild(lbl);
+    const chips=document.createElement('div');chips.style.cssText='display:flex;flex-wrap:wrap;gap:0.35rem;';
+    customT.forEach(t=>chips.appendChild(makeChip(t)));
+    sec.appendChild(chips);hc.appendChild(sec);
+  }
+  function makeChip(t){const a=document.createElement('a');a.href=t.url;a.target='_blank';a.rel='noopener noreferrer';a.style.cssText='display:inline-flex;align-items:center;gap:0.3rem;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:0.28em 0.75em;font-size:0.72rem;color:var(--text);text-decoration:none;transition:border-color 0.15s;';a.onmouseenter=()=>a.style.borderColor='var(--accent)';a.onmouseleave=()=>a.style.borderColor='';a.innerHTML=`<span>${t.icon}</span><span>${t.name}</span>`;return a;}
 }
+
+/* INSPO EDITOR */
+const LS_IP='pause_inspo_profiles_v1',LS_IH='pause_inspo_tags_v1';
+function loadCustomProfiles(){try{return JSON.parse(localStorage.getItem(LS_IP)||'[]');}catch(e){return[];}}
+function loadCustomTags(){try{return JSON.parse(localStorage.getItem(LS_IH)||'[]');}catch(e){return[];}}
+function saveCustomProfiles(d){try{localStorage.setItem(LS_IP,JSON.stringify(d));}catch(e){}}
+function saveCustomTags(d){try{localStorage.setItem(LS_IH,JSON.stringify(d));}catch(e){}}
+
+function addInspoProfile(){
+  const name=document.getElementById('ipName').value.trim();
+  const desc=document.getElementById('ipDesc').value.trim();
+  const url=document.getElementById('ipUrl').value.trim();
+  const icon=document.getElementById('ipIcon').value.trim()||'📸';
+  if(!name||!url){toast('Name und URL sind Pflicht.');return;}
+  const list=loadCustomProfiles();
+  list.push({name,desc,icon,url,custom:true});
+  saveCustomProfiles(list);
+  ['ipName','ipDesc','ipUrl','ipIcon'].forEach(id=>document.getElementById(id).value='');
+  toast('Profil gespeichert ✓');
+  rInspoEdit();rInspo();
+}
+
+function addInspoTag(){
+  const name=document.getElementById('ihName').value.trim();
+  const desc=document.getElementById('ihDesc').value.trim();
+  const icon=document.getElementById('ihIcon').value.trim()||'🏷️';
+  if(!name){toast('Hashtag eingeben.');return;}
+  const tag=name.startsWith('#')?name:'#'+name;
+  const url='https://www.instagram.com/explore/tags/'+tag.replace('#','');
+  const list=loadCustomTags();
+  list.push({name:tag,desc,icon,url,custom:true});
+  saveCustomTags(list);
+  ['ihName','ihDesc','ihIcon'].forEach(id=>document.getElementById(id).value='');
+  toast('Hashtag gespeichert ✓');
+  rInspoEdit();rInspo();
+}
+
+function rInspoEdit(){
+  // Custom profiles list
+  const pl=document.getElementById('ipList');if(!pl)return;
+  pl.innerHTML='';
+  const cp=loadCustomProfiles();
+  if(!cp.length){pl.innerHTML='<div class="empty-state">Noch keine eigenen Profile.</div>';}
+  cp.forEach((p,i)=>{
+    const el=document.createElement('div');el.className='ex-item';
+    el.innerHTML=`<div class="ex-text"><div class="ex-title">${p.icon} ${p.name}</div><div class="ex-cat">${p.desc||p.url}</div></div><div class="ex-acts"><button class="ib del" data-i="${i}" data-type="profile"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`;
+    pl.appendChild(el);
+  });
+  pl.querySelectorAll('.ib.del[data-type="profile"]').forEach(b=>{b.onclick=()=>{const list=loadCustomProfiles();list.splice(parseInt(b.dataset.i),1);saveCustomProfiles(list);toast('Gelöscht.');rInspoEdit();rInspo();};});
+
+  // Custom tags list
+  const tl=document.getElementById('ihList');tl.innerHTML='';
+  const ct=loadCustomTags();
+  if(!ct.length){tl.innerHTML='<div class="empty-state">Noch keine eigenen Hashtags.</div>';}
+  ct.forEach((t,i)=>{
+    const el=document.createElement('div');el.className='ex-item';
+    el.innerHTML=`<div class="ex-text"><div class="ex-title">${t.icon} ${t.name}</div><div class="ex-cat">${t.desc}</div></div><div class="ex-acts"><button class="ib del" data-i="${i}" data-type="tag"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>`;
+    tl.appendChild(el);
+  });
+  tl.querySelectorAll('.ib.del[data-type="tag"]').forEach(b=>{b.onclick=()=>{const list=loadCustomTags();list.splice(parseInt(b.dataset.i),1);saveCustomTags(list);toast('Gelöscht.');rInspoEdit();rInspo();};});
+}
+window.addInspoProfile=addInspoProfile;
+window.addInspoTag=addInspoTag;
 
 /* EINSTELLUNGEN */
 function rEinst(){const con=document.getElementById('soundOpts');con.innerHTML='';Object.entries(TIMER_SOUNDS).forEach(([id,s])=>{const el=document.createElement('div');el.className='sound-opt'+(id===activeSoundId?' active':'');el.innerHTML=`<span style="font-size:0.85rem;font-weight:500;color:var(--text)">${s.label}</span><span style="color:var(--accent)">${id===activeSoundId?'✓':''}</span>`;el.onclick=()=>{activeSoundId=id;try{localStorage.setItem(LSS,id);}catch(e){}s.fn();rEinst();toast('Sound gesetzt ✓');};con.appendChild(el);});rFarben();}
