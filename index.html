@@ -4,29 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Pause</title>
-<link rel="apple-touch-icon" id="appIcon" href="">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pause">
-<script>
-function updateIcon(){
-  const acc=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#4ade80';
-  const svg=`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" width="180" height="180">
-    <rect width="180" height="180" fill="#12121f"/>
-    <rect x="22" y="24" width="30" height="122" rx="9" fill="${acc}"/>
-    <circle cx="106" cy="80" r="44" fill="${acc}"/>
-    <circle cx="80" cy="32" r="9" fill="${acc}" opacity="0.5"/>
-    <circle cx="104" cy="22" r="10" fill="${acc}" opacity="0.6"/>
-    <circle cx="130" cy="32" r="10" fill="${acc}" opacity="0.6"/>
-    <circle cx="150" cy="52" r="9" fill="${acc}" opacity="0.5"/>
-    <text x="90" y="162" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18" font-weight="700" letter-spacing="5" fill="${acc}">PAUSE.</text>
-  </svg>`;
-  const url='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg)));
-  document.getElementById('appIcon').href=url;
-}
-window.addEventListener('DOMContentLoaded',()=>{setTimeout(updateIcon,100);});
-window._updateIcon=updateIcon;
-</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -382,6 +362,30 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
 <div class="screen" id="screen-audio">
   <div class="section-title">Sounds</div>
   <div id="audioBtns" style="display:flex;flex-direction:column;gap:0.38rem;"></div>
+  <div class="divider" style="margin:0.25rem 0;"></div>
+  <div class="section-title">Musik & Playlists</div>
+  <div class="card" style="gap:0.65rem;padding:0.85rem;">
+    <div style="display:flex;align-items:center;gap:0.6rem;">
+      <div style="font-size:1.4rem;">🎵</div>
+      <div>
+        <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Entspannungsmusik</div>
+        <div style="font-size:0.65rem;color:var(--muted);margin-top:0.1rem;">YouTube Playlist</div>
+      </div>
+      <button class="btn-sm sm-s" id="ytToggleBtn" onclick="toggleYT()" style="margin-left:auto;">▶ Abspielen</button>
+    </div>
+    <div id="ytWrap" style="display:none;border-radius:10px;overflow:hidden;background:#000;">
+      <iframe
+        id="ytFrame"
+        width="100%"
+        height="200"
+        src="https://www.youtube.com/embed/videoseries?list=PLBlnbh-y9eJ7bDROEC5aK5zUppbS5w6du&autoplay=1&rel=0&modestbranding=1"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        style="display:block;border:none;">
+      </iframe>
+    </div>
+    <div style="font-size:0.62rem;color:var(--muted);line-height:1.5;">Beim Öffnen startet die Musik automatisch. YouTube-App wird nicht benötigt.</div>
+  </div>
 </div>
 <div class="screen" id="screen-fidget">
   <div class="section-title">Sensory Board</div>
@@ -666,6 +670,23 @@ document.querySelectorAll('.tab').forEach(tab=>{tab.onclick=()=>{if(!tab.dataset
 
 let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
 function vib(ms){try{if(navigator.vibrate)navigator.vibrate(ms||22);}catch(e){}}
+function toggleYT(){
+  const wrap=document.getElementById('ytWrap');
+  const btn=document.getElementById('ytToggleBtn');
+  if(wrap.style.display==='none'){
+    wrap.style.display='block';
+    btn.textContent='◼ Stoppen';
+    btn.className='btn-sm sm-r';
+  } else {
+    wrap.style.display='none';
+    // Reset iframe to stop playback
+    const frame=document.getElementById('ytFrame');
+    frame.src=frame.src;
+    btn.textContent='▶ Abspielen';
+    btn.className='btn-sm sm-s';
+  }
+}
+window.toggleYT=toggleYT;
 function beep(freq=600,dur=0.06,vol=0.14,type='square'){try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur+0.01);}catch(e){}}
 function popSound(n=0){try{const freqs=[260,294,330,349,392,440,494,523,587,659];const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(freqs[n%10]*1.5,c.currentTime);o.frequency.exponentialRampToValueAtTime(freqs[n%10]*0.5,c.currentTime+0.1);g.gain.setValueAtTime(0.22,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.13);o.start();o.stop(c.currentTime+0.15);}catch(e){}}
 const TIMER_SOUNDS={chime:{label:'🔔 Glocke (sanft)',fn:()=>{try{const c=new(window.AudioContext||window.webkitAudioContext)();[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*0.22;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.2,t+0.05);g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);o.start(t);o.stop(t+0.95);});}catch(e){}}},bowl:{label:'🫙 Klangschale',fn:()=>{try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.type='sine';o.frequency.value=432;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.3,c.currentTime+0.1);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+4);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+4.1);}catch(e){}}},ding:{label:'✨ Einfaches Ding',fn:()=>beep(880,0.4,0.2,'sine')},none:{label:'🔕 Kein Ton',fn:()=>{}}};
@@ -1363,7 +1384,7 @@ document.getElementById('btnTheo').onclick=()=>document.getElementById('theoFile
 document.getElementById('theoFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{THEO=ev.target.result;sT(THEO);rEL();toast('Theo-Foto gespeichert ✓');};r.readAsDataURL(f);};
 const FARBEN=[{n:'Lila',h:'#c084fc',h2:'#818cf8',rgb:'192,132,252'},{n:'Pink',h:'#f472b6',h2:'#e879f9',rgb:'244,114,182'},{n:'Rot',h:'#f87171',h2:'#fb923c',rgb:'248,113,113'},{n:'Orange',h:'#fb923c',h2:'#fbbf24',rgb:'251,146,60'},{n:'Gelb',h:'#fbbf24',h2:'#a3e635',rgb:'251,191,36'},{n:'Grün',h:'#4ade80',h2:'#2dd4bf',rgb:'74,222,128'},{n:'Türkis',h:'#2dd4bf',h2:'#38bdf8',rgb:'45,212,191'},{n:'Blau',h:'#60a5fa',h2:'#818cf8',rgb:'96,165,250'},{n:'Indigo',h:'#818cf8',h2:'#a78bfa',rgb:'129,140,248'},{n:'Weiß',h:'#e2e8f0',h2:'#cbd5e1',rgb:'226,232,240'},{n:'Gold',h:'#f59e0b',h2:'#fbbf24',rgb:'245,158,11'},{n:'Koralle',h:'#fb7185',h2:'#f472b6',rgb:'251,113,133'}];
 let aF=5;try{const s=localStorage.getItem(LSF);if(s!==null)aF=parseInt(s);}catch(e){}
-function apF(idx){const f=FARBEN[idx];document.documentElement.style.setProperty('--accent',f.h);document.documentElement.style.setProperty('--accent2',f.h2);document.documentElement.style.setProperty('--aRGB',f.rgb);if(window._updateIcon)window._updateIcon();}
+function apF(idx){const f=FARBEN[idx];document.documentElement.style.setProperty('--accent',f.h);document.documentElement.style.setProperty('--accent2',f.h2);document.documentElement.style.setProperty('--aRGB',f.rgb);}
 function rFarben(){const g=document.getElementById('farbGrid');g.innerHTML='';const grid=document.createElement('div');grid.className='farb-grid';FARBEN.forEach((f,i)=>{const wrap=document.createElement('div');const sw=document.createElement('div');sw.className='f-sw'+(i===aF?' active':'');sw.style.background=f.h;sw.innerHTML='<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';sw.onclick=()=>{aF=i;apF(i);try{localStorage.setItem(LSF,i);}catch(e){}rFarben();toast(f.n+' ✓');};const lbl=document.createElement('div');lbl.className='f-nm';lbl.textContent=f.n;wrap.appendChild(sw);wrap.appendChild(lbl);grid.appendChild(wrap);});g.appendChild(grid);}
 apF(aF);
 rFilter();zZ();pKS();rEL();rInspo();
