@@ -4,10 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Pause</title>
+<link rel="apple-touch-icon" id="appIcon" href="">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pause">
+<script>
+function updateIcon(){
+  const acc=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#4ade80';
+  const svg=`<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" width="180" height="180">
+    <rect width="180" height="180" fill="#12121f"/>
+    <rect x="22" y="24" width="30" height="122" rx="9" fill="${acc}"/>
+    <circle cx="106" cy="80" r="44" fill="${acc}"/>
+    <circle cx="80" cy="32" r="9" fill="${acc}" opacity="0.5"/>
+    <circle cx="104" cy="22" r="10" fill="${acc}" opacity="0.6"/>
+    <circle cx="130" cy="32" r="10" fill="${acc}" opacity="0.6"/>
+    <circle cx="150" cy="52" r="9" fill="${acc}" opacity="0.5"/>
+    <text x="90" y="162" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="18" font-weight="700" letter-spacing="5" fill="${acc}">PAUSE.</text>
+  </svg>`;
+  const url='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg)));
+  document.getElementById('appIcon').href=url;
+}
+window.addEventListener('DOMContentLoaded',()=>{setTimeout(updateIcon,100);});
+window._updateIcon=updateIcon;
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#12121f;--surface:#1c1c2e;--surface2:#242438;--border:rgba(255,255,255,0.07);--accent:#c084fc;--accent2:#818cf8;--text:#f1f0f5;--muted:#6b6b8a;--muted2:#9898b8;--danger:#f87171;--aRGB:192,132,252;}
+:root{--bg:#12121f;--surface:#1c1c2e;--surface2:#242438;--border:rgba(255,255,255,0.07);--accent:#4ade80;--accent2:#2dd4bf;--text:#f1f0f5;--muted:#6b6b8a;--muted2:#9898b8;--danger:#f87171;--aRGB:74,222,128;}
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;height:100dvh;}
 
@@ -1339,8 +1362,8 @@ function rEL(){pKS();const tw=document.getElementById('theoWrap');tw.innerHTML=T
 document.getElementById('btnTheo').onclick=()=>document.getElementById('theoFile').click();
 document.getElementById('theoFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{THEO=ev.target.result;sT(THEO);rEL();toast('Theo-Foto gespeichert ✓');};r.readAsDataURL(f);};
 const FARBEN=[{n:'Lila',h:'#c084fc',h2:'#818cf8',rgb:'192,132,252'},{n:'Pink',h:'#f472b6',h2:'#e879f9',rgb:'244,114,182'},{n:'Rot',h:'#f87171',h2:'#fb923c',rgb:'248,113,113'},{n:'Orange',h:'#fb923c',h2:'#fbbf24',rgb:'251,146,60'},{n:'Gelb',h:'#fbbf24',h2:'#a3e635',rgb:'251,191,36'},{n:'Grün',h:'#4ade80',h2:'#2dd4bf',rgb:'74,222,128'},{n:'Türkis',h:'#2dd4bf',h2:'#38bdf8',rgb:'45,212,191'},{n:'Blau',h:'#60a5fa',h2:'#818cf8',rgb:'96,165,250'},{n:'Indigo',h:'#818cf8',h2:'#a78bfa',rgb:'129,140,248'},{n:'Weiß',h:'#e2e8f0',h2:'#cbd5e1',rgb:'226,232,240'},{n:'Gold',h:'#f59e0b',h2:'#fbbf24',rgb:'245,158,11'},{n:'Koralle',h:'#fb7185',h2:'#f472b6',rgb:'251,113,133'}];
-let aF=0;try{const s=localStorage.getItem(LSF);if(s!==null)aF=parseInt(s);}catch(e){}
-function apF(idx){const f=FARBEN[idx];document.documentElement.style.setProperty('--accent',f.h);document.documentElement.style.setProperty('--accent2',f.h2);document.documentElement.style.setProperty('--aRGB',f.rgb);}
+let aF=5;try{const s=localStorage.getItem(LSF);if(s!==null)aF=parseInt(s);}catch(e){}
+function apF(idx){const f=FARBEN[idx];document.documentElement.style.setProperty('--accent',f.h);document.documentElement.style.setProperty('--accent2',f.h2);document.documentElement.style.setProperty('--aRGB',f.rgb);if(window._updateIcon)window._updateIcon();}
 function rFarben(){const g=document.getElementById('farbGrid');g.innerHTML='';const grid=document.createElement('div');grid.className='farb-grid';FARBEN.forEach((f,i)=>{const wrap=document.createElement('div');const sw=document.createElement('div');sw.className='f-sw'+(i===aF?' active':'');sw.style.background=f.h;sw.innerHTML='<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';sw.onclick=()=>{aF=i;apF(i);try{localStorage.setItem(LSF,i);}catch(e){}rFarben();toast(f.n+' ✓');};const lbl=document.createElement('div');lbl.className='f-nm';lbl.textContent=f.n;wrap.appendChild(sw);wrap.appendChild(lbl);grid.appendChild(wrap);});g.appendChild(grid);}
 apF(aF);
 rFilter();zZ();pKS();rEL();rInspo();
