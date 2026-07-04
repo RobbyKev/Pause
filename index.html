@@ -1286,7 +1286,7 @@ function initMsgTab(){
         // Erste muss user sein
         while(contents.length&&contents[0].role!=='user')contents.shift();
         if(!contents.length)contents.push({role:'user',parts:[{text:text}]});
-        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key.trim()}`,{
+        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key.trim()}`,{
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({
