@@ -757,7 +757,10 @@ const DEFAULTS=[
 ];
 const LSK='pva',LST='ptv3',LSF='pfv1',LSS='psnd1';
 function load(){try{const r=localStorage.getItem(LSK);if(r)return JSON.parse(r);}catch(e){}return DEFAULTS.map(d=>({...d}));}
-function sv(l){try{localStorage.setItem(LSK,JSON.stringify(l));}catch(e){}}
+function sv(l){
+  try{localStorage.setItem(LSK,JSON.stringify(l));}catch(e){}
+  fbSet('uebungen',{data:JSON.stringify(l)});
+}
 function lT(){try{return localStorage.getItem(LST)||'';}catch(e){return '';}}
 function sT(d){try{localStorage.setItem(LST,d);}catch(e){}}
 let UB=load(),THEO=lT();
@@ -912,12 +915,68 @@ function rInspo(){
 
 /* INSPO EDITOR */
 const LS_IP='pause_inspo_profiles_v1',LS_IH='pause_inspo_tags_v1',LS_GKEY='pause_gemini_key_v1';
+// ── FIRESTORE SYNC ──
+async function fbSet(docId, data){
+  try{
+    if(typeof db!=='undefined') await db.collection('config').doc(docId).set(data);
+  }catch(e){console.log('FB write err:',e);}
+}
+async function fbGet(docId){
+  try{
+    if(typeof db==='undefined')return null;
+    const d=await db.collection('config').doc(docId).get();
+    return d.exists?d.data():null;
+  }catch(e){return null;}
+}
+
+// Inspo Profiles
 function loadCustomProfiles(){try{return JSON.parse(localStorage.getItem(LS_IP)||'[]');}catch(e){return[];}}
 function loadCustomTags(){try{return JSON.parse(localStorage.getItem(LS_IH)||'[]');}catch(e){return[];}}
-function saveCustomProfiles(d){try{localStorage.setItem(LS_IP,JSON.stringify(d));}catch(e){}}
-function saveCustomTags(d){try{localStorage.setItem(LS_IH,JSON.stringify(d));}catch(e){}}
+function saveCustomProfiles(d){
+  try{localStorage.setItem(LS_IP,JSON.stringify(d));}catch(e){}
+  fbSet('inspo',{profiles:JSON.stringify(d),tags:JSON.stringify(loadCustomTags())});
+}
+function saveCustomTags(d){
+  try{localStorage.setItem(LS_IH,JSON.stringify(d));}catch(e){}
+  fbSet('inspo',{profiles:JSON.stringify(loadCustomProfiles()),tags:JSON.stringify(d)});
+}
+
+// Load from Firestore on startup
+async function syncFromFirebase(){
+  try{
+    // Inspo
+    const inspo=await fbGet('inspo');
+    if(inspo){
+      if(inspo.profiles)try{localStorage.setItem(LS_IP,inspo.profiles);}catch(e){}
+      if(inspo.tags)try{localStorage.setItem(LS_IH,inspo.tags);}catch(e){}
+    }
+    // Übungen
+    const ub=await fbGet('uebungen');
+    if(ub&&ub.data){
+      // Only overwrite if Firebase has more recent data
+      const local=localStorage.getItem(LSK);
+      if(!local)try{localStorage.setItem(LSK,ub.data);}catch(e){}
+    }
+    // Gemini Key
+    const gem=await fbGet('gemini');
+    if(gem&&gem.key&&!localStorage.getItem(LS_GKEY)){
+      try{localStorage.setItem(LS_GKEY,gem.key);}catch(e){}
+    }
+    // Settings - Farbe
+    const einst=await fbGet('einstellungen');
+    if(einst){
+      if(einst.farbe!==undefined&&!localStorage.getItem(LSF))try{localStorage.setItem(LSF,einst.farbe);}catch(e){}
+      if(einst.sound&&!localStorage.getItem(LSS))try{localStorage.setItem(LSS,einst.sound);}catch(e){}
+      if(einst.zeichen&&!localStorage.getItem('pause_zeichen_v1'))try{localStorage.setItem('pause_zeichen_v1',einst.zeichen);}catch(e){}
+    }
+    toast('☁️ Daten synchronisiert');
+    setTimeout(()=>{rFA&&rFA();rL&&rL();},300);
+  }catch(e){console.log('Sync error:',e);}
+}
+// Run sync on load
+window.addEventListener('DOMContentLoaded',()=>setTimeout(syncFromFirebase,1500));
 function getGeminiKey(){try{return localStorage.getItem(LS_GKEY)||'';}catch(e){return '';}}
-function saveGeminiKey(){const k=document.getElementById('geminiKeyInput').value.trim();if(!k){toast('Key eingeben.');return;}try{localStorage.setItem(LS_GKEY,k);}catch(e){}if(typeof fbSaveGeminiKey!=='undefined')fbSaveGeminiKey(k);document.getElementById('geminiKeyInput').value='';document.getElementById('geminiKeyStatus').textContent='✓ Key gespeichert – Chat ist jetzt aktiv!';document.getElementById('geminiKeyStatus').style.color='var(--accent)';toast('Gemini Key gespeichert ✓');}
+function saveGeminiKey(){const k=document.getElementById('geminiKeyInput').value.trim();if(!k){toast('Key eingeben.');return;}try{localStorage.setItem(LS_GKEY,k);}catch(e){}fbSet('gemini',{key:k});document.getElementById('geminiKeyInput').value='';document.getElementById('geminiKeyStatus').textContent='✓ Key gespeichert – Chat ist jetzt aktiv!';document.getElementById('geminiKeyStatus').style.color='var(--accent)';toast('Gemini Key gespeichert ✓');}
 function clearGeminiKey(){try{localStorage.removeItem(LS_GKEY);}catch(e){}document.getElementById('geminiKeyStatus').textContent='Kein Key gespeichert.';document.getElementById('geminiKeyStatus').style.color='var(--muted)';toast('Key gelöscht.');}
 window.saveGeminiKey=saveGeminiKey;window.clearGeminiKey=clearGeminiKey;
 
@@ -1324,7 +1383,7 @@ window.rHoroskop=rHoroskop;
 /* EINSTELLUNGEN */
 function rEinst(){
   const con=document.getElementById('soundOpts');con.innerHTML='';
-  Object.entries(TIMER_SOUNDS).forEach(([id,s])=>{const el=document.createElement('div');el.className='sound-opt'+(id===activeSoundId?' active':'');el.innerHTML=`<span style="font-size:0.85rem;font-weight:500;color:var(--text)">${s.label}</span><span style="color:var(--accent)">${id===activeSoundId?'✓':''}</span>`;el.onclick=()=>{activeSoundId=id;try{localStorage.setItem(LSS,id);}catch(e){}s.fn();rEinst();toast('Sound gesetzt ✓');};con.appendChild(el);});
+  Object.entries(TIMER_SOUNDS).forEach(([id,s])=>{const el=document.createElement('div');el.className='sound-opt'+(id===activeSoundId?' active':'');el.innerHTML=`<span style="font-size:0.85rem;font-weight:500;color:var(--text)">${s.label}</span><span style="color:var(--accent)">${id===activeSoundId?'✓':''}</span>`;el.onclick=()=>{activeSoundId=id;try{localStorage.setItem(LSS,id);}catch(e){}fbSet('einstellungen',{farbe:String(aF),sound:id,zeichen:localStorage.getItem('pause_zeichen_v1')||''});s.fn();rEinst();toast('Sound gesetzt ✓');};con.appendChild(el);});
   // Gemini key status
   const st=document.getElementById('geminiKeyStatus');
   const inp=document.getElementById('geminiKeyInput');
@@ -2267,7 +2326,13 @@ document.getElementById('btnTheo').onclick=()=>document.getElementById('theoFile
 document.getElementById('theoFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{THEO=ev.target.result;sT(THEO);rEL();toast('Theo-Foto gespeichert ✓');};r.readAsDataURL(f);};
 const FARBEN=[{n:'Lila',h:'#c084fc',h2:'#818cf8',rgb:'192,132,252'},{n:'Pink',h:'#f472b6',h2:'#e879f9',rgb:'244,114,182'},{n:'Rot',h:'#f87171',h2:'#fb923c',rgb:'248,113,113'},{n:'Orange',h:'#fb923c',h2:'#fbbf24',rgb:'251,146,60'},{n:'Gelb',h:'#fbbf24',h2:'#a3e635',rgb:'251,191,36'},{n:'Grün',h:'#4ade80',h2:'#2dd4bf',rgb:'74,222,128'},{n:'Türkis',h:'#2dd4bf',h2:'#38bdf8',rgb:'45,212,191'},{n:'Blau',h:'#60a5fa',h2:'#818cf8',rgb:'96,165,250'},{n:'Indigo',h:'#818cf8',h2:'#a78bfa',rgb:'129,140,248'},{n:'Weiß',h:'#e2e8f0',h2:'#cbd5e1',rgb:'226,232,240'},{n:'Gold',h:'#f59e0b',h2:'#fbbf24',rgb:'245,158,11'},{n:'Koralle',h:'#fb7185',h2:'#f472b6',rgb:'251,113,133'}];
 let aF=5;try{const s=localStorage.getItem(LSF);if(s!==null)aF=parseInt(s);}catch(e){}
-function apF(idx){const f=FARBEN[idx];document.documentElement.style.setProperty('--accent',f.h);document.documentElement.style.setProperty('--accent2',f.h2);document.documentElement.style.setProperty('--aRGB',f.rgb);}
+function apF(idx){
+  const f=FARBEN[idx];
+  document.documentElement.style.setProperty('--accent',f.h);
+  document.documentElement.style.setProperty('--accent2',f.h2);
+  document.documentElement.style.setProperty('--aRGB',f.rgb);
+  fbSet('einstellungen',{farbe:String(idx),sound:activeSoundId,zeichen:localStorage.getItem('pause_zeichen_v1')||''});
+}
 function rFarben(){const g=document.getElementById('farbGrid');g.innerHTML='';const grid=document.createElement('div');grid.className='farb-grid';FARBEN.forEach((f,i)=>{const wrap=document.createElement('div');const sw=document.createElement('div');sw.className='f-sw'+(i===aF?' active':'');sw.style.background=f.h;sw.innerHTML='<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';sw.onclick=()=>{aF=i;apF(i);try{localStorage.setItem(LSF,i);}catch(e){}rFarben();toast(f.n+' ✓');};const lbl=document.createElement('div');lbl.className='f-nm';lbl.textContent=f.n;wrap.appendChild(sw);wrap.appendChild(lbl);grid.appendChild(wrap);});g.appendChild(grid);}
 apF(aF);
 rFilter();zZ();pKS();rEL();rInspo();
