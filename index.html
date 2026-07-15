@@ -260,10 +260,10 @@ const db = firebase.firestore();
 
 // Gemini Key sicher in Firestore speichern/laden
 async function fbSaveGeminiKey(key){
-  try{await db.collection('config').doc('gemini').set({key});}catch(e){console.log('FB save err',e);}
+  try{await db.collection('config').doc('groq').set({key});}catch(e){console.log('FB save err',e);}
 }
 async function fbLoadGeminiKey(){
-  try{const d=await db.collection('config').doc('gemini').get();return d.exists?d.data().key:null;}catch(e){return null;}
+  try{const d=await db.collection('config').doc('groq').get();return d.exists?d.data().key:null;}catch(e){return null;}
 }
 
 // Backup Übungen in Firestore
@@ -288,7 +288,7 @@ async function getGeminiKeyFromFB(){
   const local=getGeminiKey();
   if(local)return local;
   const fb=await fbLoadGeminiKey();
-  if(fb){try{localStorage.setItem('pause_gemini_key_v1',fb);}catch(e){}}
+  if(fb){try{localStorage.setItem('pause_groq_key_v1',fb);}catch(e){}}
   return fb;
 }
 
@@ -640,13 +640,13 @@ console.log('Firebase Pause: verbunden ✓');
   </div>
   <div class="divider"></div>
   <!-- Abschnitt: Chat / Gemini -->
-  <div class="section-title">Chat – KI Verbindung</div>
+  <div class="section-title">Chat – KI Verbindung (Groq)</div>
   <div class="card" style="gap:0.6rem;">
-    <div style="font-size:0.78rem;color:var(--muted2);line-height:1.5;">Füge einen Gemini API Key ein damit „Stille" im Chat wirklich auf dich eingeht. Key bekommst du kostenlos auf <span style="color:var(--accent);">aistudio.google.com</span></div>
+    <div style="font-size:0.78rem;color:var(--muted2);line-height:1.5;">Füge einen Groq API Key ein – komplett kostenlos auf <span style="color:var(--accent);">console.groq.com/keys</span></div>
     <div class="ed-sec">
-      <div class="ed-lbl">Gemini API Key</div>
+      <div class="ed-lbl">Groq API Key</div>
       <div style="display:flex;gap:0.4rem;align-items:center;">
-        <input type="text" id="geminiKeyInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="AIza..." style="flex:1;">
+        <input type="text" id="geminiKeyInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="gsk_..." style="flex:1;">
         <button class="btn-sm sm-s" onclick="saveGeminiKey()">Speichern</button>
       </div>
     </div>
@@ -914,7 +914,7 @@ function rInspo(){
 }
 
 /* INSPO EDITOR */
-const LS_IP='pause_inspo_profiles_v1',LS_IH='pause_inspo_tags_v1',LS_GKEY='pause_gemini_key_v1';
+const LS_IP='pause_inspo_profiles_v1',LS_IH='pause_inspo_tags_v1',LS_GKEY='pause_groq_key_v1';
 // ── FIRESTORE SYNC ──
 async function fbSet(docId, data){
   try{
@@ -976,7 +976,7 @@ async function syncFromFirebase(){
 // Run sync on load
 window.addEventListener('DOMContentLoaded',()=>setTimeout(syncFromFirebase,1500));
 function getGeminiKey(){try{return localStorage.getItem(LS_GKEY)||'';}catch(e){return '';}}
-function saveGeminiKey(){const k=document.getElementById('geminiKeyInput').value.trim();if(!k){toast('Key eingeben.');return;}try{localStorage.setItem(LS_GKEY,k);}catch(e){}fbSet('gemini',{key:k});document.getElementById('geminiKeyInput').value='';document.getElementById('geminiKeyStatus').textContent='✓ Key gespeichert – Chat ist jetzt aktiv!';document.getElementById('geminiKeyStatus').style.color='var(--accent)';toast('Gemini Key gespeichert ✓');}
+function saveGeminiKey(){const k=document.getElementById('geminiKeyInput').value.trim();if(!k){toast('Key eingeben.');return;}try{localStorage.setItem(LS_GKEY,k);}catch(e){}fbSet('gemini',{key:k});document.getElementById('geminiKeyInput').value='';document.getElementById('geminiKeyStatus').textContent='✓ Groq Key gespeichert – Chat ist jetzt aktiv!';document.getElementById('geminiKeyStatus').style.color='var(--accent)';toast('Groq Key gespeichert ✓');}
 function clearGeminiKey(){try{localStorage.removeItem(LS_GKEY);}catch(e){}document.getElementById('geminiKeyStatus').textContent='Kein Key gespeichert.';document.getElementById('geminiKeyStatus').style.color='var(--muted)';toast('Key gelöscht.');}
 window.saveGeminiKey=saveGeminiKey;window.clearGeminiKey=clearGeminiKey;
 
@@ -1355,27 +1355,30 @@ async function ladeHoroskop(z,save=true){
   let key=getGeminiKey();
   if(!key&&typeof fbLoadGeminiKey!=='undefined'){
     key=await fbLoadGeminiKey();
-    if(key)try{localStorage.setItem('pause_gemini_key_v1',key);}catch(e){}
+    if(key)try{localStorage.setItem('pause_groq_key_v1',key);}catch(e){}
   }
   if(!key){
     loadEl.style.display='none';textEl.style.display='block';
-    textEl.innerHTML='<span style="color:var(--muted)">Für echte Tages-Horoskope bitte einen Gemini API Key in den Einstellungen eintragen.</span>';
+    textEl.innerHTML='<span style="color:var(--muted)">Für echte Tages-Horoskope bitte einen Groq API Key in den Einstellungen eintragen.</span>';
     return;
   }
   try{
     const today=new Date().toLocaleDateString('de-DE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${key.trim()}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{role:'user',parts:[{text:`Schreibe ein tagesaktuelles Horoskop für ${z.n} (${today}). 3-4 Sätze, warmherzig und inspirierend, auf Deutsch. Gehe auf Energie, Beziehungen und persönliche Entwicklung ein. Kein Datum erwähnen.`}]}]})
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:200,messages:[
+        {role:'system',content:'Du bist ein einfühlsamer Astrologe. Schreibe kurze, warmherzige Tages-Horoskope auf Deutsch.'},
+        {role:'user',content:`Schreibe ein tagesaktuelles Horoskop für ${z.n} (${today}). 3-4 Sätze, warmherzig und inspirierend. Gehe auf Energie, Beziehungen und persönliche Entwicklung ein. Kein Datum erwähnen.`}
+      ]})
     });
     const data=await res.json();
-    const text=data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const text=data.choices?.[0]?.message?.content;
     if(!text)throw new Error('no text');
     try{localStorage.setItem(cacheKey,text);}catch(e){}
     textEl.textContent=text;textEl.style.display='block';loadEl.style.display='none';
   }catch(e){
     loadEl.style.display='none';textEl.style.display='block';
-    textEl.textContent='Horoskop konnte nicht geladen werden. Bitte Gemini Key prüfen.';
+    textEl.textContent='Horoskop konnte nicht geladen werden. Bitte Groq Key prüfen.';
   }
 }
 window.rHoroskop=rHoroskop;
@@ -1387,7 +1390,7 @@ function rEinst(){
   // Gemini key status
   const st=document.getElementById('geminiKeyStatus');
   const inp=document.getElementById('geminiKeyInput');
-  if(st){const k=getGeminiKey();st.textContent=k?'✓ Key vorhanden – Chat aktiv':'Kein Key – Chat nutzt Fallback-Antworten';st.style.color=k?'var(--accent)':'var(--muted)';}
+  if(st){const k=getGeminiKey();st.textContent=k?'✓ Groq Key vorhanden – Chat & Horoskop aktiv':'Kein Groq Key – bitte eintragen (console.groq.com/keys)';st.style.color=k?'var(--accent)':'var(--muted)';}
   if(inp)inp.value='';
   rFarben();
 }
@@ -2272,16 +2275,20 @@ function initMsgTab(){
         // Erste muss user sein
         while(contents.length&&contents[0].role!=='user')contents.shift();
         if(!contents.length)contents.push({role:'user',parts:[{text:text}]});
-        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${key.trim()}`,{
+        const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
           method:'POST',
-          headers:{'Content-Type':'application/json'},
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},
           body:JSON.stringify({
-            system_instruction:{parts:[{text:'Du bist eine ruhige, warme Begleiterin namens "Stille". Der Nutzer schreibt dir was er denkt oder fühlt. Antworte sehr kurz (1-2 Sätze), sanft und menschlich. Kein Ratschlag, kein Therapieton. Geh auf das ein was geschrieben steht. Manchmal nur ein Emoji oder "Ich höre dich." Sei wie eine stille Freundin. Antworte immer auf Deutsch.'}]},
-            contents
+            model:'llama-3.3-70b-versatile',
+            max_tokens:120,
+            messages:[
+              {role:'system',content:'Du bist eine ruhige, warme Begleiterin namens "Stille". Der Nutzer schreibt dir was er denkt oder fühlt. Antworte sehr kurz (1-2 Sätze), sanft und menschlich. Kein Ratschlag, kein Therapieton. Geh auf das ein was geschrieben steht. Manchmal nur ein Emoji oder "Ich höre dich." Sei wie eine stille Freundin. Antworte immer auf Deutsch.'},
+              ...contents.map(x=>({role:x.role==='user'?'user':'assistant',content:x.parts[0].text}))
+            ]
           })
         });
         const data=await res.json();
-        const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||(data.error?null:'💜');
+        const reply=data.choices?.[0]?.message?.content||(data.error?null:'💜');
         if(!reply){throw new Error(data.error?.message||'no reply');}
         typing.remove();
         const rm={role:'recv',text:reply.trim()};MSG_HISTORY.push(rm);renderBubble(rm.text,'recv');scrollFeed();
