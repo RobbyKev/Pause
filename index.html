@@ -1448,42 +1448,42 @@ function rHoroskop(){
     let cached=null;try{cached=localStorage.getItem(cacheKey);}catch(e){}
     if(cached){textEl.style.fontStyle='normal';textEl.style.color='var(--text)';textEl.textContent=cached;return;}
     textEl.style.fontStyle='italic';textEl.style.color='var(--muted)';textEl.textContent='Sterne werden befragt …';
+    let key=getGeminiKey();
+    if(!key&&typeof fbGet!=='undefined'){try{const fbD=await fbGet('groq');if(fbD?.key)key=fbD.key;}catch(e){}}
+    if(!key){
+      textEl.style.fontStyle='italic';textEl.style.color='var(--muted)';
+      textEl.textContent='Groq Key in Einstellungen eintragen für Horoskope.';
+      dateEl.textContent='';return;
+    }
     try{
-      const res=await fetch('https://freehoroscopeapi.com/api/v1/get-horoscope/'+period+'?sign='+s.key);
-      if(!res.ok)throw new Error('Status '+res.status);
-      const json=await res.json();
-      const enText=json.data.horoscope;
-      dateEl.textContent=json.data.date||'';
-      // Übersetze mit Groq falls Key vorhanden
-      let key=getGeminiKey();
-      if(!key&&typeof fbGet!=='undefined'){const fbD=await fbGet('groq');if(fbD?.key)key=fbD.key;}
-      let finalText=enText;
-      if(key){
-        try{
-          const tr=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:300,messages:[{role:'system',content:'Übersetze diesen Horoskop-Text ins Deutsche. Nur die Übersetzung, nichts anderes.'},{role:'user',content:enText}]})});
-          const td=await tr.json();finalText=td.choices?.[0]?.message?.content||enText;
-        }catch(e){}
-      }
-      try{localStorage.setItem(cacheKey,finalText);}catch(e){}
-      textEl.style.fontStyle='normal';textEl.style.color='var(--text)';textEl.textContent=finalText;
+      const periodDE=period==='daily'?'tägliches':period==='weekly'?'wöchentliches':'monatliches';
+      const tr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+        method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},
+        body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:250,
+          messages:[
+            {role:'system',content:'Du bist ein warmherziger Astrologe. Schreibe inspirierende Horoskope auf Deutsch.'},
+            {role:'user',content:'Schreibe ein '+periodDE+' Horoskop für '+s.name+'. 3-4 Sätze, warmherzig und inspirierend auf Deutsch. Kein Datum nennen.'}
+          ]})
+      });
+      const td=await tr.json();
+      const text=td.choices?.[0]?.message?.content;
+      if(!text)throw new Error('no text');
+      try{localStorage.setItem(cacheKey,text);}catch(e){}
+      textEl.style.fontStyle='normal';textEl.style.color='var(--text)';textEl.textContent=text;
+      dateEl.textContent=new Date().toLocaleDateString('de-DE');
     }catch(err){
       textEl.style.color='#f87171';textEl.style.fontStyle='normal';
-      textEl.textContent='Die Sterne schweigen gerade (API nicht erreichbar).';
+      textEl.textContent='Horoskop konnte nicht geladen werden. Groq Key prüfen.';
     }
   }
   // Restore saved sign
   const saved=localStorage.getItem('pause_zeichen_v1');
   if(saved){const s=SIGNS.find(x=>x.key===saved);if(s)selectSign(s);}
 }
-window.ladeHoroskop=ladeHoroskop;
 window.rHoroskop=rHoroskop;
 
 let activePeriod='daily';
-function horoPeriod(p){
-  activePeriod=p;
-  document.querySelectorAll('#horoskopPeriodRow .pill').forEach(b=>b.classList.toggle('active',b.dataset.period===p));
-  if(savedZeichen){const z=ZEICHEN.find(z=>z.slug===savedZeichen);if(z)ladeHoroskop(z,false,p);}
-}
+function horoPeriod(p){activePeriod=p;}
 window.horoPeriod=horoPeriod;
 
 // Tarot API
