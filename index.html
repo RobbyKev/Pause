@@ -573,28 +573,7 @@ console.log('Firebase Pause: verbunden ✓');
   <button class="btn btn-p" id="kartenZiehenBtn">🃏 Karte ziehen</button>
   <div id="tagesKarteInfo" style="font-size:0.65rem;color:var(--muted);text-align:center;"></div>
 </div>
-<div class="screen" id="screen-horoskop">
-  <div class="section-title">Dein Sternzeichen</div>
-  <div class="pill-row" id="horoskopPeriodRow">
-    <button class="pill active" data-period="daily" onclick="horoPeriod('daily')">📅 Täglich</button>
-    <button class="pill" data-period="weekly" onclick="horoPeriod('weekly')">📆 Wöchentlich</button>
-    <button class="pill" data-period="monthly" onclick="horoPeriod('monthly')">🗓️ Monatlich</button>
-  </div>
-  <div class="pill-row" id="horoskopZeichenRow" style="flex-wrap:wrap;gap:0.3rem;"></div>
-  <div id="horoskopResult" style="display:none;" class="card">
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
-      <div id="horoskopEmoji" style="font-size:2rem;line-height:1;"></div>
-      <div>
-        <div id="horoskopName" style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);"></div>
-        <div id="horoskopDatum" style="font-size:0.62rem;color:var(--muted);margin-top:0.1rem;"></div>
-      </div>
-    </div>
-    <div style="height:1px;background:var(--border);margin-bottom:0.75rem;"></div>
-    <div id="horoskopText" style="font-size:0.82rem;color:var(--muted2);line-height:1.7;font-weight:300;"></div>
-    <div id="horoskopLoading" style="font-size:0.82rem;color:var(--muted);text-align:center;padding:1rem 0;">Lädt Horoskop…</div>
-  </div>
-  <div id="horoskopSpeichernHint" style="font-size:0.62rem;color:var(--muted);text-align:center;display:none;">⭐ Tippe auf ein Sternzeichen um das Horoskop zu laden</div>
-</div>
+
 <div class="screen" id="screen-inspo">
   <div class="section-title">Profile</div>
   <div id="inspoProfiles" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
