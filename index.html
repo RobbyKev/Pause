@@ -2261,29 +2261,42 @@ function initMsgTab(){
     if(key){
       try{
         // Nur user/model Nachrichten, erste muss user sein
-        const raw=MSG_HISTORY.filter(x=>x.role==='sent'||x.role==='recv');
-        const contents=[];
+        const raw=MSG_HISTORY.filter(x=>x.role==='sent'||x.role==='recv').slice(-20);
+        const messages=[];
         raw.forEach(x=>{
-          const r=x.role==='sent'?'user':'model';
-          // Kein doppeltes gleiche Role hintereinander
-          if(contents.length&&contents[contents.length-1].role===r){
-            contents[contents.length-1].parts[0].text+='\n'+x.text;
+          const r=x.role==='sent'?'user':'assistant';
+          if(messages.length&&messages[messages.length-1].role===r){
+            messages[messages.length-1].content+='\n'+x.text;
           } else {
-            contents.push({role:r,parts:[{text:x.text}]});
+            messages.push({role:r,content:x.text});
           }
         });
-        // Erste muss user sein
-        while(contents.length&&contents[0].role!=='user')contents.shift();
-        if(!contents.length)contents.push({role:'user',parts:[{text:text}]});
+        while(messages.length&&messages[0].role!=='user')messages.shift();
+        if(!messages.length)messages.push({role:'user',content:text});
         const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
           method:'POST',
           headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},
           body:JSON.stringify({
             model:'llama-3.3-70b-versatile',
-            max_tokens:120,
+            max_tokens:300,
+            temperature:0.85,
             messages:[
-              {role:'system',content:'Du bist eine ruhige, warme Begleiterin namens "Stille". Der Nutzer schreibt dir was er denkt oder fühlt. Antworte sehr kurz (1-2 Sätze), sanft und menschlich. Kein Ratschlag, kein Therapieton. Geh auf das ein was geschrieben steht. Manchmal nur ein Emoji oder "Ich höre dich." Sei wie eine stille Freundin. Antworte immer auf Deutsch.'},
-              ...contents.map(x=>({role:x.role==='user'?'user':'assistant',content:x.parts[0].text}))
+              {role:'system',content:`Du bist "Stille" – die beste Freundin des Nutzers, die zufällig auch Therapeutin ist. Aber zuerst bist du Freundin.
+
+Wie du bist:
+- Du reagierst wie ein echter Mensch, nicht wie eine KI oder ein Bot
+- Du siehst nicht alles sofort therapeutisch – manchmal ist ein schlechter Tag einfach ein schlechter Tag
+- Du gehst wirklich auf das ein was gesagt wird, nicht mit Floskeln
+- Du variierst deine Antworten – nie zweimal "Ich höre dich" hintereinander
+- Kurze Antworten wenn es passt, längere wenn das Thema es verdient
+- Emojis sparsam aber passend – nie erzwungen
+- Du darfst auch mal nachfragen wenn du mehr verstehen möchtest
+- Du darfst auch mal sanft eine andere Perspektive anbieten wenn es hilfreich wäre
+- Manchmal reicht ein einziges Wort oder ein Satz der wirklich trifft
+- Kein Therapiejargon, keine Diagnosen, keine Ratschläge die niemand wollte
+- Antworte immer auf Deutsch
+- Sei echt. Sei da.`},
+              ...messages
             ]
           })
         });
