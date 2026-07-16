@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Arcana — Tarot ziehen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#150F1C;
+    --surface:#1F1729;
+    --surface-2:#2B2136;
+    --gold:#B9975B;
+    --gold-dim: rgba(185,151,91,0.35);
+    --blood:#8A3B3B;
+    --text:#EDE6DA;
+    --muted:#948C9E;
+    --line: rgba(185,151,91,0.22);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(138,59,59,0.14), transparent),
+      var(--ink);
+    color:var(--text);
+    font-family:'EB Garamond', serif;
+    min-height:100vh;
+    padding: max(24px, env(safe-area-inset-top)) 18px 40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .eyebrow{
+    font-family:'Cinzel',serif;
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Cinzel',serif;
+    font-weight:500;
+    font-size:26px;
+    margin:0 0 20px;
+    letter-spacing:0.02em;
+  }
+
+  .spreads{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:18px;
+    width:100%;
+    max-width:420px;
+  }
+  .spread-btn{
+    flex:1;
+    min-width:100px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-family:'Cinzel',serif;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:11px 8px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .spread-btn.active{
+    color:var(--gold);
+    border-color:var(--gold-dim);
+    background:var(--surface-2);
+  }
+
+  .draw-btn{
+    font-family:'Cinzel',serif;
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    background:var(--gold);
+    color:var(--ink);
+    border:none;
+    padding:14px 30px;
+    border-radius:30px;
+    cursor:pointer;
+    margin-bottom:30px;
+    box-shadow: 0 0 24px rgba(185,151,91,0.25);
+  }
+  .draw-btn:active{ transform: scale(0.97); }
+
+  .cloth{
+    width:100%;
+    max-width:520px;
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .slot{ display:flex; flex-direction:column; align-items:center; width:150px; }
+  .slot-label{
+    font-family:'Cinzel',serif;
+    font-size:10px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:8px;
+    height:14px;
+  }
+
+  .card-flip{
+    width:150px;
+    height:255px;
+    perspective:1000px;
+    cursor:pointer;
+  }
+  .card-inner{
+    position:relative;
+    width:100%; height:100%;
+    transition: transform 0.7s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+  }
+  .card-flip.flipped .card-inner{ transform: rotateY(180deg); }
+
+  .card-face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid var(--gold-dim);
+    background:var(--surface);
+  }
+  .card-back{
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card-back svg{ width:70%; opacity:0.85; }
+
+  .card-front{
+    transform: rotateY(180deg);
+    display:flex; flex-direction:column;
+  }
+  .card-front img{
+    width:100%; height:100%;
+    object-fit:cover;
+    transition: transform 0.4s ease;
+  }
+  .card-front.reversed img{ transform: rotate(180deg); }
+
+  .card-meta{
+    text-align:center;
+    margin-top:10px;
+    min-height:20px;
+  }
+  .card-name{
+    font-family:'Cinzel',serif;
+    font-size:13px;
+    color:var(--text);
+  }
+  .card-orient{
+    font-size:11px;
+    color:var(--gold);
+    margin-top:2px;
+    letter-spacing:0.04em;
+  }
+  .card-orient.reversed{ color:var(--blood); }
+
+  .meaning-toggle{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-size:10px;
+    letter-spacing:0.04em;
+    padding:4px 10px;
+    border-radius:14px;
+    margin-top:8px;
+    cursor:pointer;
+    display:none;
+  }
+  .meaning-toggle.show{ display:inline-block; }
+
+  .meaning-text{
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--muted);
+    margin-top:8px;
+    max-width:150px;
+    display:none;
+    font-style:italic;
+  }
+  .meaning-text.open{ display:block; }
+
+  .hint{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:26px;
+    text-align:center;
+    max-width:300px;
+  }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Arcana</div>
+  <h1>Karten ziehen</h1>
+
+  <div class="spreads">
+    <button class="spread-btn active" data-spread="tages">Tageskarte</button>
+    <button class="spread-btn" data-spread="einzel">Einzelkarte</button>
+    <button class="spread-btn" data-spread="drei">3 Karten</button>
+  </div>
+
+  <button class="draw-btn" id="drawBtn">Karten ziehen</button>
+
+  <div class="cloth" id="cloth"></div>
+
+  <div class="hint" id="hint">Tippe auf eine Karte, um sie umzudrehen.</div>
+
+<script>
+const BASE = "https://commons.wikimedia.org/wiki/Special:FilePath/";
+
+const majorArcana = [
+  ["Der Narr","00_Fool","Neubeginn, Unbekümmertheit, ein Sprung ins Ungewisse","Leichtsinn, Naivität, unüberlegte Schritte"],
+  ["Der Magier","01_Magician","Willenskraft, Tatendrang, vorhandene Mittel nutzen","Manipulation, ungenutztes Potenzial, Täuschung"],
+  ["Die Hohepriesterin","02_High_Priestess","Intuition, verborgenes Wissen, die innere Stimme","Verdrängte Intuition, Geheimnisse, fehlender Zugang zu sich selbst"],
+  ["Die Herrscherin","03_Empress","Fülle, Kreativität, Fürsorge","Blockaden, Abhängigkeit, übermäßige Fürsorge"],
+  ["Der Herrscher","04_Emperor","Struktur, Autorität, Stabilität","Kontrollzwang, Starrheit, Machtmissbrauch"],
+  ["Der Hierophant","05_Hierophant","Tradition, Lehre, Zugehörigkeit","Dogma, Konformitätsdruck, der eigene Weg"],
+  ["Die Liebenden","06_Lovers","Verbindung, eine Wahl, Harmonie","Disharmonie, ungleiche Werte, eine Fehlentscheidung"],
+  ["Der Wagen","07_Chariot","Willenskraft, Zielstrebigkeit, Sieg durch Fokus","Kontrollverlust, Richtungslosigkeit, innere Konflikte"],
+  ["Kraft","08_Strength","Sanfte Stärke, Mut, Geduld","Selbstzweifel, Schwäche, unterdrückte Gefühle"],
+  ["Der Eremit","09_Hermit","Rückzug, Selbstreflexion, innere Führung","Isolation, Einsamkeit, Rückzug aus Angst"],
+  ["Rad des Schicksals","10_Wheel_of_Fortune","Ein Wendepunkt, Zyklen, Schicksal","Pech, Widerstand gegen Veränderung"],
+  ["Gerechtigkeit","11_Justice","Ausgleich, Wahrheit, Konsequenzen","Ungerechtigkeit, Unehrlichkeit, Verantwortung meiden"],
+  ["Der Gehängte","12_Hanged_Man","Loslassen, eine neue Perspektive, Stillstand","Widerstand, Stagnation, eine Opferrolle"],
+  ["Der Tod","13_Death","Wandel, Abschluss, Transformation","Widerstand gegen Wandel, Stillstand, Angst vor Veränderung"],
+  ["Mäßigkeit","14_Temperance","Balance, Geduld, Harmonie","Ungleichgewicht, Übermaß, Ungeduld"],
+  ["Der Teufel","15_Devil","Bindung, Versuchung, das Materielle","Befreiung, Erkenntnis, gebrochene Ketten"],
+  ["Der Turm","16_Tower","Plötzlicher Umbruch, Erkenntnis, alte Strukturen fallen","Vermiedene Katastrophe, Angst vor Wandel, verzögerter Umbruch"],
+  ["Der Stern","17_Star","Hoffnung, Inspiration, Heilung","Verzweiflung, Zweifel, Vertrauensverlust"],
+  ["Der Mond","18_Moon","Unterbewusstsein, Illusion, Unsicherheit","Verwirrung klärt sich, verdrängte Ängste"],
+  ["Die Sonne","19_Sun","Freude, Erfolg, Klarheit","Vorübergehende Rückschläge, gedämpfte Freude"],
+  ["Das Gericht","20_Judgement","Erwachen, Neubewertung, eine Berufung","Selbstzweifel, eine verpasste Chance, Aufschub"],
+  ["Die Welt","21_World","Vollendung, Erfüllung, Abschluss eines Zyklus","Unvollendetes, ein verzögerter Abschluss, fehlende Erfüllung"],
+];
+
+const suits = {
+  "Stäbe":     "Wands",
+  "Kelche":    "Cups",
+  "Schwerter": "Swords",
+  "Münzen":    "Pentacles",
+};
+
+const rankMeanings = {
+  "Stäbe": [
+    ["Ass","Ein neuer Funke, Inspiration, Aufbruch","Verzögerter Start, fehlende Energie"],
+    ["2","Planung, Weitblick, erste Schritte","Angst vor dem nächsten Schritt, Zögern"],
+    ["3","Expansion, Weitsicht, Fortschritt","Rückschläge, verzögerte Pläne"],
+    ["4","Feier, Stabilität, Zusammenkunft","Instabilität, verschobene Freude"],
+    ["5","Wettstreit, Spannung, Konflikt","Vermiedener Streit, innere Spannung"],
+    ["6","Erfolg, Anerkennung, ein Sieg","Verzögerter Erfolg, Selbstzweifel"],
+    ["7","Behauptung, Durchhaltevermögen, Verteidigung","Überforderung, Aufgeben"],
+    ["8","Schnelligkeit, Bewegung, rasche Entwicklung","Verzögerung, Frustration"],
+    ["9","Erschöpfung, Widerstandskraft, letzte Kraft","Erschöpfung, Aufgeben kurz vor dem Ziel"],
+    ["10","Last, Verantwortung, Überlastung","Loslassen von Bürden, Delegieren"],
+    ["Bube","Neugier, Enthusiasmus, Entdeckung","Impulsivität, fehlende Richtung"],
+    ["Ritter","Tatendrang, Abenteuer, Ungeduld","Rücksichtslosigkeit, Hitzköpfigkeit"],
+    ["Dame","Selbstbewusstsein, Wärme, Unabhängigkeit","Eifersucht, Unsicherheit"],
+    ["König","Vision, Führungsstärke, Mut","Impulsive Führung, Dominanz"],
+  ],
+  "Kelche": [
+    ["Ass","Neue Gefühle, Liebe, emotionaler Neubeginn","Verschlossenheit, unterdrückte Gefühle"],
+    ["2","Verbindung, Partnerschaft, Gegenseitigkeit","Disharmonie, Ungleichgewicht in einer Beziehung"],
+    ["3","Feier, Freundschaft, Gemeinschaft","Übertreibung, Klatsch, Isolation"],
+    ["4","Unzufriedenheit, Rückzug, verpasste Chancen","Neue Motivation, ein Erwachen aus der Apathie"],
+    ["5","Verlust, Trauer, Fokus auf das Negative","Akzeptanz, Weiterziehen"],
+    ["6","Nostalgie, Kindheit, Erinnerungen","Festhalten an der Vergangenheit, Unreife"],
+    ["7","Träumerei, viele Optionen, Illusion","Klarheit, eine bewusste Entscheidung"],
+    ["8","Aufbruch, Suche nach Tieferem, Abkehr","Angst vor Veränderung, Zurückbleiben"],
+    ["9","Zufriedenheit, Wunscherfüllung, Genuss","Übermaß, oberflächliche Zufriedenheit"],
+    ["10","Harmonie, familiäres Glück, Erfüllung","Zerrüttung, unerfüllte Erwartungen"],
+    ["Bube","Sensibilität, eine kreative Botschaft, Verspieltheit","Emotionale Unreife, Launenhaftigkeit"],
+    ["Ritter","Romantik, Charme, eine Einladung","Enttäuschung, unrealistische Erwartungen"],
+    ["Dame","Mitgefühl, Intuition, emotionale Tiefe","Übermäßige Emotionalität, fehlende Grenzen"],
+    ["König","Emotionale Reife, Gelassenheit, Fürsorge","Emotionale Manipulation, Stimmungsschwankungen"],
+  ],
+  "Schwerter": [
+    ["Ass","Klarheit, ein Durchbruch, neue Erkenntnis","Verwirrung, fehlende Klarheit"],
+    ["2","Unentschlossenheit, ein Patt, verweigerte Entscheidung","Überforderung, eine erzwungene Entscheidung"],
+    ["3","Herzschmerz, Trennung, eine schmerzhafte Wahrheit","Heilung, das Verarbeiten von Schmerz"],
+    ["4","Ruhe, Erholung, Rückzug","Erschöpfung, eine erzwungene Pause endet"],
+    ["5","Konflikt, ein Sieg um jeden Preis","Versöhnung, Loslassen von Groll"],
+    ["6","Übergang, Weiterziehen, ruhigeres Fahrwasser","Festhalten an Problemen, ein Rückschritt"],
+    ["7","List, Alleingang, Täuschung","Aufdeckung, ein schlechtes Gewissen"],
+    ["8","Gefangenschaft im eigenen Denken, eine Blockade","Befreiung, eine neue Perspektive"],
+    ["9","Angst, Sorgen, schlaflose Nächte","Verarbeitung, Hoffnung nach der Krise"],
+    ["10","Ein Endpunkt, ein schmerzhaftes Ende, Erschöpfung","Erholung, eine langsame Genesung"],
+    ["Bube","Wachsamkeit, Neugier, ein scharfer Verstand","Unüberlegte Worte, Klatsch"],
+    ["Ritter","Entschlossenheit, direkte Aktion, Ungeduld","Rücksichtslosigkeit, Impulsivität"],
+    ["Dame","Klarheit, Unabhängigkeit, scharfsinnige Wahrnehmung","Kälte, übertriebene Kritik"],
+    ["König","Rationalität, Autorität, ein klares Urteil","Machtmissbrauch, Kälte, Manipulation"],
+  ],
+  "Münzen": [
+    ["Ass","Eine neue Chance, materieller Neubeginn, Fülle","Eine verpasste Gelegenheit, fehlende Planung"],
+    ["2","Balance, das Jonglieren mehrerer Aufgaben","Überforderung, Ungleichgewicht"],
+    ["3","Zusammenarbeit, Handwerk, gemeinsamer Erfolg","Mangelnde Teamarbeit, Uneinigkeit"],
+    ["4","Sicherheit, Festhalten, Kontrolle","Geiz, Loslassen fällt schwer"],
+    ["5","Mangel, Sorge, Ausgeschlossenheit","Erholung, Unterstützung wird gefunden"],
+    ["6","Großzügigkeit, Geben und Nehmen, Ausgleich","Ungleichgewicht, Abhängigkeit"],
+    ["7","Geduld, die Ernte erwarten, Bewertung","Ungeduld, mangelnder Ertrag"],
+    ["8","Fleiß, Meisterschaft, stetige Arbeit","Perfektionismus, Stillstand in der Entwicklung"],
+    ["9","Unabhängigkeit, Wohlstand, Selbstgenügsamkeit","Übertriebene Vorsicht, finanzielle Rückschläge"],
+    ["10","Erbe, langfristiger Wohlstand, Familie","Finanzielle Verluste, Familienkonflikte"],
+    ["Bube","Lernbereitschaft, neue Fähigkeiten, Bodenständigkeit","Mangelnder Fokus, Prokrastination"],
+    ["Ritter","Verlässlichkeit, Fleiß, methodisches Vorgehen","Stagnation, Sturheit"],
+    ["Dame","Bodenständigkeit, Fürsorge, praktischer Sinn","Vernachlässigung, Unausgeglichenheit"],
+    ["König","Erfolg, Wohlstand, Verlässlichkeit","Materialismus, Sturheit, Geiz"],
+  ],
+};
+
+const rankFiles = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14"];
+
+let deck = [];
+majorArcana.forEach(([name, file, up, rev]) => {
+  deck.push({ name, url: BASE + "RWS1909_-_" + file + ".jpeg", up, rev });
+});
+for (const deSuit in suits) {
+  const enSuit = suits[deSuit];
+  rankMeanings[deSuit].forEach(([rank, up, rev], i) => {
+    const name = rank + " der " + deSuit;
+    deck.push({ name, url: BASE + "RWS1909_-_" + enSuit + "_" + rankFiles[i] + ".jpeg", up, rev });
+  });
+}
+
+function seededRandom(seed){
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+function dateSeed(){
+  const d = new Date();
+  return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+}
+
+function pickCards(n, seeded){
+  const pool = [...deck];
+  const picked = [];
+  let seed = seeded ? dateSeed() : Math.floor(Math.random()*1000000);
+  for(let i=0; i<n; i++){
+    seed += 1;
+    const r = seeded ? seededRandom(seed) : Math.random();
+    const idx = Math.floor(r * pool.length);
+    const card = pool.splice(idx,1)[0];
+    seed += 7;
+    const rReversed = seeded ? seededRandom(seed*3.1) : Math.random();
+    picked.push({ ...card, reversed: rReversed < 0.5 });
+  }
+  return picked;
+}
+
+let currentSpread = "tages";
+const spreadConfig = {
+  tages: { n:1, labels:[""], seeded:true },
+  einzel: { n:1, labels:[""], seeded:false },
+  drei: { n:3, labels:["Vergangenheit","Gegenwart","Zukunft"], seeded:false },
+};
+
+document.querySelectorAll('.spread-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.spread-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSpread = btn.dataset.spread;
+    document.getElementById('cloth').innerHTML = '';
+    document.getElementById('hint').textContent = 'Tippe auf „Karten ziehen“, um zu starten.';
+  });
+});
+
+const cardBackSVG = `
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="30" fill="none" stroke="#B9975B" stroke-width="1"/>
+  <circle cx="50" cy="50" r="20" fill="none" stroke="#B9975B" stroke-width="0.6"/>
+  <path d="M50 20 L53 45 L78 50 L53 55 L50 80 L47 55 L22 50 L47 45 Z" fill="#B9975B" opacity="0.7"/>
+</svg>`;
+
+function renderSpread(cards, labels){
+  const cloth = document.getElementById('cloth');
+  cloth.innerHTML = '';
+  cards.forEach((card, i)=>{
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+
+    const label = document.createElement('div');
+    label.className = 'slot-label';
+    label.textContent = labels[i] || '';
+    slot.appendChild(label);
+
+    const flip = document.createElement('div');
+    flip.className = 'card-flip';
+
+    const inner = document.createElement('div');
+    inner.className = 'card-inner';
+
+    const back = document.createElement('div');
+    back.className = 'card-face card-back';
+    back.innerHTML = cardBackSVG;
+
+    const front = document.createElement('div');
+    front.className = 'card-face card-front' + (card.reversed ? ' reversed' : '');
+    front.innerHTML = `<img src="${card.url}" alt="${card.name}" />`;
+
+    inner.appendChild(back);
+    inner.appendChild(front);
+    flip.appendChild(inner);
+    slot.appendChild(flip);
+
+    const meta = document.createElement('div');
+    meta.className = 'card-meta';
+    slot.appendChild(meta);
+
+    flip.addEventListener('click', ()=>{
+      if(flip.classList.contains('flipped')) return;
+      flip.classList.add('flipped');
+      meta.innerHTML = `
+        <div class="card-name">${card.name}</div>
+        <div class="card-orient ${card.reversed ? 'reversed':''}">${card.reversed ? 'Umgekehrt':'Aufrecht'}</div>
+        <button class="meaning-toggle show">Bedeutung</button>
+        <div class="meaning-text">${card.reversed ? card.rev : card.up}</div>
+      `;
+      const toggle = meta.querySelector('.meaning-toggle');
+      const text = meta.querySelector('.meaning-text');
+      toggle.addEventListener('click', ()=>{
+        text.classList.toggle('open');
+      });
+    });
+
+    cloth.appendChild(slot);
+  });
+  document.getElementById('hint').textContent = 'Tippe auf eine Karte, um sie umzudrehen.';
+}
+
+document.getElementById('drawBtn').addEventListener('click', ()=>{
+  const cfg = spreadConfig[currentSpread];
+  const cards = pickCards(cfg.n, cfg.seeded);
+  renderSpread(cards, cfg.labels);
+});
+</script>
+</body>
+</html>
