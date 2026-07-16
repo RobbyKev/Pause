@@ -239,6 +239,18 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
 .karten-back{background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);border:1px solid var(--border);}
 .karten-front{background:linear-gradient(160deg,var(--surface) 0%,var(--surface2) 100%);border:2px solid rgba(var(--aRGB),0.4);transform:rotateY(180deg);}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* KARTEN SPREADS */
+.karte-slot{perspective:600px;cursor:pointer;}
+.karte-inner{position:relative;width:100%;height:100%;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d;}
+.karte-slot.revealed .karte-inner{transform:rotateY(180deg);}
+.karte-slot.reversed .karte-inner{transform:rotateY(180deg) rotate(180deg);}
+.karte-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;padding:0.4rem;}
+.karte-back-face{background:var(--surface2);border:1px solid rgba(var(--aRGB),0.3);}
+.karte-back-pattern{font-size:1.4rem;opacity:0.4;}
+.karte-front-face{background:var(--surface);border:2px solid rgba(var(--aRGB),0.5);transform:rotateY(180deg);}
+.karte-front-face.reversed-face{transform:rotateY(180deg) rotate(180deg);}
+.karte-slot-label{font-size:0.52rem;color:var(--muted);text-align:center;margin-top:0.25rem;letter-spacing:0.05em;}
 .toast{position:fixed;bottom:4.2rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:0.4rem 0.95rem;font-size:0.74rem;color:var(--text);opacity:0;transition:opacity 0.2s,transform 0.2s;pointer-events:none;white-space:nowrap;z-index:300;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .empty-state{text-align:center;color:var(--muted);font-size:0.78rem;padding:1.2rem 0;line-height:1.6;}
@@ -499,25 +511,23 @@ console.log('Firebase Pause: verbunden ✓');
     <div class="tc" onclick="openOv('2048')"><div class="tc-icon">🔢</div><div class="tc-label">2048</div><div class="tc-sub">Zahlen zusammenführen</div></div>
   </div>
 </div>
-<div class="screen" id="screen-karten">
-  <div class="section-title">Kartensystem wählen</div>
-  <div class="pill-row" id="kartenSystemRow">
-    <button class="pill active" data-system="tarot">🌙 Tarot</button>
-    <button class="pill" data-system="lenormand">🌹 Lenormand</button>
-    <button class="pill" data-system="kipper">🕯️ Kipper</button>
-  </div>
-  <div id="kartenResult" style="display:none;" class="card" style="align-items:center;gap:0.75rem;">
-    <div id="kartenFront" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0.65rem;">
-      <div id="kartenImg" style="display:none;width:140px;height:245px;border-radius:10px;overflow:hidden;border:1px solid var(--border);"><img id="kartenImgEl" src="" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
-      <div id="kartenSymbol" style="font-size:3.5rem;line-height:1;"></div>
-      <div id="kartenName" style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text);text-align:center;"></div>
-      <div id="kartenNummer" style="font-size:0.65rem;color:var(--accent);font-weight:500;letter-spacing:0.08em;text-transform:uppercase;"></div>
-      <div style="height:1px;background:var(--border);width:100%;"></div>
-      <div id="kartenBedeutung" style="font-size:0.8rem;color:var(--muted2);line-height:1.65;text-align:center;font-weight:300;"></div>
+<div class="screen" id="screen-karten" style="padding:0;gap:0;">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;">
+    <div style="text-align:center;">
+      <div style="font-size:3rem;margin-bottom:0.5rem;">🃏</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text);">Karten</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:0.35rem;">Tarot · Lenormand · Kipper</div>
     </div>
+    <button class="btn btn-p" onclick="openKartenFrame()" style="max-width:220px;">
+      🃏 Karten öffnen
+    </button>
   </div>
-  <button class="btn btn-p" id="kartenZiehenBtn">🃏 Karte ziehen</button>
-  <div id="tagesKarteInfo" style="font-size:0.65rem;color:var(--muted);text-align:center;"></div>
+</div>
+
+<!-- Karten Fullscreen Overlay -->
+<div id="kartenFrameWrap" style="display:none;position:fixed;inset:0;z-index:1000;background:#0d0a1a;flex-direction:column;">
+  <button onclick="closeKartenFrame()" style="position:absolute;top:12px;right:14px;z-index:10;background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:36px;height:36px;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+  <iframe id="kartenFrame" src="" style="border:none;width:100%;height:100%;flex:1;" allowfullscreen></iframe>
 </div>
 <div class="screen" id="screen-horoskop" style="padding:0.75rem 0.85rem 2rem;gap:1rem;">
   <div style="text-align:center;">
@@ -1055,316 +1065,8 @@ function rInspoEdit(){
 window.addInspoProfile=addInspoProfile;
 window.addInspoTag=addInspoTag;
 
-/* KARTEN */
-const KARTEN_DATA={
-  tarot:{name:'Tarot',emoji:'🌙',cards:[
-    {n:'Der Narr',e:'🌀',b:'Neuanfänge, Spontanität, Freiheit und unbegrenztes Potenzial'},
-    {n:'Der Magier',e:'✨',b:'Willenskraft, Geschick, Manifestation und Entschlossenheit'},
-    {n:'Die Hohepriesterin',e:'🌊',b:'Intuition, verborgenes Wissen, innere Stimme und Geheimnis'},
-    {n:'Die Herrscherin',e:'🌸',b:'Fülle, Kreativität, Fruchtbarkeit und Naturverbundenheit'},
-    {n:'Der Herrscher',e:'👑',b:'Autorität, Struktur, Stabilität und väterliche Führung'},
-    {n:'Der Hierophant',e:'🕍',b:'Tradition, Überzeugungen, geistliche Führung und Konvention'},
-    {n:'Die Liebenden',e:'💑',b:'Liebe, Harmonie, Beziehungen und wichtige Entscheidungen'},
-    {n:'Der Wagen',e:'🏆',b:'Kontrolle, Willenskraft, Erfolg und Überwindung von Hindernissen'},
-    {n:'Die Stärke',e:'🦁',b:'Innere Stärke, Mut, Geduld und Mitgefühl'},
-    {n:'Der Einsiedler',e:'🕯️',b:'Innenschau, Rückzug, Weisheit und Suche nach der Wahrheit'},
-    {n:'Das Rad des Schicksals',e:'☸️',b:'Schicksal, Wendepunkte, Glück und kosmische Zyklen'},
-    {n:'Die Gerechtigkeit',e:'⚖️',b:'Fairness, Wahrheit, Ursache und Wirkung, Integrität'},
-    {n:'Der Gehängte',e:'🔄',b:'Pause, Hingabe, neue Perspektiven und loslassen'},
-    {n:'Der Tod',e:'🦋',b:'Wandel, Transformation, Abschlüsse und Neuanfänge'},
-    {n:'Die Mäßigkeit',e:'🌈',b:'Balance, Geduld, Anpassung und Heilung'},
-    {n:'Der Teufel',e:'⛓️',b:'Bindungen, Materialismus, Abhängigkeit und Schattenanteile'},
-    {n:'Der Turm',e:'⚡',b:'Plötzlicher Wandel, Erschütterung, Offenbarung und Befreiung'},
-    {n:'Der Stern',e:'⭐',b:'Hoffnung, Inspiration, Erneuerung und Vertrauen'},
-    {n:'Der Mond',e:'🌑',b:'Illusionen, Unterbewusstsein, Träume und das Verborgene'},
-    {n:'Die Sonne',e:'☀️',b:'Freude, Erfolg, Vitalität und Klarheit'},
-    {n:'Das Gericht',e:'🔔',b:'Reflexion, innerer Ruf, Vergebung und Neugeburt'},
-    {n:'Die Welt',e:'🌍',b:'Vollendung, Integration, Leistung und ganzheitliches Sein'},
-    {n:'Ass der Stäbe',e:'🌱',b:'Neuer Anfang, kreative Energie und Inspiration'},
-    {n:'Zwei der Stäbe',e:'🗺️',b:'Planung, Entscheidungen, Zukunftsvision'},
-    {n:'Drei der Stäbe',e:'⛵',b:'Expansion, Vorausschau, erste Erfolge'},
-    {n:'Vier der Stäbe',e:'🎉',b:'Feier, Heimat, Harmonie, Stabilität'},
-    {n:'Fünf der Stäbe',e:'⚔️',b:'Konflikt, Wettbewerb, Meinungsverschiedenheiten'},
-    {n:'Sechs der Stäbe',e:'🥇',b:'Erfolg, Anerkennung, Triumph'},
-    {n:'Sieben der Stäbe',e:'🛡️',b:'Standhaftigkeit, Herausforderung, Verteidigung'},
-    {n:'Acht der Stäbe',e:'💫',b:'Bewegung, Schnelligkeit, rasche Entwicklungen'},
-    {n:'Neun der Stäbe',e:'🏗️',b:'Beharrlichkeit, Ausdauer, Grenzen setzen'},
-    {n:'Zehn der Stäbe',e:'🎒',b:'Bürde, Verantwortung, Überlastung'},
-    {n:'Bube der Stäbe',e:'🔥',b:'Abenteuer, Energie, neue Ideen'},
-    {n:'Ritter der Stäbe',e:'🐎',b:'Leidenschaft, Aktion, Abenteuerlust'},
-    {n:'Königin der Stäbe',e:'🌻',b:'Selbstbewusstsein, Wärme, Entschlossenheit'},
-    {n:'König der Stäbe',e:'🦅',b:'Führung, Vision, Charisma'},
-    {n:'Ass der Kelche',e:'💧',b:'Neue Gefühle, Liebe, intuitive Öffnung'},
-    {n:'Zwei der Kelche',e:'💞',b:'Partnerschaft, Verbindung, gegenseitige Anziehung'},
-    {n:'Drei der Kelche',e:'🥂',b:'Freundschaft, Feier, Gemeinschaft'},
-    {n:'Vier der Kelche',e:'😔',b:'Apathie, Kontemplation, verpasste Chancen'},
-    {n:'Fünf der Kelche',e:'😢',b:'Verlust, Trauer, Enttäuschung'},
-    {n:'Sechs der Kelche',e:'🌼',b:'Nostalgie, Kindheit, Unschuld'},
-    {n:'Sieben der Kelche',e:'🌫️',b:'Illusionen, Wünsche, Fantasie'},
-    {n:'Acht der Kelche',e:'🚶',b:'Loslassen, Aufbruch, Suche nach Tieferem'},
-    {n:'Neun der Kelche',e:'😊',b:'Zufriedenheit, Wünsche erfüllt, Wohlbefinden'},
-    {n:'Zehn der Kelche',e:'🌈',b:'Familiäres Glück, Erfüllung, Harmonie'},
-    {n:'Bube der Kelche',e:'🐟',b:'Kreativität, Sensibilität, Träumerei'},
-    {n:'Ritter der Kelche',e:'🦢',b:'Romantik, Idealismus, Charme'},
-    {n:'Königin der Kelche',e:'🌊',b:'Mitgefühl, Intuition, emotionale Tiefe'},
-    {n:'König der Kelche',e:'🐋',b:'Emotionale Reife, Fürsorge, Diplomatie'},
-    {n:'Ass der Schwerter',e:'⚔️',b:'Klarheit, Wahrheit, mentale Kraft'},
-    {n:'Zwei der Schwerter',e:'🙈',b:'Entscheidungsblockade, Verdrängung'},
-    {n:'Drei der Schwerter',e:'💔',b:'Herzschmerz, Trauer, schmerzhafte Wahrheit'},
-    {n:'Vier der Schwerter',e:'🛌',b:'Rückzug, Erholung, stille Besinnung'},
-    {n:'Fünf der Schwerter',e:'😈',b:'Konflikt, Niederlage, Machtkämpfe'},
-    {n:'Sechs der Schwerter',e:'⛵',b:'Übergang, Heilung, Entfernung vom Schmerz'},
-    {n:'Sieben der Schwerter',e:'🦊',b:'Täuschung, List, Strategie'},
-    {n:'Acht der Schwerter',e:'🕸️',b:'Selbstbeschränkung, Hilflosigkeit, Gefangenheit im Kopf'},
-    {n:'Neun der Schwerter',e:'😰',b:'Angst, Albträume, Sorgen'},
-    {n:'Zehn der Schwerter',e:'🌅',b:'Ende, Niederlage aber auch Neuanfang'},
-    {n:'Bube der Schwerter',e:'💭',b:'Neugier, Kommunikation, schnelles Denken'},
-    {n:'Ritter der Schwerter',e:'🌪️',b:'Entschlossenheit, Direktheit, Impulsivität'},
-    {n:'Königin der Schwerter',e:'🗡️',b:'Unabhängigkeit, Klarheit, scharfer Verstand'},
-    {n:'König der Schwerter',e:'⚖️',b:'Vernunft, Autorität, intellektuelle Macht'},
-    {n:'Ass der Pentakel',e:'🌿',b:'Materialielle Chancen, neuer Reichtum, Anfang'},
-    {n:'Zwei der Pentakel',e:'♾️',b:'Balance, Flexibilität, Anpassung'},
-    {n:'Drei der Pentakel',e:'🏛️',b:'Teamarbeit, Handwerk, Kollaboration'},
-    {n:'Vier der Pentakel',e:'💰',b:'Sicherheit, Kontrolle, Festhalten'},
-    {n:'Fünf der Pentakel',e:'❄️',b:'Mangel, Verlust, spirituelle Armut'},
-    {n:'Sechs der Pentakel',e:'🎁',b:'Großzügigkeit, Ausgeglichenheit, Geben und Nehmen'},
-    {n:'Sieben der Pentakel',e:'🌾',b:'Geduld, Investition, langfristige Arbeit'},
-    {n:'Acht der Pentakel',e:'🔨',b:'Fleiß, Handwerk, Perfektion'},
-    {n:'Neun der Pentakel',e:'🍇',b:'Unabhängigkeit, Luxus, Selbstgenügsamkeit'},
-    {n:'Zehn der Pentakel',e:'🏡',b:'Familiärer Reichtum, Erbe, Beständigkeit'},
-    {n:'Bube der Pentakel',e:'📚',b:'Lernen, Ambition, praktische Ziele'},
-    {n:'Ritter der Pentakel',e:'🐂',b:'Ausdauer, Verlässlichkeit, methodisches Vorgehen'},
-    {n:'Königin der Pentakel',e:'🌺',b:'Fürsorge, Praktikabilität, Wohlstand'},
-    {n:'König der Pentakel',e:'🦬',b:'Reichtum, Sicherheit, unternehmerischer Erfolg'},
-  ]},
-  lenormand:{name:'Lenormand',emoji:'🌹',cards:[
-    {n:'Reiter',e:'🏇',b:'Schnelle Nachrichten, Neuigkeiten, Bewegung'},
-    {n:'Klee',e:'🍀',b:'Kleines Glück, Chancen, Spontanität'},
-    {n:'Schiff',e:'⛵',b:'Reisen, Fernweh, Handel, Sehnsucht'},
-    {n:'Haus',e:'🏠',b:'Familie, Heim, Sicherheit, Stabilität'},
-    {n:'Baum',e:'🌳',b:'Gesundheit, Wachstum, Wurzeln, Lebensenergie'},
-    {n:'Wolken',e:'☁️',b:'Unsicherheit, Verwirrung, vorübergehende Probleme'},
-    {n:'Schlange',e:'🐍',b:'Verführung, Intrigen, Umwege, Weisheit'},
-    {n:'Sarg',e:'⚰️',b:'Wandel, Ende, Transformation, Abschluss'},
-    {n:'Blumen',e:'💐',b:'Freude, Einladung, Schönheit, Glück'},
-    {n:'Sense',e:'⚔️',b:'Gefahr, Trennung, schnelle Entscheidung'},
-    {n:'Rute',e:'🌿',b:'Diskussionen, Kritik, Wiederholung, Kommunikation'},
-    {n:'Eulen',e:'🦉',b:'Gespräche, Warnungen, Botschaften, Weisheit'},
-    {n:'Kind',e:'👶',b:'Neuanfang, Unschuld, etwas Kleines oder Neues'},
-    {n:'Fuchs',e:'🦊',b:'List, Vorsicht, falsche Fährte, Selbsterhaltung'},
-    {n:'Bär',e:'🐻',b:'Stärke, Schutz, Autorität, Fülle'},
-    {n:'Sterne',e:'⭐',b:'Hoffnung, Inspiration, Führung, Klarheit'},
-    {n:'Storch',e:'🦢',b:'Veränderung, Erneuerung, Bewegung, Rückkehr'},
-    {n:'Hund',e:'🐕',b:'Treue, Freundschaft, Vertrauen, Loyalität'},
-    {n:'Turm',e:'🏰',b:'Einsamkeit, Institution, Recht, Rückzug'},
-    {n:'Garten',e:'🌳',b:'Gesellschaft, Öffentlichkeit, soziale Ereignisse'},
-    {n:'Berg',e:'⛰️',b:'Hindernis, Blockade, Herausforderung, Geduld'},
-    {n:'Wege',e:'🛤️',b:'Entscheidungen, Wahlmöglichkeiten, Richtung'},
-    {n:'Mäuse',e:'🐭',b:'Verlust, Stress, Zermürbung, Diebstahl'},
-    {n:'Herz',e:'❤️',b:'Liebe, Gefühle, Mitgefühl, Romantik'},
-    {n:'Ring',e:'💍',b:'Verbindung, Vertrag, Verpflichtung, Zyklus'},
-    {n:'Buch',e:'📖',b:'Geheimnis, Wissen, verborgene Dinge, Studium'},
-    {n:'Brief',e:'✉️',b:'Nachrichten, Kommunikation, Dokumente'},
-    {n:'Mann',e:'👨',b:'Männliche Person, der Fragesteller (männl.) oder Partner'},
-    {n:'Frau',e:'👩',b:'Weibliche Person, die Fragestellerin oder Partnerin'},
-    {n:'Lilien',e:'🌸',b:'Reife, Moral, Ruhe, Sexualität, ältere Person'},
-    {n:'Sonne',e:'☀️',b:'Erfolg, Energie, Klarheit, Vitalität'},
-    {n:'Mond',e:'🌙',b:'Anerkennung, Intuition, Emotionen, Ruhm'},
-    {n:'Schlüssel',e:'🗝️',b:'Lösung, Erfolg, Wichtigkeit, Öffnung'},
-    {n:'Fisch',e:'🐟',b:'Finanzen, Fluss, Fülle, Unabhängigkeit'},
-    {n:'Anker',e:'⚓',b:'Stabilität, Beständigkeit, langfristige Ziele'},
-    {n:'Kreuz',e:'✝️',b:'Schicksal, Bürde, Karma, Unvermeidliches'},
-  ]},
-  kipper:{name:'Kipper',emoji:'🕯️',cards:[
-    {n:'Hauptperson (Mann)',e:'👨',b:'Repräsentiert den männlichen Fragesteller oder eine wichtige männliche Person'},
-    {n:'Hauptperson (Frau)',e:'👩',b:'Steht für die weibliche Fragestellerin oder zentrale weibliche Figur'},
-    {n:'Ehestandskarte',e:'💍',b:'Symbolisiert Partnerschaften, Verbindungen und Verträge'},
-    {n:'Zusammenkunft',e:'🤝',b:'Deutet auf Treffen, soziale Ereignisse oder Versammlungen hin'},
-    {n:'Guter Herr',e:'🎩',b:'Verkörpert einen wohlwollenden männlichen Einfluss oder Mentor'},
-    {n:'Gute Dame',e:'👒',b:'Stellt eine unterstützende weibliche Präsenz oder Beraterin dar'},
-    {n:'Angenehmer Brief',e:'💌',b:'Zeigt positive Nachrichten oder vielversprechende Kommunikation an'},
-    {n:'Falsche Person',e:'🎭',b:'Warnt vor Täuschung, Unaufrichtigkeit oder negativen Einflüssen'},
-    {n:'Eine Veränderung',e:'🔄',b:'Kündigt Wandel, Umbrüche oder neue Lebensabschnitte an'},
-    {n:'Eine Reise',e:'✈️',b:'Deutet auf Bewegung, Ortswechsel oder persönliche Entwicklung hin'},
-    {n:'Viel Geld gewinnen',e:'💰',b:'Verspricht finanzielle Verbesserungen oder Gewinne'},
-    {n:'Reiches Mädchen',e:'💎',b:'Symbolisiert Wohlstand, Fülle oder eine junge wohlhabende Person'},
-    {n:'Reicher guter Herr',e:'🤴',b:'Steht für Großzügigkeit, Unterstützung oder einen Gönner'},
-    {n:'Traurige Nachricht',e:'📭',b:'Warnt vor kurzfristigen Enttäuschungen oder Rückschlägen'},
-    {n:'Guter Ausgang in der Liebe',e:'💕',b:'Verheißt positive Entwicklungen in Beziehungen'},
-    {n:'Seine Gedanken',e:'💭',b:'Repräsentiert Pläne, Ideen oder geistige Beschäftigung'},
-    {n:'Geschenk bekommen',e:'🎁',b:'Deutet auf unerwartete Freuden oder Zuwendungen hin'},
-    {n:'Ein kleines Kind',e:'👶',b:'Symbolisiert Neuanfänge, Unschuld oder kindliche Aspekte'},
-    {n:'Ein Todesfall',e:'🦋',b:'Steht für Abschlüsse, Transformationen oder das Ende einer Phase'},
-    {n:'Haus',e:'🏠',b:'Repräsentiert Sicherheit, Stabilität und häusliches Leben'},
-    {n:'Wohnzimmer',e:'🛋️',b:'Deutet auf private Angelegenheiten und das familiäre Umfeld hin'},
-    {n:'Militärperson',e:'🎖️',b:'Symbolisiert Autorität, Disziplin oder offizielle Instanzen'},
-    {n:'Gericht',e:'⚖️',b:'Steht für Urteile, wichtige Entscheidungen oder Gerechtigkeit'},
-    {n:'Diebstahl',e:'🔓',b:'Warnt vor Verlusten, Betrug oder unerwarteten Rückschlägen'},
-    {n:'Zu hohen Ehren kommen',e:'🏆',b:'Verspricht Anerkennung, Erfolg oder Beförderung'},
-    {n:'Großes Glück',e:'🌟',b:'Deutet auf bedeutsame positive Wendungen oder Chancen hin'},
-    {n:'Unverhofftes Geld',e:'💫',b:'Zeigt unerwartete finanzielle Möglichkeiten oder Angebote'},
-    {n:'Erwartung',e:'⏳',b:'Symbolisiert Geduld, Vorfreude oder eine Zeit des Wartens'},
-    {n:'Gefängnis',e:'🔒',b:'Repräsentiert Einschränkungen, Hindernisse oder innere Blockaden'},
-    {n:'Gerichtsperson',e:'👨‍⚖️',b:'Steht für Rat, Vermittlung oder eine wichtige Autoritätsfigur'},
-    {n:'Kurze Krankheit',e:'🌡️',b:'Deutet auf vorübergehende Schwierigkeiten oder Schwächen hin'},
-    {n:'Kummer und Widerwärtigkeiten',e:'🌧️',b:'Warnt vor Herausforderungen oder Sorgen'},
-    {n:'Trübe Gedanken',e:'🌫️',b:'Symbolisiert negative Einstellungen oder pessimistische Phasen'},
-    {n:'Arbeit/Beschäftigung',e:'💼',b:'Repräsentiert berufliche Aktivitäten oder Projekte'},
-    {n:'Ein langer Weg',e:'🛤️',b:'Steht für Ausdauer, langfristige Ziele oder Entwicklungsprozesse'},
-    {n:'Die Hoffnung/Großes Wasser',e:'🌊',b:'Symbolisiert Optimismus, Träume oder emotionale Tiefe'},
-  ]}
-};
-
-let activeKartenSystem='tarot';
-let lastKarteDate={tarot:null,lenormand:null,kipper:null};
-let lastKarte={tarot:null,lenormand:null,kipper:null};
-
-function rKarten(){
-  // System pills
-  document.querySelectorAll('#kartenSystemRow .pill').forEach(b=>{
-    b.classList.toggle('active',b.dataset.system===activeKartenSystem);
-    b.onclick=()=>{activeKartenSystem=b.dataset.system;rKarten();};
-  });
-  // Reset card display
-  document.getElementById('kartenResult').style.display='none';
-  document.getElementById('kartenZiehenBtn').textContent='🃏 Karte ziehen';
-  document.getElementById('tagesKarteInfo').textContent='';
-  // Tages-Karte hint
-  const today=new Date().toDateString();
-  if(lastKarteDate[activeKartenSystem]===today&&lastKarte[activeKartenSystem]){
-    showKarte(lastKarte[activeKartenSystem],true);
-  }
-}
-
-function showKarte(card,isTagesKarte=false){
-  const res=document.getElementById('kartenResult');
-  res.style.display='flex';res.style.flexDirection='column';res.style.alignItems='center';res.style.gap='0.75rem';
-  const imgEl=document.getElementById('kartenImgEl');
-  const imgWrap=document.getElementById('kartenImg');
-  const symEl=document.getElementById('kartenSymbol');
-  if(activeKartenSystem==='tarot'&&TAROT_IMGS[card.n]){
-    imgEl.src=TAROT_IMGS[card.n];imgEl.alt=card.n;
-    imgEl.crossOrigin='anonymous';
-    imgEl.onerror=()=>{imgWrap.style.display='none';symEl.style.display='block';symEl.textContent=card.e;};
-    imgWrap.style.display='block';symEl.style.display='none';
-  } else {
-    imgWrap.style.display='none';symEl.style.display='block';
-    symEl.textContent=card.e;
-  }
-  document.getElementById('kartenName').textContent=card.n;
-  const sys=KARTEN_DATA[activeKartenSystem];
-  const idx=sys.cards.indexOf(card)+1;
-  document.getElementById('kartenNummer').textContent=sys.emoji+' '+sys.name+' · Karte '+idx+' von '+sys.cards.length;
-  document.getElementById('kartenBedeutung').textContent=card.b;
-  if(isTagesKarte){
-    document.getElementById('tagesKarteInfo').textContent='✨ Deine Tageskarte – bereits heute gezogen';
-    document.getElementById('kartenZiehenBtn').textContent='🔄 Neue Karte (ignoriert Tageskarte)';
-  }
-}
-
-const TAROT_EN_DE={
-  "The Fool":"Der Narr","The Magician":"Der Magier","The High Priestess":"Die Hohepriesterin",
-  "The Empress":"Die Herrscherin","The Emperor":"Der Herrscher","The Hierophant":"Der Hierophant",
-  "The Lovers":"Die Liebenden","The Chariot":"Der Wagen","Strength":"Die Stärke",
-  "The Hermit":"Der Einsiedler","Wheel of Fortune":"Das Rad des Schicksals","Justice":"Die Gerechtigkeit",
-  "The Hanged Man":"Der Gehängte","Death":"Der Tod","Temperance":"Die Mäßigkeit",
-  "The Devil":"Der Teufel","The Tower":"Der Turm","The Star":"Der Stern",
-  "The Moon":"Der Mond","The Sun":"Die Sonne","Judgement":"Das Gericht","The World":"Die Welt",
-  "Ace of Wands":"Ass der Stäbe","Two of Wands":"Zwei der Stäbe","Three of Wands":"Drei der Stäbe",
-  "Four of Wands":"Vier der Stäbe","Five of Wands":"Fünf der Stäbe","Six of Wands":"Sechs der Stäbe",
-  "Seven of Wands":"Sieben der Stäbe","Eight of Wands":"Acht der Stäbe","Nine of Wands":"Neun der Stäbe",
-  "Ten of Wands":"Zehn der Stäbe","Page of Wands":"Bube der Stäbe","Knight of Wands":"Ritter der Stäbe",
-  "Queen of Wands":"Königin der Stäbe","King of Wands":"König der Stäbe",
-  "Ace of Cups":"Ass der Kelche","Two of Cups":"Zwei der Kelche","Three of Cups":"Drei der Kelche",
-  "Four of Cups":"Vier der Kelche","Five of Cups":"Fünf der Kelche","Six of Cups":"Sechs der Kelche",
-  "Seven of Cups":"Sieben der Kelche","Eight of Cups":"Acht der Kelche","Nine of Cups":"Neun der Kelche",
-  "Ten of Cups":"Zehn der Kelche","Page of Cups":"Bube der Kelche","Knight of Cups":"Ritter der Kelche",
-  "Queen of Cups":"Königin der Kelche","King of Cups":"König der Kelche",
-  "Ace of Swords":"Ass der Schwerter","Two of Swords":"Zwei der Schwerter","Three of Swords":"Drei der Schwerter",
-  "Four of Swords":"Vier der Schwerter","Five of Swords":"Fünf der Schwerter","Six of Swords":"Sechs der Schwerter",
-  "Seven of Swords":"Sieben der Schwerter","Eight of Swords":"Acht der Schwerter","Nine of Swords":"Neun der Schwerter",
-  "Ten of Swords":"Zehn der Schwerter","Page of Swords":"Bube der Schwerter","Knight of Swords":"Ritter der Schwerter",
-  "Queen of Swords":"Königin der Schwerter","King of Swords":"König der Schwerter",
-  "Ace of Pentacles":"Ass der Pentakel","Two of Pentacles":"Zwei der Pentakel","Three of Pentacles":"Drei der Pentakel",
-  "Four of Pentacles":"Vier der Pentakel","Five of Pentacles":"Fünf der Pentakel","Six of Pentacles":"Sechs der Pentakel",
-  "Seven of Pentacles":"Sieben der Pentakel","Eight of Pentacles":"Acht der Pentakel","Nine of Pentacles":"Neun der Pentakel",
-  "Ten of Pentacles":"Zehn der Pentakel","Page of Pentacles":"Bube der Pentakel","Knight of Pentacles":"Ritter der Pentakel",
-  "Queen of Pentacles":"Königin der Pentakel","King of Pentacles":"König der Pentakel"
-};
-async function zieheKarte(){
-  const sys=KARTEN_DATA[activeKartenSystem];
-  const btn=document.getElementById('kartenZiehenBtn');
-  btn.disabled=true;btn.textContent='…';
-
-  if(activeKartenSystem==='tarot'){
-    // Versuche API zu nutzen
-    const apiCards=await ladeTarotAPI();
-    if(apiCards&&apiCards.length){
-      const apiCard=apiCards[Math.floor(Math.random()*apiCards.length)];
-      const reversed=Math.random()>0.5;
-      const enMeaning=reversed?apiCard.meaning_rev:apiCard.meaning_up;
-      // Finde passende lokale Karte für deutschen Namen
-      const deName=TAROT_EN_DE[apiCard.name]||apiCard.name;
-      const localCard=sys.cards.find(c=>c.n===deName)||null;
-      const today=new Date().toDateString();
-      const deMeaning=await uebersetzeTarot(enMeaning);
-      const card={
-        n:deName,
-        e:localCard?localCard.e:'🌙',
-        b:deMeaning+(reversed?' (Umgekehrt)':''),
-        apiName:apiCard.name,
-        reversed
-      };
-      lastKarteDate[activeKartenSystem]=today;
-      lastKarte[activeKartenSystem]=card;
-      showKarte(card);
-      btn.disabled=false;btn.textContent='🔄 Nochmal ziehen';
-      beep(528,0.12,0.08,'sine');
-      return;
-    }
-  }
-
-  // Fallback: lokale Daten
-  const card=sys.cards[Math.floor(Math.random()*sys.cards.length)];
-  const today=new Date().toDateString();
-  lastKarteDate[activeKartenSystem]=today;
-  lastKarte[activeKartenSystem]=card;
-  setTimeout(()=>{
-    showKarte(card);
-    btn.disabled=false;btn.textContent='🔄 Nochmal ziehen';
-    beep(528,0.12,0.08,'sine');
-  },400);
-}
-
-document.getElementById('kartenZiehenBtn').onclick=zieheKarte;
-window.rKarten=rKarten;
-
 
 /* HOROSKOP */
-const TAROT_IMGS={
-"Der Narr":"https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg",
-"Der Magier":"https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg",
-"Die Hohepriesterin":"https://upload.wikimedia.org/wikipedia/commons/8/88/RWS_Tarot_02_High_Priestess.jpg",
-"Die Herrscherin":"https://upload.wikimedia.org/wikipedia/commons/d/d2/RWS_Tarot_03_Empress.jpg",
-"Der Herrscher":"https://upload.wikimedia.org/wikipedia/commons/c/c3/RWS_Tarot_04_Emperor.jpg",
-"Der Hierophant":"https://upload.wikimedia.org/wikipedia/commons/8/8d/RWS_Tarot_05_Hierophant.jpg",
-"Die Liebenden":"https://upload.wikimedia.org/wikipedia/commons/3/3a/RWS_Tarot_06_Lovers.jpg",
-"Der Wagen":"https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg",
-"Die Stärke":"https://upload.wikimedia.org/wikipedia/commons/f/f5/RWS_Tarot_08_Strength.jpg",
-"Der Einsiedler":"https://upload.wikimedia.org/wikipedia/commons/4/4d/RWS_Tarot_09_Hermit.jpg",
-"Das Rad des Schicksals":"https://upload.wikimedia.org/wikipedia/commons/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg",
-"Die Gerechtigkeit":"https://upload.wikimedia.org/wikipedia/commons/e/e0/RWS_Tarot_11_Justice.jpg",
-"Der Gehängte":"https://upload.wikimedia.org/wikipedia/commons/2/2b/RWS_Tarot_12_Hanged_Man.jpg",
-"Der Tod":"https://upload.wikimedia.org/wikipedia/commons/d/d7/RWS_Tarot_13_Death.jpg",
-"Die Mäßigkeit":"https://upload.wikimedia.org/wikipedia/commons/f/f8/RWS_Tarot_14_Temperance.jpg",
-"Der Teufel":"https://upload.wikimedia.org/wikipedia/commons/5/55/RWS_Tarot_15_Devil.jpg",
-"Der Turm":"https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg",
-"Der Stern":"https://upload.wikimedia.org/wikipedia/commons/d/db/RWS_Tarot_17_Star.jpg",
-"Der Mond":"https://upload.wikimedia.org/wikipedia/commons/7/7f/RWS_Tarot_18_Moon.jpg",
-"Die Sonne":"https://upload.wikimedia.org/wikipedia/commons/1/17/RWS_Tarot_19_Sun.jpg",
-"Das Gericht":"https://upload.wikimedia.org/wikipedia/commons/d/dd/RWS_Tarot_20_Judgement.jpg",
-"Die Welt":"https://upload.wikimedia.org/wikipedia/commons/f/ff/RWS_Tarot_21_World.jpg"
-};
 
 const ZEICHEN=[
   {n:'Widder',e:'♈',slug:'aries',d:'21.3–19.4'},
@@ -1507,6 +1209,21 @@ async function uebersetzeTarot(text){
     const d=await r.json();return d.choices?.[0]?.message?.content||text;
   }catch(e){return text;}
 }
+
+
+function openKartenFrame(){
+  const wrap=document.getElementById('kartenFrameWrap');
+  const frame=document.getElementById('kartenFrame');
+  wrap.style.display='flex';
+  if(!frame.src||frame.src==='about:blank'||!frame.src.includes('karten')){
+    frame.src='karten.html';
+  }
+}
+function closeKartenFrame(){
+  document.getElementById('kartenFrameWrap').style.display='none';
+}
+window.openKartenFrame=openKartenFrame;
+window.closeKartenFrame=closeKartenFrame;
 
 /* EINSTELLUNGEN */
 function rEinst(){
