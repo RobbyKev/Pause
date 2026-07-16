@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Arcana — Tarot ziehen</title>
+<title>Arcana — Karten ziehen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
@@ -44,22 +44,20 @@
     font-family:'Cinzel',serif;
     font-weight:500;
     font-size:26px;
-    margin:0 0 20px;
+    margin:0 0 18px;
     letter-spacing:0.02em;
   }
 
-  .spreads{
+  .row{
     display:flex;
     gap:8px;
     flex-wrap:wrap;
     justify-content:center;
-    margin-bottom:18px;
+    margin-bottom:12px;
     width:100%;
-    max-width:420px;
+    max-width:460px;
   }
-  .spread-btn{
-    flex:1;
-    min-width:100px;
+  .row-btn{
     background:var(--surface);
     border:1px solid var(--line);
     color:var(--muted);
@@ -67,15 +65,17 @@
     font-size:11px;
     letter-spacing:0.06em;
     text-transform:uppercase;
-    padding:11px 8px;
+    padding:9px 14px;
     border-radius:8px;
     cursor:pointer;
   }
-  .spread-btn.active{
+  .row-btn.active{
     color:var(--gold);
     border-color:var(--gold-dim);
     background:var(--surface-2);
   }
+  #spreadRow{ margin-bottom:20px; }
+  #spreadRow .row-btn{ flex:1; min-width:92px; }
 
   .draw-btn{
     font-family:'Cinzel',serif;
@@ -92,29 +92,29 @@
     box-shadow: 0 0 24px rgba(185,151,91,0.25);
   }
   .draw-btn:active{ transform: scale(0.97); }
+  .draw-btn:disabled{ opacity:0.6; }
 
   .cloth{
     width:100%;
-    max-width:520px;
+    max-width:640px;
     display:flex;
-    gap:16px;
+    gap:14px;
     justify-content:center;
     flex-wrap:wrap;
   }
-  .slot{ display:flex; flex-direction:column; align-items:center; width:150px; }
+  .slot{ display:flex; flex-direction:column; align-items:center; }
   .slot-label{
     font-family:'Cinzel',serif;
-    font-size:10px;
-    letter-spacing:0.12em;
+    font-size:9.5px;
+    letter-spacing:0.1em;
     text-transform:uppercase;
     color:var(--muted);
     margin-bottom:8px;
     height:14px;
+    text-align:center;
   }
 
   .card-flip{
-    width:150px;
-    height:255px;
     perspective:1000px;
     cursor:pointer;
   }
@@ -141,27 +141,34 @@
 
   .card-front{
     transform: rotateY(180deg);
-    display:flex; flex-direction:column;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:10px;
+    gap:6px;
   }
   .card-front img{
-    width:100%; height:100%;
+    width:100%; height:auto;
+    max-width:100%;
     object-fit:cover;
+    border-radius:6px;
     transition: transform 0.4s ease;
   }
   .card-front.reversed img{ transform: rotate(180deg); }
+  .card-symbol{ font-size:2rem; line-height:1; }
 
   .card-meta{
     text-align:center;
-    margin-top:10px;
-    min-height:20px;
+    margin-top:9px;
+    min-height:18px;
+    max-width:150px;
   }
   .card-name{
     font-family:'Cinzel',serif;
-    font-size:13px;
+    font-size:12.5px;
     color:var(--text);
+    line-height:1.3;
   }
   .card-orient{
-    font-size:11px;
+    font-size:10px;
     color:var(--gold);
     margin-top:2px;
     letter-spacing:0.04em;
@@ -176,17 +183,15 @@
     letter-spacing:0.04em;
     padding:4px 10px;
     border-radius:14px;
-    margin-top:8px;
+    margin-top:7px;
     cursor:pointer;
-    display:none;
   }
-  .meaning-toggle.show{ display:inline-block; }
 
   .meaning-text{
-    font-size:13.5px;
+    font-size:12.5px;
     line-height:1.5;
     color:var(--muted);
-    margin-top:8px;
+    margin-top:7px;
     max-width:150px;
     display:none;
     font-style:italic;
@@ -206,21 +211,33 @@
   <div class="eyebrow">Arcana</div>
   <h1>Karten ziehen</h1>
 
-  <div class="spreads">
-    <button class="spread-btn active" data-spread="tages">Tageskarte</button>
-    <button class="spread-btn" data-spread="einzel">Einzelkarte</button>
-    <button class="spread-btn" data-spread="drei">3 Karten</button>
+  <div class="row" id="systemRow">
+    <button class="row-btn active" data-system="tarot">🌙 Tarot</button>
+    <button class="row-btn" data-system="lenormand">🌹 Lenormand</button>
+    <button class="row-btn" data-system="kipper">🕯️ Kipper</button>
   </div>
 
-  <button class="draw-btn" id="drawBtn">Karten ziehen</button>
+  <div class="row" id="spreadRow">
+    <button class="row-btn active" data-spread="tages">Tageskarte</button>
+    <button class="row-btn" data-spread="einzel">Einzelkarte</button>
+    <button class="row-btn" data-spread="janein">Ja/Nein</button>
+    <button class="row-btn" data-spread="drei">3 Karten</button>
+    <button class="row-btn" data-spread="beziehung">Beziehung</button>
+    <button class="row-btn" data-spread="kreuz">Kreuz</button>
+    <button class="row-btn" data-spread="woche">Woche</button>
+    <button class="row-btn" data-spread="keltenkreuz">Kelten-Kreuz</button>
+  </div>
+
+  <button class="draw-btn" id="drawBtn">Karte(n) ziehen</button>
 
   <div class="cloth" id="cloth"></div>
 
-  <div class="hint" id="hint">Tippe auf eine Karte, um sie umzudrehen.</div>
+  <div class="hint" id="hint">Wähle Kartensystem und Legemuster, dann ziehe deine Karte(n).</div>
 
 <script>
 const BASE = "https://commons.wikimedia.org/wiki/Special:FilePath/";
 
+/* ---------- TAROT ---------- */
 const majorArcana = [
   ["Der Narr","00_Fool","Neubeginn, Unbekümmertheit, ein Sprung ins Ungewisse","Leichtsinn, Naivität, unüberlegte Schritte"],
   ["Der Magier","01_Magician","Willenskraft, Tatendrang, vorhandene Mittel nutzen","Manipulation, ungenutztes Potenzial, Täuschung"],
@@ -245,14 +262,7 @@ const majorArcana = [
   ["Das Gericht","20_Judgement","Erwachen, Neubewertung, eine Berufung","Selbstzweifel, eine verpasste Chance, Aufschub"],
   ["Die Welt","21_World","Vollendung, Erfüllung, Abschluss eines Zyklus","Unvollendetes, ein verzögerter Abschluss, fehlende Erfüllung"],
 ];
-
-const suits = {
-  "Stäbe":     "Wands",
-  "Kelche":    "Cups",
-  "Schwerter": "Swords",
-  "Münzen":    "Pentacles",
-};
-
+const suits = { "Stäbe":"Wands", "Kelche":"Cups", "Schwerter":"Swords", "Münzen":"Pentacles" };
 const rankMeanings = {
   "Stäbe": [
     ["Ass","Ein neuer Funke, Inspiration, Aufbruch","Verzögerter Start, fehlende Energie"],
@@ -319,32 +329,144 @@ const rankMeanings = {
     ["König","Erfolg, Wohlstand, Verlässlichkeit","Materialismus, Sturheit, Geiz"],
   ],
 };
-
 const rankFiles = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14"];
 
-let deck = [];
+let tarotDeck = [];
 majorArcana.forEach(([name, file, up, rev]) => {
-  deck.push({ name, url: BASE + "RWS1909_-_" + file + ".jpeg", up, rev });
+  tarotDeck.push({ name, url: BASE + "RWS1909_-_" + file + ".jpeg", up, rev });
 });
 for (const deSuit in suits) {
   const enSuit = suits[deSuit];
   rankMeanings[deSuit].forEach(([rank, up, rev], i) => {
     const name = rank + " der " + deSuit;
-    deck.push({ name, url: BASE + "RWS1909_-_" + enSuit + "_" + rankFiles[i] + ".jpeg", up, rev });
+    tarotDeck.push({ name, url: BASE + "RWS1909_-_" + enSuit + "_" + rankFiles[i] + ".jpeg", up, rev });
   });
 }
 
-function seededRandom(seed){
-  let x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-function dateSeed(){
-  const d = new Date();
-  return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
-}
+/* ---------- LENORMAND ---------- */
+const lenormandDeck = [
+  ["Reiter","🏇","Schnelle Nachrichten, Neuigkeiten, Bewegung"],
+  ["Klee","🍀","Kleines Glück, Chancen, Spontanität"],
+  ["Schiff","⛵","Reisen, Fernweh, Handel, Sehnsucht"],
+  ["Haus","🏠","Familie, Heim, Sicherheit, Stabilität"],
+  ["Baum","🌳","Gesundheit, Wachstum, Wurzeln, Lebensenergie"],
+  ["Wolken","☁️","Unsicherheit, Verwirrung, vorübergehende Probleme"],
+  ["Schlange","🐍","Verführung, Intrigen, Umwege, Weisheit"],
+  ["Sarg","⚰️","Wandel, Ende, Transformation, Abschluss"],
+  ["Blumen","💐","Freude, Einladung, Schönheit, Glück"],
+  ["Sense","⚔️","Gefahr, Trennung, schnelle Entscheidung"],
+  ["Rute","🌿","Diskussionen, Kritik, Wiederholung, Kommunikation"],
+  ["Eulen","🦉","Gespräche, Warnungen, Botschaften, Weisheit"],
+  ["Kind","👶","Neuanfang, Unschuld, etwas Kleines oder Neues"],
+  ["Fuchs","🦊","List, Vorsicht, falsche Fährte, Selbsterhaltung"],
+  ["Bär","🐻","Stärke, Schutz, Autorität, Fülle"],
+  ["Sterne","⭐","Hoffnung, Inspiration, Führung, Klarheit"],
+  ["Storch","🦢","Veränderung, Erneuerung, Bewegung, Rückkehr"],
+  ["Hund","🐕","Treue, Freundschaft, Vertrauen, Loyalität"],
+  ["Turm","🏰","Einsamkeit, Institution, Recht, Rückzug"],
+  ["Garten","🌳","Gesellschaft, Öffentlichkeit, soziale Ereignisse"],
+  ["Berg","⛰️","Hindernis, Blockade, Herausforderung, Geduld"],
+  ["Wege","🛤️","Entscheidungen, Wahlmöglichkeiten, Richtung"],
+  ["Mäuse","🐭","Verlust, Stress, Zermürbung, Diebstahl"],
+  ["Herz","❤️","Liebe, Gefühle, Mitgefühl, Romantik"],
+  ["Ring","💍","Verbindung, Vertrag, Verpflichtung, Zyklus"],
+  ["Buch","📖","Geheimnis, Wissen, verborgene Dinge, Studium"],
+  ["Brief","✉️","Nachrichten, Kommunikation, Dokumente"],
+  ["Mann","👨","Männliche Person, der Fragesteller (männl.) oder Partner"],
+  ["Frau","👩","Weibliche Person, die Fragestellerin oder Partnerin"],
+  ["Lilien","🌸","Reife, Moral, Ruhe, Sexualität, ältere Person"],
+  ["Sonne","☀️","Erfolg, Energie, Klarheit, Vitalität"],
+  ["Mond","🌙","Anerkennung, Intuition, Emotionen, Ruhm"],
+  ["Schlüssel","🗝️","Lösung, Erfolg, Wichtigkeit, Öffnung"],
+  ["Fisch","🐟","Finanzen, Fluss, Fülle, Unabhängigkeit"],
+  ["Anker","⚓","Stabilität, Beständigkeit, langfristige Ziele"],
+  ["Kreuz","✝️","Schicksal, Bürde, Karma, Unvermeidliches"],
+].map(([name,e,b])=>({name,emoji:e,meaning:b}));
+
+/* ---------- KIPPER ---------- */
+const kipperDeck = [
+  ["Hauptperson (Mann)","👨","Repräsentiert den männlichen Fragesteller oder eine wichtige männliche Person"],
+  ["Hauptperson (Frau)","👩","Steht für die weibliche Fragestellerin oder zentrale weibliche Figur"],
+  ["Ehestandskarte","💍","Symbolisiert Partnerschaften, Verbindungen und Verträge"],
+  ["Zusammenkunft","🤝","Deutet auf Treffen, soziale Ereignisse oder Versammlungen hin"],
+  ["Guter Herr","🎩","Verkörpert einen wohlwollenden männlichen Einfluss oder Mentor"],
+  ["Gute Dame","👒","Stellt eine unterstützende weibliche Präsenz oder Beraterin dar"],
+  ["Angenehmer Brief","💌","Zeigt positive Nachrichten oder vielversprechende Kommunikation an"],
+  ["Falsche Person","🎭","Warnt vor Täuschung, Unaufrichtigkeit oder negativen Einflüssen"],
+  ["Eine Veränderung","🔄","Kündigt Wandel, Umbrüche oder neue Lebensabschnitte an"],
+  ["Eine Reise","✈️","Deutet auf Bewegung, Ortswechsel oder persönliche Entwicklung hin"],
+  ["Viel Geld gewinnen","💰","Verspricht finanzielle Verbesserungen oder Gewinne"],
+  ["Reiches Mädchen","💎","Symbolisiert Wohlstand, Fülle oder eine junge wohlhabende Person"],
+  ["Reicher guter Herr","🤴","Steht für Großzügigkeit, Unterstützung oder einen Gönner"],
+  ["Traurige Nachricht","📭","Warnt vor kurzfristigen Enttäuschungen oder Rückschlägen"],
+  ["Guter Ausgang in der Liebe","💕","Verheißt positive Entwicklungen in Beziehungen"],
+  ["Seine Gedanken","💭","Repräsentiert Pläne, Ideen oder geistige Beschäftigung"],
+  ["Geschenk bekommen","🎁","Deutet auf unerwartete Freuden oder Zuwendungen hin"],
+  ["Ein kleines Kind","👶","Symbolisiert Neuanfänge, Unschuld oder kindliche Aspekte"],
+  ["Ein Todesfall","🦋","Steht für Abschlüsse, Transformationen oder das Ende einer Phase"],
+  ["Haus","🏠","Repräsentiert Sicherheit, Stabilität und häusliches Leben"],
+  ["Wohnzimmer","🛋️","Deutet auf private Angelegenheiten und das familiäre Umfeld hin"],
+  ["Militärperson","🎖️","Symbolisiert Autorität, Disziplin oder offizielle Instanzen"],
+  ["Gericht","⚖️","Steht für Urteile, wichtige Entscheidungen oder Gerechtigkeit"],
+  ["Diebstahl","🔓","Warnt vor Verlusten, Betrug oder unerwarteten Rückschlägen"],
+  ["Zu hohen Ehren kommen","🏆","Verspricht Anerkennung, Erfolg oder Beförderung"],
+  ["Großes Glück","🌟","Deutet auf bedeutsame positive Wendungen oder Chancen hin"],
+  ["Unverhofftes Geld","💫","Zeigt unerwartete finanzielle Möglichkeiten oder Angebote"],
+  ["Erwartung","⏳","Symbolisiert Geduld, Vorfreude oder eine Zeit des Wartens"],
+  ["Gefängnis","🔒","Repräsentiert Einschränkungen, Hindernisse oder innere Blockaden"],
+  ["Gerichtsperson","👨‍⚖️","Steht für Rat, Vermittlung oder eine wichtige Autoritätsfigur"],
+  ["Kurze Krankheit","🌡️","Deutet auf vorübergehende Schwierigkeiten oder Schwächen hin"],
+  ["Kummer und Widerwärtigkeiten","🌧️","Warnt vor Herausforderungen oder Sorgen"],
+  ["Trübe Gedanken","🌫️","Symbolisiert negative Einstellungen oder pessimistische Phasen"],
+  ["Arbeit/Beschäftigung","💼","Repräsentiert berufliche Aktivitäten oder Projekte"],
+  ["Ein langer Weg","🛤️","Steht für Ausdauer, langfristige Ziele oder Entwicklungsprozesse"],
+  ["Die Hoffnung/Großes Wasser","🌊","Symbolisiert Optimismus, Träume oder emotionale Tiefe"],
+].map(([name,e,b])=>({name,emoji:e,meaning:b}));
+
+const DECKS = { tarot: tarotDeck, lenormand: lenormandDeck, kipper: kipperDeck };
+
+/* ---------- SPREADS ---------- */
+const SPREADS = {
+  tages:       { n:1,  labels:[''], seeded:true },
+  einzel:      { n:1,  labels:[''] },
+  janein:      { n:1,  labels:[''] },
+  drei:        { n:3,  labels:['Vergangenheit','Gegenwart','Zukunft'] },
+  beziehung:   { n:3,  labels:['Du','Die andere Person','Die Verbindung'] },
+  kreuz:       { n:5,  labels:['Situation','Herausforderung','Vergangenheit','Zukunft','Ergebnis'] },
+  woche:       { n:7,  labels:['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'] },
+  keltenkreuz: { n:10, labels:['Situation','Herausforderung','Bewusstes Ziel','Vergangenheit','Mögliche Zukunft','Nahe Zukunft','Du selbst','Umfeld','Hoffnungen & Ängste','Ergebnis'] },
+};
+
+let currentSystem = "tarot";
+let currentSpread = "tages";
+let lastTagesKey = null;
+let lastTagesCard = null;
+
+document.querySelectorAll('#systemRow .row-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#systemRow .row-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSystem = btn.dataset.system;
+    document.getElementById('cloth').innerHTML = '';
+    document.getElementById('hint').textContent = 'Wähle Kartensystem und Legemuster, dann ziehe deine Karte(n).';
+  });
+});
+
+document.querySelectorAll('#spreadRow .row-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#spreadRow .row-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSpread = btn.dataset.spread;
+    document.getElementById('cloth').innerHTML = '';
+    document.getElementById('hint').textContent = 'Tippe auf „Karte(n) ziehen“, um zu starten.';
+  });
+});
+
+function seededRandom(seed){ let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+function dateSeed(){ const d = new Date(); return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate(); }
 
 function pickCards(n, seeded){
-  const pool = [...deck];
+  const pool = [...DECKS[currentSystem]];
   const picked = [];
   let seed = seeded ? dateSeed() : Math.floor(Math.random()*1000000);
   for(let i=0; i<n; i++){
@@ -352,29 +474,16 @@ function pickCards(n, seeded){
     const r = seeded ? seededRandom(seed) : Math.random();
     const idx = Math.floor(r * pool.length);
     const card = pool.splice(idx,1)[0];
-    seed += 7;
-    const rReversed = seeded ? seededRandom(seed*3.1) : Math.random();
-    picked.push({ ...card, reversed: rReversed < 0.5 });
+    let reversed = false;
+    if(currentSystem === "tarot"){
+      seed += 7;
+      const rReversed = seeded ? seededRandom(seed*3.1) : Math.random();
+      reversed = rReversed < 0.5;
+    }
+    picked.push({ ...card, reversed });
   }
   return picked;
 }
-
-let currentSpread = "tages";
-const spreadConfig = {
-  tages: { n:1, labels:[""], seeded:true },
-  einzel: { n:1, labels:[""], seeded:false },
-  drei: { n:3, labels:["Vergangenheit","Gegenwart","Zukunft"], seeded:false },
-};
-
-document.querySelectorAll('.spread-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.spread-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    currentSpread = btn.dataset.spread;
-    document.getElementById('cloth').innerHTML = '';
-    document.getElementById('hint').textContent = 'Tippe auf „Karten ziehen“, um zu starten.';
-  });
-});
 
 const cardBackSVG = `
 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -383,20 +492,32 @@ const cardBackSVG = `
   <path d="M50 20 L53 45 L78 50 L53 55 L50 80 L47 55 L22 50 L47 45 Z" fill="#B9975B" opacity="0.7"/>
 </svg>`;
 
+function cardSize(total){
+  if(total <= 3) return { w:150, h:255, sym:'2rem', name:'12.5px' };
+  if(total <= 6) return { w:120, h:200, sym:'1.6rem', name:'11px' };
+  return { w:92, h:150, sym:'1.3rem', name:'10px' };
+}
+
 function renderSpread(cards, labels){
   const cloth = document.getElementById('cloth');
   cloth.innerHTML = '';
+  const sz = cardSize(cards.length);
   cards.forEach((card, i)=>{
     const slot = document.createElement('div');
     slot.className = 'slot';
+    slot.style.width = sz.w + 'px';
 
-    const label = document.createElement('div');
-    label.className = 'slot-label';
-    label.textContent = labels[i] || '';
-    slot.appendChild(label);
+    if(labels[i]){
+      const label = document.createElement('div');
+      label.className = 'slot-label';
+      label.textContent = labels[i];
+      slot.appendChild(label);
+    }
 
     const flip = document.createElement('div');
     flip.className = 'card-flip';
+    flip.style.width = sz.w + 'px';
+    flip.style.height = sz.h + 'px';
 
     const inner = document.createElement('div');
     inner.className = 'card-inner';
@@ -407,7 +528,11 @@ function renderSpread(cards, labels){
 
     const front = document.createElement('div');
     front.className = 'card-face card-front' + (card.reversed ? ' reversed' : '');
-    front.innerHTML = `<img src="${card.url}" alt="${card.name}" />`;
+    if(currentSystem === 'tarot'){
+      front.innerHTML = `<img src="${card.url}" alt="${card.name}" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('afterbegin','<div class=card-symbol>🌙</div>');" />`;
+    } else {
+      front.innerHTML = `<div class="card-symbol" style="font-size:${sz.sym}">${card.emoji}</div>`;
+    }
 
     inner.appendChild(back);
     inner.appendChild(front);
@@ -421,17 +546,21 @@ function renderSpread(cards, labels){
     flip.addEventListener('click', ()=>{
       if(flip.classList.contains('flipped')) return;
       flip.classList.add('flipped');
+      const orientHtml = currentSystem === 'tarot'
+        ? `<div class="card-orient ${card.reversed ? 'reversed':''}">${card.reversed ? 'Umgekehrt':'Aufrecht'}</div>`
+        : '';
+      const meaningText = currentSystem === 'tarot'
+        ? (card.reversed ? card.rev : card.up)
+        : card.meaning;
       meta.innerHTML = `
-        <div class="card-name">${card.name}</div>
-        <div class="card-orient ${card.reversed ? 'reversed':''}">${card.reversed ? 'Umgekehrt':'Aufrecht'}</div>
-        <button class="meaning-toggle show">Bedeutung</button>
-        <div class="meaning-text">${card.reversed ? card.rev : card.up}</div>
+        <div class="card-name" style="font-size:${sz.name}">${card.name}</div>
+        ${orientHtml}
+        <button class="meaning-toggle">Bedeutung</button>
+        <div class="meaning-text">${meaningText}</div>
       `;
       const toggle = meta.querySelector('.meaning-toggle');
       const text = meta.querySelector('.meaning-text');
-      toggle.addEventListener('click', ()=>{
-        text.classList.toggle('open');
-      });
+      toggle.addEventListener('click', ()=>{ text.classList.toggle('open'); });
     });
 
     cloth.appendChild(slot);
@@ -440,8 +569,22 @@ function renderSpread(cards, labels){
 }
 
 document.getElementById('drawBtn').addEventListener('click', ()=>{
-  const cfg = spreadConfig[currentSpread];
-  const cards = pickCards(cfg.n, cfg.seeded);
+  const cfg = SPREADS[currentSpread];
+  const today = new Date().toDateString();
+  const tagesKey = currentSystem + '_' + today;
+
+  if(currentSpread === 'tages' && lastTagesKey === tagesKey && lastTagesCard){
+    renderSpread([lastTagesCard], ['']);
+    return;
+  }
+
+  const cards = pickCards(cfg.n, !!cfg.seeded);
+
+  if(currentSpread === 'tages'){
+    lastTagesKey = tagesKey;
+    lastTagesCard = cards[0];
+  }
+
   renderSpread(cards, cfg.labels);
 });
 </script>
