@@ -319,6 +319,7 @@ console.log('Firebase Pause: verbunden ✓');
     <div class="start-card" onclick="goTab('uebung')"><div class="start-card-icon">🧘</div><div class="start-card-label">Übungen</div><div class="start-card-sub">Grounding & Ablenkung</div></div>
     <div class="start-card" onclick="goTab('timer')"><div class="start-card-icon">⏱️</div><div class="start-card-label">Timer</div><div class="start-card-sub">Fokus & Pausen</div></div>
     <div class="start-card" onclick="goTab('atem')"><div class="start-card-icon">🌬️</div><div class="start-card-label">Atem</div><div class="start-card-sub">Atemführung & Ruhe</div></div>
+    <div class="start-card" onclick="openOv('worrytime')"><div class="start-card-icon">🧠</div><div class="start-card-label">Worry Time</div><div class="start-card-sub">5 Min alles rausschreiben</div></div>
     <div class="start-card" onclick="goTab('audio')"><div class="start-card-icon">🎵</div><div class="start-card-label">Audio</div><div class="start-card-sub">Sounds & Musik</div></div>
     <div class="start-card" onclick="goTab('fidget')"><div class="start-card-icon">🫧</div><div class="start-card-label">Fidget</div><div class="start-card-sub">Sensory Board</div></div>
     <div class="start-card" onclick="goTab('visuell')"><div class="start-card-icon">🌈</div><div class="start-card-label">Visuell</div><div class="start-card-sub">Spirograph & mehr</div></div>
@@ -864,7 +865,15 @@ function popSound(n=0){try{const freqs=[260,294,330,349,392,440,494,523,587,659]
 const TIMER_SOUNDS={chime:{label:'🔔 Glocke (sanft)',fn:()=>{try{const c=new(window.AudioContext||window.webkitAudioContext)();[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*0.22;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.2,t+0.05);g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);o.start(t);o.stop(t+0.95);});}catch(e){}}},bowl:{label:'🫙 Klangschale',fn:()=>{try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.type='sine';o.frequency.value=432;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.3,c.currentTime+0.1);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+4);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+4.1);}catch(e){}}},ding:{label:'✨ Einfaches Ding',fn:()=>beep(880,0.4,0.2,'sine')},none:{label:'🔕 Kein Ton',fn:()=>{}}};
 let _aCtxWarmed=false;
 function warmAudioCtx(){if(_aCtxWarmed)return;try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();g.gain.value=0;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.001);_aCtxWarmed=true;}catch(e){}}
-function playTimerSound(){try{const c=new(window.AudioContext||window.webkitAudioContext)();TIMER_SOUNDS[activeSoundId]?.fn(c);}catch(e){TIMER_SOUNDS[activeSoundId]?.fn();}}
+function playTimerSound(){
+  try{
+    const fn=TIMER_SOUNDS[activeSoundId]?.fn;
+    if(fn)fn();
+    else beep(880,0.4,0.2,'sine');
+  }catch(e){beep(880,0.4,0.2,'sine');}
+  // Also try vibration
+  vib(300);
+}
 
 
 /* POMODORO */
@@ -1328,7 +1337,7 @@ function stopBilateral(){if(bilateralRaf)cancelAnimationFrame(bilateralRaf);bila
 function startBilateral(){
   stopBilateral();
   bilateralCtx=new(window.AudioContext||window.webkitAudioContext)();
-  const ctx=bilateralCtx;const speed=0.8;
+  const ctx=bilateralCtx;const speed=1.5;
   function makeSource(){
     if(activeBtype==='pink'||activeBtype==='weiss'){
       const buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=buf.getChannelData(0);let last=0;
