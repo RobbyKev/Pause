@@ -314,51 +314,18 @@ console.log('Firebase Pause: verbunden ✓');
   <div class="start-logo">Pause.</div>
   <div class="start-sub">Dein persönlicher Ruhepol 🫶</div>
   <div class="start-grid">
-    <div class="start-card" onclick="goTab('uebung')">
-      <div class="start-card-icon">🧘</div>
-      <div class="start-card-label">Übungen</div>
-      <div class="start-card-sub">Grounding & Ablenkung</div>
-    </div>
-    <div class="start-card" onclick="goTab('timer')">
-      <div class="start-card-icon">⏱️</div>
-      <div class="start-card-label">Timer</div>
-      <div class="start-card-sub">Fokus & Pausen</div>
-    </div>
-    <div class="start-card" onclick="goTab('atem')">
-      <div class="start-card-icon">🌬️</div>
-      <div class="start-card-label">Atem</div>
-      <div class="start-card-sub">Atemführung & Ruhe</div>
-    </div>
-    <div class="start-card" onclick="goTab('audio')">
-      <div class="start-card-icon">🎵</div>
-      <div class="start-card-label">Audio</div>
-      <div class="start-card-sub">Sounds & Stille</div>
-    </div>
-    <div class="start-card" onclick="goTab('fidget')">
-      <div class="start-card-icon">🫧</div>
-      <div class="start-card-label">Fidget</div>
-      <div class="start-card-sub">Sensory Board</div>
-    </div>
-    <div class="start-card" onclick="goTab('visuell')">
-      <div class="start-card-icon">🌈</div>
-      <div class="start-card-label">Visuell</div>
-      <div class="start-card-sub">Spirograph & mehr</div>
-    </div>
-    <div class="start-card" onclick="goTab('spiele')">
-      <div class="start-card-icon">🎮</div>
-      <div class="start-card-label">Spiele</div>
-      <div class="start-card-sub">Tetris, Snake & mehr</div>
-    </div>
-    <div class="start-card" onclick="goTab('inspo')">
-      <div class="start-card-icon">📸</div>
-      <div class="start-card-label">Inspiration</div>
-      <div class="start-card-sub">Instagram & Natur</div>
-    </div>
-    <div class="start-card" onclick="goTab('messenger')">
-      <div class="start-card-icon">💬</div>
-      <div class="start-card-label">Messenger</div>
-      <div class="start-card-sub">Einfach schreiben</div>
-    </div>
+    <div class="start-card" onclick="goTab('uebung')"><div class="start-card-icon">🧘</div><div class="start-card-label">Übungen</div><div class="start-card-sub">Grounding & Ablenkung</div></div>
+    <div class="start-card" onclick="goTab('timer')"><div class="start-card-icon">⏱️</div><div class="start-card-label">Timer</div><div class="start-card-sub">Fokus & Pausen</div></div>
+    <div class="start-card" onclick="goTab('atem')"><div class="start-card-icon">🌬️</div><div class="start-card-label">Atem</div><div class="start-card-sub">Atemführung & Ruhe</div></div>
+    <div class="start-card" onclick="goTab('audio')"><div class="start-card-icon">🎵</div><div class="start-card-label">Audio</div><div class="start-card-sub">Sounds & Musik</div></div>
+    <div class="start-card" onclick="goTab('fidget')"><div class="start-card-icon">🫧</div><div class="start-card-label">Fidget</div><div class="start-card-sub">Sensory Board</div></div>
+    <div class="start-card" onclick="goTab('visuell')"><div class="start-card-icon">🌈</div><div class="start-card-label">Visuell</div><div class="start-card-sub">Spirograph & mehr</div></div>
+    <div class="start-card" onclick="goTab('spiele')"><div class="start-card-icon">🎮</div><div class="start-card-label">Spiele</div><div class="start-card-sub">Tetris, 2048 & mehr</div></div>
+    <div class="start-card" onclick="goTab('karten')"><div class="start-card-icon">🃏</div><div class="start-card-label">Karten</div><div class="start-card-sub">Tarot · Lenormand · Kipper</div></div>
+    <div class="start-card" onclick="goTab('horoskop')"><div class="start-card-icon">⭐</div><div class="start-card-label">Sterne</div><div class="start-card-sub">Tages-Horoskop</div></div>
+    <div class="start-card" onclick="goTab('inspo')"><div class="start-card-icon">📸</div><div class="start-card-label">Inspiration</div><div class="start-card-sub">Instagram & Natur</div></div>
+    <div class="start-card" onclick="goTab('messenger')"><div class="start-card-icon">💬</div><div class="start-card-label">Chat</div><div class="start-card-sub">Stille – deine Begleiterin</div></div>
+    <div class="start-card" onclick="goTab('einst')"><div class="start-card-icon">⚙️</div><div class="start-card-label">Einstellungen</div><div class="start-card-sub">Anpassen & verwalten</div></div>
   </div>
   <div class="start-all">
     <button class="btn btn-g" onclick="hideStart()" style="font-size:0.78rem;padding:0.65rem;">Alle Tabs anzeigen →</button>
@@ -392,6 +359,7 @@ console.log('Firebase Pause: verbunden ✓');
   <div class="counter" id="counter"></div>
   <button class="btn btn-p" id="btnNeu">Neue Übung →</button>
   <button class="btn btn-g" onclick="goTab('timer')" style="font-size:0.78rem;">⏱ Timer starten</button>
+  <button class="btn btn-g" onclick="openOv('worrytime')" style="font-size:0.78rem;">🧠 Worry Time</button>
 </div>
 <div class="screen" id="screen-timer">
   <div class="section-title">Timer</div>
@@ -436,7 +404,26 @@ console.log('Firebase Pause: verbunden ✓');
   <div class="section-title">Sounds</div>
   <div id="audioBtns" style="display:flex;flex-direction:column;gap:0.38rem;"></div>
   <div class="divider" style="margin:0.25rem 0;"></div>
+  <!-- Bilaterale Klangreise -->
+  <div class="section-title">Bilaterale Klangreise</div>
+  <div class="card" style="gap:0.65rem;">
+    <div style="font-size:0.75rem;color:var(--muted2);line-height:1.55;">Mit Stereo-Kopfhörern wandern die Töne von links nach rechts. Diese Wechselbewegung hilft, den Kopf zu beruhigen (EMDR-ähnlich).</div>
+    <div style="font-size:0.65rem;color:var(--accent);">🎧 Am besten mit Kopfhörern – oder Handy quer halten</div>
+    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;" id="bilateralTypes">
+      <button class="pill active" data-btype="pink">🩷 Pink</button>
+      <button class="pill" data-btype="weiss">❄️ Weiß</button>
+      <button class="pill" data-btype="432">🎵 432 Hz</button>
+      <button class="pill" data-btype="852">🎵 852 Hz</button>
+    </div>
+    <div class="tbts">
+      <button class="btn-sm sm-s" id="bilateralStart" onclick="startBilateral()">▶ Starten</button>
+      <button class="btn-sm sm-r" onclick="stopBilateral()">◼ Stop</button>
+    </div>
+    <div id="bilateralStatus" style="font-size:0.65rem;color:var(--muted);text-align:center;"></div>
+  </div>
+  <div class="divider" style="margin:0.25rem 0;"></div>
   <div class="section-title">Musik & Playlists</div>
+  <div id="embedList" style="display:flex;flex-direction:column;gap:0.65rem;"></div>
   <div class="card" style="gap:0.65rem;padding:0.85rem;">
     <div style="display:flex;align-items:center;gap:0.6rem;">
       <div style="font-size:1.4rem;">🎵</div>
@@ -668,6 +655,18 @@ console.log('Firebase Pause: verbunden ✓');
     </div>
   </div>
   <div class="divider"></div>
+  <!-- Embed Manager -->
+  <div class="section-title">🎵 Musik & Embeds verwalten</div>
+  <div class="card" style="gap:0.6rem;">
+    <div style="font-size:0.72rem;color:var(--muted2);line-height:1.5;">Spotify, YouTube oder andere Embeds hinzufügen. Erscheinen im Audio-Tab.</div>
+    <div class="ed-sec"><div class="ed-lbl">Titel</div><input type="text" id="embedTitle" placeholder="z.B. Meine Entspannungsplaylist"></div>
+    <div class="ed-sec"><div class="ed-lbl">Embed-Code oder URL</div><textarea id="embedCode" placeholder="&lt;iframe src=&quot;https://open.spotify.com/embed/...&quot;&gt;&lt;/iframe&gt;&#10;oder einfach den Spotify/YouTube Link" rows="3"></textarea></div>
+    <div class="ed-sec"><div class="ed-lbl">Emoji</div><input type="text" id="embedEmoji" placeholder="🎵" style="width:70px;"></div>
+    <button class="btn-save" onclick="addEmbed()">Embed speichern</button>
+  </div>
+  <div class="section-title" style="margin-top:0.5rem;">Meine Embeds</div>
+  <div id="embedEditList" style="display:flex;flex-direction:column;gap:0.35rem;"></div>
+  <div class="divider"></div>
   <!-- Abschnitt: Chat / Gemini -->
   <div class="section-title">Chat – KI Verbindung (Groq)</div>
   <div class="card" style="gap:0.6rem;">
@@ -726,6 +725,7 @@ console.log('Firebase Pause: verbunden ✓');
 <div class="overlay" id="ov-hotspot"><div class="ov-hdr"><div class="ov-title">Hot Spot 📡</div><button class="ov-close" onclick="closeOv('hotspot')">✕</button></div><div class="ov-body" style="padding:0;overflow:hidden;position:relative;background:#000;" id="ob-hotspot"></div></div>
 <div class="overlay" id="ov-adventure"><div class="ov-hdr"><div class="ov-title">Abenteuer 📖</div><button class="ov-close" onclick="closeOv('adventure')">✕</button></div><div class="ov-body" style="padding:0;align-items:stretch;background:var(--bg);" id="ob-adventure"></div></div>
 <div class="overlay" id="ov-theojump"><div class="ov-hdr"><div class="ov-title">Theo Jump 🐾</div><button class="ov-close" onclick="closeOv('theojump')">✕</button></div><div class="ov-body" style="padding:0;overflow:hidden;background:#12121f;position:relative;" id="ob-theojump"></div></div>
+<div class="overlay" id="ov-worrytime"><div class="ov-hdr"><div class="ov-title">Worry Time 🧠</div><button class="ov-close" onclick="closeOv('worrytime')">✕</button></div><div class="ov-body" style="padding:0;align-items:stretch;" id="ob-worrytime"></div></div>
 <div class="overlay" id="ov-2048"><div class="ov-hdr"><div class="ov-title">2048 🔢</div><button class="ov-close" onclick="closeOv('2048')">✕</button></div><div class="ov-body" style="padding:0;overflow:hidden;background:#faf8ef;" id="ob-2048"></div></div>
 <div class="overlay" id="ov-ocean"><div class="ov-hdr"><div class="ov-title">🌊 Tides</div><button class="ov-close" onclick="closeOv('ocean')">✕</button></div><div class="ov-body" style="padding:0;overflow:hidden;position:relative;" id="ob-ocean"></div></div>
 <div class="overlay" id="ov-shapegrid"><div class="ov-hdr"><div class="ov-title">✨ Shape Grid</div><button class="ov-close" onclick="closeOv('shapegrid')">✕</button></div><div class="ov-body" style="padding:0;overflow:hidden;background:#080808;position:relative;" id="ob-shapegrid"></div></div>
@@ -797,13 +797,13 @@ function kats(){return[...new Set(UB.map(u=>u.k))];}
 let activeSoundId=localStorage.getItem(LSS)||'chime';
 
 /* STARTSCREEN */
-function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst')rEinst();if(name==='inspo')rInspo();if(name==='messenger')initMsgTab();if(name==='inspo-edit')rInspoEdit();}
+function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst'){rEinst();setTimeout(rEmbedList,100);}if(name==='inspo')rInspo();if(name==='audio'){rAudio();setTimeout(rAudioEmbeds,100);}if(name==='messenger')initMsgTab();if(name==='inspo-edit')rInspoEdit();}
 function hideStart(){document.getElementById('startScreen').classList.add('hidden');}
 function showStart(){document.getElementById('startScreen').classList.remove('hidden');}
 window.goTab=goTab;window.hideStart=hideStart;window.showStart=showStart;
 
 /* TABS */
-document.querySelectorAll('.tab').forEach(tab=>{tab.onclick=()=>{if(!tab.dataset.tab)return;hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));tab.classList.add('active');const sc=document.getElementById('screen-'+tab.dataset.tab);if(sc)sc.classList.add('active');if(tab.dataset.tab==='alle'){rFA();rL();}if(tab.dataset.tab==='editor'){rEL();pKS();}if(tab.dataset.tab==='einst')rEinst();if(tab.dataset.tab==='inspo')rInspo();if(tab.dataset.tab==='messenger')initMsgTab();if(tab.dataset.tab==='inspo-edit')rInspoEdit();if(tab.dataset.tab==='karten')rKarten();if(tab.dataset.tab==='horoskop')rHoroskop();};});
+document.querySelectorAll('.tab').forEach(tab=>{tab.onclick=()=>{if(!tab.dataset.tab)return;hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));tab.classList.add('active');const sc=document.getElementById('screen-'+tab.dataset.tab);if(sc)sc.classList.add('active');if(tab.dataset.tab==='alle'){rFA();rL();}if(tab.dataset.tab==='editor'){rEL();pKS();}if(tab.dataset.tab==='einst'){rEinst();setTimeout(rEmbedList,100);}if(tab.dataset.tab==='inspo')rInspo();if(tab.dataset.tab==='audio'){rAudio();setTimeout(rAudioEmbeds,100);}if(tab.dataset.tab==='messenger')initMsgTab();if(tab.dataset.tab==='inspo-edit')rInspoEdit();if(tab.dataset.tab==='karten')rKarten();if(tab.dataset.tab==='horoskop')rHoroskop();};});
 
 let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
 function vib(ms){try{if(navigator.vibrate)navigator.vibrate(ms||22);}catch(e){}}
@@ -1224,6 +1224,109 @@ function closeKartenFrame(){
 }
 window.openKartenFrame=openKartenFrame;
 window.closeKartenFrame=closeKartenFrame;
+
+/* BILATERAL KLANGREISE */
+let bilateralRaf=null,bilateralCtx=null,bilateralNodes=[];
+let activeBtype='pink';
+document.querySelectorAll('[data-btype]').forEach(b=>{b.onclick=()=>{document.querySelectorAll('[data-btype]').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeBtype=b.dataset.btype;};});
+function stopBilateral(){if(bilateralRaf)cancelAnimationFrame(bilateralRaf);bilateralNodes.forEach(n=>{try{n.stop?n.stop():n.disconnect();}catch(e){}});bilateralNodes=[];bilateralRaf=null;const st=document.getElementById('bilateralStatus');if(st)st.textContent='';const btn=document.getElementById('bilateralStart');if(btn)btn.textContent='▶ Starten';}
+function startBilateral(){
+  stopBilateral();
+  bilateralCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const ctx=bilateralCtx;const speed=0.8;
+  function makeSource(){
+    if(activeBtype==='pink'||activeBtype==='weiss'){
+      const buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=buf.getChannelData(0);let last=0;
+      for(let i=0;i<d.length;i++){const w=(Math.random()*2-1);if(activeBtype==='pink'){last=(last+w*0.05)/1.02;d[i]=last*20;}else d[i]=w;}
+      const s=ctx.createBufferSource();s.buffer=buf;s.loop=true;bilateralNodes.push(s);return s;
+    } else {
+      const freq=activeBtype==='432'?432:852;const o=ctx.createOscillator();o.frequency.value=freq;o.type='sine';bilateralNodes.push(o);return o;
+    }
+  }
+  const panner=ctx.createStereoPanner();const gain=ctx.createGain();gain.gain.value=0.22;
+  const src=makeSource();src.connect(panner);panner.connect(gain);gain.connect(ctx.destination);src.start();
+  bilateralNodes.push(panner);bilateralNodes.push(gain);
+  const startTime=ctx.currentTime;
+  function sweep(){
+    const elapsed=(ctx.currentTime-startTime)%(speed*2);panner.pan.value=Math.sin(elapsed/speed*Math.PI);
+    const st=document.getElementById('bilateralStatus');
+    if(st){const tot=Math.floor(ctx.currentTime-startTime);const m=Math.floor(tot/60);const s=tot%60;st.textContent='Laeuft: '+m+':'+(s<10?'0':'')+s;}
+    bilateralRaf=requestAnimationFrame(sweep);
+  }
+  sweep();const btn=document.getElementById('bilateralStart');if(btn)btn.textContent='Laeuft...';
+}
+window.startBilateral=startBilateral;window.stopBilateral=stopBilateral;
+
+/* EMBED MANAGER */
+const LS_EMBEDS='pause_embeds_v1';
+function loadEmbeds(){try{return JSON.parse(localStorage.getItem(LS_EMBEDS)||'[]');}catch(e){return[];}}
+function saveEmbeds(d){try{localStorage.setItem(LS_EMBEDS,JSON.stringify(d));}catch(e){}fbSet('embeds',{data:JSON.stringify(d)});}
+function urlToEmbed(code){
+  if(code.includes('<iframe'))return code;
+  if(code.includes('spotify.com')){
+    const parts=code.split('/');const id=parts[parts.length-1].split('?')[0];
+    const type=code.includes('/playlist/')?'playlist':code.includes('/artist/')?'artist':code.includes('/album/')?'album':'track';
+    return '<iframe style="border-radius:12px" src="https://open.spotify.com/embed/'+type+'/'+id+'" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+  }
+  if(code.includes('youtube.com')||code.includes('youtu.be')){
+    let v='',list='';
+    try{const url=new URL(code);v=url.searchParams.get('v')||url.pathname.split('/').pop();list=url.searchParams.get('list')||'';}catch(e){}
+    const src=list?'https://www.youtube.com/embed/videoseries?list='+list:'https://www.youtube.com/embed/'+v;
+    return '<iframe width="100%" height="152" src="'+src+'&autoplay=0" frameborder="0" allow="encrypted-media" allowfullscreen style="border-radius:12px;"></iframe>';
+  }
+  return code;
+}
+function addEmbed(){
+  const title=document.getElementById('embedTitle').value.trim();
+  const code=document.getElementById('embedCode').value.trim();
+  const emoji=document.getElementById('embedEmoji').value.trim()||'🎵';
+  if(!title||!code){toast('Titel und Embed eingeben.');return;}
+  const embed=urlToEmbed(code);
+  const embeds=loadEmbeds();embeds.push({title,embed,emoji,id:Date.now()});saveEmbeds(embeds);
+  ['embedTitle','embedCode','embedEmoji'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  toast('Embed gespeichert');rEmbedList();rAudioEmbeds();
+}
+function rEmbedList(){
+  const list=document.getElementById('embedEditList');if(!list)return;list.innerHTML='';
+  const embeds=loadEmbeds();
+  if(!embeds.length){list.innerHTML='<div class="empty-state">Noch keine Embeds.</div>';return;}
+  embeds.forEach((e,i)=>{
+    const el=document.createElement('div');el.className='ex-item';
+    el.innerHTML='<div class="ex-text"><div class="ex-title">'+e.emoji+' '+e.title+'</div></div><div class="ex-acts"><button class="ib del" data-i="'+i+'"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div>';
+    el.querySelector('.ib.del').onclick=()=>{const l=loadEmbeds();l.splice(i,1);saveEmbeds(l);toast('Geloescht.');rEmbedList();rAudioEmbeds();};
+    list.appendChild(el);
+  });
+}
+function rAudioEmbeds(){
+  const embedList=document.getElementById('embedList');if(!embedList)return;embedList.innerHTML='';
+  const embeds=loadEmbeds();
+  if(!embeds.length){embedList.innerHTML='<div class="empty-state" style="font-size:0.72rem;">Keine Embeds – in Einstellungen hinzufügen</div>';return;}
+  embeds.forEach(e=>{
+    const card=document.createElement('div');card.className='card';card.style.cssText='gap:0.5rem;padding:0.75rem;';
+    card.innerHTML='<div style="font-size:0.78rem;font-weight:500;color:var(--text);">'+e.emoji+' '+e.title+'</div>'+e.embed;
+    embedList.appendChild(card);
+  });
+}
+window.addEmbed=addEmbed;
+window.rEmbedList=rEmbedList;
+
+/* WORRY TIME */
+function iWorryTime(){
+  const con=document.getElementById('ob-worrytime');con.innerHTML='';
+  const DURATION=5*60;let timeLeft=DURATION,running=false,iv=null;
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;flex-direction:column;height:100%;background:var(--bg);padding:1.2rem;gap:1rem;';
+  wrap.innerHTML='<div style="text-align:center;"><div style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.25rem;">WORRY TIME</div><div style="font-family:\'DM Serif Display\',serif;font-size:1.3rem;color:var(--text);">Klarheit · 5 Min</div></div><div style="display:flex;align-items:center;gap:0.5rem;background:var(--surface);border-radius:10px;padding:0.65rem 0.85rem;"><span style="font-size:0.9rem;">⏱</span><span id="wtTime" style="font-family:\'DM Serif Display\',serif;font-size:1rem;color:var(--text);">5:00 verbleibend</span></div><div style="background:var(--surface2);height:3px;border-radius:3px;overflow:hidden;"><div id="wtBar" style="height:100%;width:0%;background:var(--accent);transition:width 1s linear;border-radius:3px;"></div></div><div style="font-size:0.78rem;color:var(--muted2);text-align:center;line-height:1.6;">Schreib alles raus, was dich beschaeftigt.<br>Kein Filter, keine Reihenfolge.</div><textarea id="wtText" placeholder="Lass es einfach fliessen ..." style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:\'DM Sans\',sans-serif;font-size:0.88rem;padding:1rem;resize:none;outline:none;line-height:1.6;min-height:160px;"></textarea><button id="wtBtn" style="background:var(--text);color:var(--bg);border:none;border-radius:14px;padding:0.9rem;font-family:\'DM Sans\',sans-serif;font-size:0.85rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">STARTEN</button>';
+  con.appendChild(wrap);
+  function update(){const m=Math.floor(timeLeft/60),s=timeLeft%60;document.getElementById('wtTime').textContent=m+':'+(s<10?'0':'')+s+' verbleibend';document.getElementById('wtBar').style.width=((DURATION-timeLeft)/DURATION*100)+'%';}
+  document.getElementById('wtBtn').onclick=()=>{
+    if(!running){running=true;document.getElementById('wtBtn').textContent='FRUHER BEENDEN';document.getElementById('wtText').focus();
+      iv=setInterval(()=>{timeLeft--;update();if(timeLeft<=0){clearInterval(iv);running=false;document.getElementById('wtBtn').textContent='FERTIG';document.getElementById('wtBtn').style.background='var(--accent)';beep(528,0.2,0.4,'sine');vib(100);}},1000);
+    } else {clearInterval(iv);running=false;timeLeft=DURATION;update();document.getElementById('wtBtn').textContent='STARTEN';document.getElementById('wtBtn').style.background='var(--text)';}
+  };
+  update();
+}
+
 
 /* EINSTELLUNGEN */
 function rEinst(){
