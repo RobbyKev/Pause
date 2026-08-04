@@ -29,7 +29,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 
 /* TABS */
 .tabs{display:none;}
-.back-btn{display:flex;align-items:center;gap:0.3rem;background:transparent;border:none;color:var(--muted);font-family:"DM Sans",sans-serif;font-size:0.7rem;cursor:pointer;padding:0;margin-bottom:0.2rem;flex-shrink:0;}
+.back-btn{display:flex;align-items:center;gap:0.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:100px;color:var(--muted2);font-family:"DM Sans",sans-serif;font-size:0.75rem;font-weight:500;cursor:pointer;padding:0.35rem 0.75rem;margin-bottom:0.5rem;flex-shrink:0;width:fit-content;}
 
 .tabs::-webkit-scrollbar{display:none;}
 .tab{flex:0 0 auto;min-width:52px;padding:0.65rem 0.3rem 0.45rem;border:none;background:transparent;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:0.52rem;font-weight:500;letter-spacing:0.03em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.14rem;transition:color 0.15s;border-radius:0;}
@@ -97,6 +97,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 .overlay{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column;}
 .overlay.active{display:flex;}
 .ov-hdr{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0.95rem;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);}
+.ov-close{background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:0.9rem;flex-shrink:0;}
 .ov-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);}
 .ov-close{background:transparent;border:none;color:var(--muted2);font-size:1.3rem;cursor:pointer;padding:0.12rem 0.3rem;line-height:1;}
 .ov-body{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;background:var(--bg);}
@@ -389,7 +390,6 @@ console.log('Firebase Pause: verbunden ✓');
     </div>
     <div id="wakeLockStatus" style="font-size:0.62rem;color:var(--muted);text-align:center;">⏱ Bildschirm bleibt an während der Timer läuft</div>
   </div>
-  <button class="btn btn-g" onclick="showStart()" style="font-size:0.78rem;">← Zurück zur Übung</button>
   <div class="divider"></div>
   <div class="section-title">Focus Timer (Pomodoro)</div>
   <div class="card" style="align-items:center;gap:0.85rem;">
@@ -882,14 +882,27 @@ const POM_CIRC=2*Math.PI*54;
 let pomMode='work',pomLeft=25*60,pomTotal=25*60,pomRun=false,pomIv=null,pomCycles=0;
 let pomWakeLock=null;
 
-document.querySelectorAll('[data-pmode]').forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll('[data-pmode]').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');pomMode=b.dataset.pmode;
-    pomTotal=POM_TIMES[pomMode];pomLeft=pomTotal;
-    pomReset_();
+function initPomodoro(){
+  document.querySelectorAll('[data-pmode]').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('[data-pmode]').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');pomMode=b.dataset.pmode;
+      pomTotal=POM_TIMES[pomMode];pomLeft=pomTotal;
+      pomReset_();
+    };
+  });
+  const ps=document.getElementById('pomStart');
+  if(ps)ps.onclick=()=>{
+    if(!pomRun){pomRun=true;warmAudioCtx();try{if('wakeLock' in navigator)navigator.wakeLock.request('screen').then(wl=>pomWakeLock=wl);}catch(e){}
+      ps.textContent='◼ Stop';
+      pomIv=setInterval(()=>{pomLeft--;pomUpdate();if(pomLeft<=0)pomDone();},1000);
+    } else {pomReset_();}
   };
-});
+  const pr=document.getElementById('pomReset');
+  if(pr)pr.onclick=()=>{pomLeft=pomTotal;pomReset_();};
+  pomUpdate();
+}
+window.addEventListener('DOMContentLoaded',initPomodoro);
 
 function pomUpdate(){
   const m=Math.floor(pomLeft/60),s=pomLeft%60;
@@ -1447,7 +1460,7 @@ function rEinst(){
 /* OVERLAY MANAGER */
 const OVC={};
 function openOv(n){document.getElementById('ov-'+n).classList.add('active');({popit:iPopit,spinner:iSpinner,toggles:iToggles,knopf:iKnopf,wahl:iWahl,augen:iAugen,farbrad:iFarbrad,kalimba:iKalimba,launchpad:iLaunchpad,metro:iMetro,spiro:iSpiro,blob:iBlob,physik:iPhysik,fluid:iFluid,zen:iZen,geo:iGeo,draw:iDraw,konfetti:iKonfetti,tappy:iTappy,blasen:iBlasen,tetris:iTetris,snake:iSnake,quicktap:iQT,senso:iSenso,breakout:iBreakout,reaction:iReaction,ttt:initTTT,zahlen:initZahlen,ssp:initSSP,hotspot:iHotspot,adventure:iAdventure,messenger:iMessenger,theojump:iTheoJump,
-  '2048':i2048,ocean:iOcean,shapegrid:iShapeGrid,snakeanim:iSnakeAnim})[n]?.();}
+  '2048':i2048,ocean:iOcean,shapegrid:iShapeGrid,snakeanim:iSnakeAnim,worrytime:iWorryTime})[n]?.();}
 function closeOv(n){document.getElementById('ov-'+n).classList.remove('active');if(OVC[n]){OVC[n]();delete OVC[n];}}
 window.openOv=openOv;window.closeOv=closeOv;
 
