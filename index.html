@@ -28,7 +28,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 .start-all{margin-top:0.65rem;width:100%;max-width:360px;}
 
 /* TABS */
-.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tabs{display:none;}
+.back-btn{display:flex;align-items:center;gap:0.3rem;background:transparent;border:none;color:var(--muted);font-family:"DM Sans",sans-serif;font-size:0.7rem;cursor:pointer;padding:0;margin-bottom:0.2rem;flex-shrink:0;}
+
 .tabs::-webkit-scrollbar{display:none;}
 .tab{flex:0 0 auto;min-width:52px;padding:0.65rem 0.3rem 0.45rem;border:none;background:transparent;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:0.52rem;font-weight:500;letter-spacing:0.03em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.14rem;transition:color 0.15s;border-radius:0;}
 .tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
@@ -362,7 +364,8 @@ console.log('Firebase Pause: verbunden ✓');
   <button class="btn btn-g" onclick="openOv('worrytime')" style="font-size:0.78rem;">🧠 Worry Time</button>
 </div>
 <div class="screen" id="screen-timer">
-  <div class="section-title">Timer</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Timer</div>
   <div class="card" style="align-items:center;gap:1rem;">
     <div class="timer-opts">
       <button class="timer-opt" data-min="5">5 Min</button>
@@ -385,10 +388,33 @@ console.log('Firebase Pause: verbunden ✓');
     </div>
     <div id="wakeLockStatus" style="font-size:0.62rem;color:var(--muted);text-align:center;">⏱ Bildschirm bleibt an während der Timer läuft</div>
   </div>
-  <button class="btn btn-g" onclick="goTab('uebung')" style="font-size:0.78rem;">← Zurück zur Übung</button>
+  <button class="btn btn-g" onclick="showStart()" style="font-size:0.78rem;">← Zurück zur Übung</button>
+  <div class="divider"></div>
+  <div class="section-title">Focus Timer (Pomodoro)</div>
+  <div class="card" style="align-items:center;gap:0.85rem;">
+    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;" id="pomodoroModes">
+      <button class="pill active" data-pmode="work">🎯 Fokus 25</button>
+      <button class="pill" data-pmode="short">☕ Kurze Pause 5</button>
+      <button class="pill" data-pmode="long">🌿 Lange Pause 15</button>
+    </div>
+    <div style="position:relative;width:120px;height:120px;">
+      <svg viewBox="0 0 120 120" width="120" height="120">
+        <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+        <circle id="pomRing" cx="60" cy="60" r="54" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="339.3" stroke-dashoffset="0"/>
+      </svg>
+      <div id="pomVal" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--text);">25:00</div>
+    </div>
+    <div id="pomCycles" style="font-size:0.65rem;color:var(--muted);">🍅 0 Pomodoros heute</div>
+    <div style="display:flex;gap:0.4rem;">
+      <button class="btn-sm sm-s" id="pomStart">▶ Start</button>
+      <button class="btn-sm sm-r" id="pomReset">Reset</button>
+    </div>
+    <div id="pomStatus" style="font-size:0.65rem;color:var(--accent);text-align:center;"></div>
+  </div>
 </div>
 <div class="screen" id="screen-atem">
-  <div class="section-title">Atemübung wählen</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Atemübung wählen</div>
   <div class="atem-methods" id="atemMethods"></div>
   <div class="atem-wrap">
     <div class="atem-c" id="atemC">bereit</div>
@@ -401,7 +427,8 @@ console.log('Firebase Pause: verbunden ✓');
   </div>
 </div>
 <div class="screen" id="screen-audio">
-  <div class="section-title">Sounds</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Sounds</div>
   <div id="audioBtns" style="display:flex;flex-direction:column;gap:0.38rem;"></div>
   <div class="divider" style="margin:0.25rem 0;"></div>
   <!-- Bilaterale Klangreise -->
@@ -448,7 +475,8 @@ console.log('Firebase Pause: verbunden ✓');
   </div>
 </div>
 <div class="screen" id="screen-fidget">
-  <div class="section-title">Sensory Board</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Sensory Board</div>
   <div class="tool-grid">
     <div class="tc" onclick="openOv('popit')"><div class="tc-icon">🫧</div><div class="tc-label">Pop It</div><div class="tc-sub">Eindrücken & zurück</div></div>
     <div class="tc" onclick="openOv('spinner')"><div class="tc-icon">🌀</div><div class="tc-label">Spinner</div><div class="tc-sub">Drehen & loslassen</div></div>
@@ -463,7 +491,8 @@ console.log('Firebase Pause: verbunden ✓');
   </div>
 </div>
 <div class="screen" id="screen-visuell">
-  <div class="section-title">Visuelle Tools</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Visuelle Tools</div>
   <div class="tool-grid">
     <div class="tc" onclick="openOv('spiro')"><div class="tc-icon">🌈</div><div class="tc-label">Spirograph</div><div class="tc-sub">Farbige Muster</div></div>
     <div class="tc" onclick="openOv('blob')"><div class="tc-icon">🟢</div><div class="tc-label">Blob</div><div class="tc-sub">Berühren zum Morphen</div></div>
@@ -479,7 +508,8 @@ console.log('Firebase Pause: verbunden ✓');
   </div>
 </div>
 <div class="screen" id="screen-spiele">
-  <div class="section-title">Spiele</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Spiele</div>
   <div class="tool-grid">
     <div class="tc" onclick="openOv('tappy')"><div class="tc-icon">🔵</div><div class="tc-label">Tipper</div><div class="tc-sub">Einfach tippen</div></div>
     <div class="tc" onclick="openOv('blasen')"><div class="tc-icon">🫧</div><div class="tc-label">Blasen</div><div class="tc-sub">Zerplatzen lassen</div></div>
@@ -552,7 +582,8 @@ console.log('Firebase Pause: verbunden ✓');
 </div>
 
 <div class="screen" id="screen-inspo">
-  <div class="section-title">Profile</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Profile</div>
   <div id="inspoProfiles" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
   <div class="section-title" style="margin-top:0.5rem;">Themen & Hashtags</div>
   <div id="inspoHashtags" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
@@ -571,11 +602,13 @@ console.log('Firebase Pause: verbunden ✓');
   </div>
 </div>
 <div class="screen" id="screen-alle">
-  <div class="pill-row" id="filterRowAlle"></div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="pill-row" id="filterRowAlle"></div>
   <div id="listContainer"></div>
 </div>
 <div class="screen" id="screen-inspo-edit">
-  <div class="section-title">Inspo verwalten</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Inspo verwalten</div>
   <!-- Add Profile -->
   <div class="card" style="gap:0.6rem;">
     <div style="font-size:0.72rem;font-weight:600;color:var(--accent);">➕ Profil hinzufügen</div>
@@ -601,7 +634,8 @@ console.log('Firebase Pause: verbunden ✓');
   <div id="ihList" style="display:flex;flex-direction:column;gap:0.35rem;"></div>
 </div>
 <div class="screen" id="screen-editor">
-  <div class="section-title">Neue Übung</div>
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <div class="section-title">Neue Übung</div>
   <div class="ed-sec"><div class="ed-lbl">Titel</div><input type="text" id="edTitel" placeholder="z.B. Fenster auf und riechen"></div>
   <div class="ed-sec"><div class="ed-lbl">Beschreibung</div><textarea id="edBesch" placeholder="Was genau tun?"></textarea></div>
   <div class="ed-sec">
@@ -629,7 +663,8 @@ console.log('Firebase Pause: verbunden ✓');
   <div id="editorList"></div>
 </div>
 <div class="screen" id="screen-einst">
-  <!-- Abschnitt: Verwalten -->
+  <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
+    <!-- Abschnitt: Verwalten -->
   <div class="section-title">Verwalten</div>
   <div style="display:flex;flex-direction:column;gap:0.38rem;">
     <div class="sound-opt" onclick="goTab('editor')" style="cursor:pointer;">
@@ -830,6 +865,66 @@ const TIMER_SOUNDS={chime:{label:'🔔 Glocke (sanft)',fn:()=>{try{const c=new(w
 let _aCtxWarmed=false;
 function warmAudioCtx(){if(_aCtxWarmed)return;try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();g.gain.value=0;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.001);_aCtxWarmed=true;}catch(e){}}
 function playTimerSound(){try{const c=new(window.AudioContext||window.webkitAudioContext)();TIMER_SOUNDS[activeSoundId]?.fn(c);}catch(e){TIMER_SOUNDS[activeSoundId]?.fn();}}
+
+
+/* POMODORO */
+const POM_TIMES={work:25*60,short:5*60,long:15*60};
+const POM_CIRC=2*Math.PI*54;
+let pomMode='work',pomLeft=25*60,pomTotal=25*60,pomRun=false,pomIv=null,pomCycles=0;
+let pomWakeLock=null;
+
+document.querySelectorAll('[data-pmode]').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('[data-pmode]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');pomMode=b.dataset.pmode;
+    pomTotal=POM_TIMES[pomMode];pomLeft=pomTotal;
+    pomReset_();
+  };
+});
+
+function pomUpdate(){
+  const m=Math.floor(pomLeft/60),s=pomLeft%60;
+  const el=document.getElementById('pomVal');if(el)el.textContent=m+':'+(s<10?'0':'')+s;
+  const ring=document.getElementById('pomRing');
+  if(ring)ring.style.strokeDashoffset=POM_CIRC*(1-pomLeft/pomTotal);
+  const st=document.getElementById('pomStatus');
+  if(st){
+    if(pomRun)st.textContent=pomMode==='work'?'Fokus-Zeit läuft...':pomMode==='short'?'Kurze Pause...':'Lange Pause...';
+    else st.textContent='';
+  }
+}
+
+function pomReset_(){
+  clearInterval(pomIv);pomRun=false;
+  if(pomWakeLock){try{pomWakeLock.release();}catch(e){}pomWakeLock=null;}
+  const btn=document.getElementById('pomStart');if(btn)btn.textContent='▶ Start';
+  pomUpdate();
+}
+
+function pomDone(){
+  clearInterval(pomIv);pomRun=false;
+  if(pomWakeLock){try{pomWakeLock.release();}catch(e){}pomWakeLock=null;}
+  if(pomMode==='work'){pomCycles++;const el=document.getElementById('pomCycles');if(el)el.textContent='🍅 '+pomCycles+' Pomodoro'+(pomCycles!==1?'s':'')+' heute';}
+  beep(528,0.25,0.5,'sine');vib(200);
+  const btn=document.getElementById('pomStart');if(btn)btn.textContent='▶ Start';
+  const st=document.getElementById('pomStatus');
+  if(st)st.textContent=pomMode==='work'?'✓ Geschafft! Zeit für eine Pause.':'✓ Pause vorbei!';
+  pomLeft=pomTotal;pomUpdate();
+}
+
+document.getElementById('pomStart')&&(document.getElementById('pomStart').onclick=()=>{
+  if(!pomRun){
+    pomRun=true;
+    warmAudioCtx();
+    try{if('wakeLock' in navigator)navigator.wakeLock.request('screen').then(wl=>pomWakeLock=wl);}catch(e){}
+    document.getElementById('pomStart').textContent='◼ Stop';
+    pomIv=setInterval(()=>{pomLeft--;pomUpdate();if(pomLeft<=0)pomDone();},1000);
+  } else {pomReset_();}
+});
+
+document.getElementById('pomReset')&&(document.getElementById('pomReset').onclick=()=>{
+  pomLeft=pomTotal;pomReset_();
+});
 
 /* TIMER */
 const CIRC=2*Math.PI*62;let tMin=10,tTotal=600,tLeft=600,tRun=false,tIv=null;
