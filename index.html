@@ -94,7 +94,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 .tc-icon{font-size:1.7rem;line-height:1;}
 .tc-label{font-size:0.73rem;font-weight:500;color:var(--text);text-align:center;}
 .tc-sub{font-size:0.6rem;color:var(--muted);text-align:center;}
-.overlay{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column;}
+.overlay{position:fixed;inset:0;background:var(--bg);z-index:600;display:none;flex-direction:column;}
 .overlay.active{display:flex;}
 .ov-hdr{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0.95rem;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);}
 .ov-close{background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:0.9rem;flex-shrink:0;}
@@ -352,7 +352,9 @@ console.log('Firebase Pause: verbunden ✓');
 </div>
 <div class="screens">
 <div class="screen active" id="screen-uebung">
-  <div class="pill-row" id="filterRow"></div>
+  <div class="section-title" style="margin-bottom:-0.15rem;">Was brauchst du gerade?</div>
+  <div class="pill-row" id="needFilterRow" style="gap:0.4rem;"></div>
+  <div class="pill-row" id="filterRow" style="opacity:0.75;"></div>
   <div class="card" id="mainCard">
     <span class="label-tag" id="mainTag"></span>
     <img class="card-img" id="mainImg" src="" alt="">
@@ -735,58 +737,131 @@ console.log('Firebase Pause: verbunden ✓');
 <div class="toast" id="toast"></div>
 <script>
 const DEFAULTS=[
-  {id:'d01',k:'Körper',t:'Hände klatschen',b:'Hände ein paar Mal fest aufeinander klatschen.',img:''},
-  {id:'d02',k:'Körper',t:'Handflächen reiben',b:'Beide Handflächen schnell aneinander reiben bis sie warm werden.',img:''},
-  {id:'d03',k:'Körper',t:'Fäuste auf und zu',b:'Hände 5 Sekunden fest zu Fäusten ballen, dann langsam öffnen.',img:''},
-  {id:'d04',k:'Körper',t:'Schultern kreisen',b:'Schultern langsam nach hinten kreisen – drei Mal.',img:''},
-  {id:'d05',k:'Körper',t:'Arme strecken',b:'Arme langsam nach oben strecken, kurz halten, dann fallen lassen.',img:''},
-  {id:'d06',k:'Körper',t:'Erden im Sitzen',b:'Rücken bewusst an die Lehne. Füße flach auf den Boden. Gewicht spüren.',img:''},
-  {id:'d07',k:'Körper',t:'Erden im Liegen',b:'Hinlegen und den Körper bewusst wahrnehmen – von Kopf bis Fuß.',img:''},
-  {id:'d08',k:'Körper',t:'Kaltes Wasser übers Handgelenk',b:'Kurz kaltes Wasser über die Handgelenke laufen lassen.',img:''},
-  {id:'d09',k:'Körper',t:'Warme Tasse halten',b:'Eine Tasse mit warmem Inhalt mit beiden Händen umschließen.',img:''},
-  {id:'d10',k:'Körper',t:'Oberfläche anfassen',b:'Kühle oder warme Oberfläche berühren – Tischplatte, Fenster, Wand.',img:''},
-  {id:'d11',k:'Körper',t:'Stoff befühlen',b:'Pullover, Decke oder Kissen nehmen und den Stoff reiben.',img:''},
-  {id:'d12',k:'Theo',t:'Theo streicheln',b:'Einfach die Hand in sein Fell legen. Seinen Herzschlag wahrnehmen.',img:'__theo__'},
-  {id:'d13',k:'Theo',t:'An Theos Fell riechen',b:'Hunde haben ihren ganz eigenen Geruch. Einfach kurz riechen.',img:'__theo__'},
-  {id:'d14',k:'Theo',t:'Theo beobachten',b:'Einfach zuschauen wie er schläft, atmet, sich bewegt.',img:'__theo__'},
-  {id:'d15',k:'Theo',t:'Theo zuhören',b:'Auf seinen Atem, sein Schnaufen, sein Schnarchen fokussieren.',img:'__theo__'},
-  {id:'d16',k:'Theo',t:'Mit Theo spielen',b:'Sitzen bleiben und einen Ball werfen, so oft du magst.',img:'__theo__'},
-  {id:'d17',k:'Theo',t:'Mit Theo in den Garten',b:'Rausgehen, Theo laufen lassen und einfach dabei sein.',img:'__theo__'},
-  {id:'d18',k:'Theo',t:'Frische Luft mit Theo',b:'Kurz vor die Tür, Theo schnuppern lassen, selbst tief einatmen.',img:'__theo__'},
-  {id:'d19',k:'Geruch',t:'Lieblingsparfüm',b:'Kurz ans Handgelenk oder an die Flasche riechen.',img:''},
-  {id:'d20',k:'Geruch',t:'Frische Luft',b:'Fenster auf, kurz die Nase rausstrecken.',img:''},
-  {id:'d21',k:'Geruch',t:'Gewürz oder Tee',b:'Eine Dose aufmachen und reinriechen.',img:''},
-  {id:'d22',k:'Fokus',t:'3 Dinge benennen',b:'Was siehst du? Was hörst du? Was spürst du?',img:''},
-  {id:'d23',k:'Fokus',t:'Was war heute okay?',b:'Was war heute schon in Ordnung? Auch Kleines zählt.',img:''},
-  {id:'d24',k:'Fokus',t:'Rückwärts zählen',b:'Von 20 rückwärts in 3er-Schritten: 20, 17, 14 …',img:''},
-  {id:'d25',k:'Fokus',t:'3 blaue Dinge finden',b:'Im Raum nach 3 blauen oder roten Dingen suchen.',img:''},
-  {id:'d26',k:'Fokus',t:'Gegenstand beschreiben',b:'Irgendetwas in die Hand nehmen. Farbe, Gewicht, Textur.',img:''},
-  {id:'d27',k:'Fokus',t:'Eine Karte ziehen',b:'Aus dem Tarot- oder Kipper-Stapel – einfach als Blickpunkt.',img:''},
-  {id:'d28',k:'Fokus',t:'Kerze anschauen',b:'Eine Kerze anzünden und die Flamme 20–30 Sekunden beobachten.',img:''},
-  {id:'d29',k:'Fokus',t:'5-4-3-2-1 Methode',b:'5 Dinge sehen, 4 hören, 3 fühlen, 2 riechen, 1 schmecken.',img:''},
-  {id:'d30',k:'Atem',t:'4-7-8 Atem',b:'4 Sekunden einatmen, 7 Sekunden halten, 8 Sekunden ausatmen.',img:''},
-  {id:'d31',k:'Atem',t:'Einfach ausatmen',b:'Tief einatmen und dann langsam, ganz lang ausatmen.',img:''},
-  {id:'d32',k:'Atem',t:'Box Breathing',b:'4 Sekunden einatmen, 4 halten, 4 ausatmen, 4 halten.',img:''},
-  {id:'d33',k:'Atem',t:'Langer Ausatem',b:'4 Sekunden einatmen, 8 Sekunden ausatmen.',img:''},
-  {id:'d34',k:'Atem',t:'Bauchatmung',b:'Hand auf den Bauch legen. Bewusst in den Bauch atmen.',img:''},
-  {id:'d35',k:'Atem',t:'Seufzen',b:'Tief einatmen, dann einen langen hörbaren Seufzer rauslassen.',img:''},
-  {id:'d36',k:'Atem',t:'Nasenwechselatmung',b:'Rechtes Nasenloch zuhalten, links einatmen. Dann wechseln.',img:''},
-  {id:'d37',k:'Atem',t:'Summen beim Ausatmen',b:'Einatmen, dann beim Ausatmen leise summen.',img:''},
-  {id:'d38',k:'Hören',t:'Ein Lied bewusst hören',b:'Ein Lied anmachen und 30 Sekunden nur zuhören.',img:''},
-  {id:'d39',k:'Hören',t:'Stille aushalten',b:'Alle Geräte ausmachen. Einfach hören was übrig bleibt.',img:''},
-  {id:'d40',k:'Hören',t:'Geräusche im Raum zählen',b:'Wie viele verschiedene Geräusche kannst du gerade hören?',img:''},
-  {id:'d41',k:'Hören',t:'Ein Lied summen',b:'Ein Lied leise summen. Auch falsch, auch leise.',img:''},
-  {id:'d42',k:'Handy',t:'Theo-Fotos anschauen',b:'Album mit Theo-Fotos aufmachen und durchscrollen.',img:''},
-  {id:'d43',k:'Handy',t:'Kevin eine Sprachnachricht',b:'"Hey, kurze Meldung." Auch wenn er arbeitet.',img:''},
-  {id:'d44',k:'Rausgehen',t:'Mit Theo in den Garten',b:'Rausgehen, Theo laufen lassen und dabei sein.',img:'__theo__'},
-  {id:'d45',k:'Rausgehen',t:'Frische Luft holen',b:'Kurz vor die Tür. Einfach stehen, atmen, ankommen.',img:''},
-  {id:'d46',k:'Rausgehen',t:'Barfuß ins Gras',b:'Schuhe aus, Füße ins Gras. Den Boden spüren.',img:''},
-  {id:'d47',k:'Rausgehen',t:'Himmel anschauen',b:'Einfach nach oben schauen. Wolken, Licht, Farbe.',img:''},
-  {id:'d48',k:'Rausgehen',t:'Draußen sitzen',b:'Hinsetzen, nichts tun. Wind, Temperatur wahrnehmen.',img:''},
-  {id:'d49',k:'Rausgehen',t:'Einen Moment stehen bleiben',b:'Kurz draußen: Wind auf der Haut, Temperatur, Geräusche.',img:''},
+  {id:'d01',k:'Körper',t:'Hände klatschen',b:'Hände ein paar Mal fest aufeinander klatschen.',img:'',n:['erden','bewegen']},
+  {id:'d02',k:'Körper',t:'Handflächen reiben',b:'Beide Handflächen schnell aneinander reiben bis sie warm werden.',img:'',n:['erden','beruhigen']},
+  {id:'d03',k:'Körper',t:'Fäuste auf und zu',b:'Hände 5 Sekunden fest zu Fäusten ballen, dann langsam öffnen.',img:'',n:['erden','bewegen']},
+  {id:'d04',k:'Körper',t:'Schultern kreisen',b:'Schultern langsam nach hinten kreisen – drei Mal.',img:'',n:['bewegen','beruhigen']},
+  {id:'d05',k:'Körper',t:'Arme strecken',b:'Arme langsam nach oben strecken, kurz halten, dann fallen lassen.',img:'',n:['bewegen']},
+  {id:'d06',k:'Körper',t:'Erden im Sitzen',b:'Rücken bewusst an die Lehne. Füße flach auf den Boden. Gewicht spüren.',img:'',n:['erden']},
+  {id:'d07',k:'Körper',t:'Erden im Liegen',b:'Hinlegen und den Körper bewusst wahrnehmen – von Kopf bis Fuß.',img:'',n:['erden','beruhigen']},
+  {id:'d08',k:'Körper',t:'Kaltes Wasser übers Handgelenk',b:'Kurz kaltes Wasser über die Handgelenke laufen lassen.',img:'',n:['erden','beruhigen']},
+  {id:'d09',k:'Körper',t:'Warme Tasse halten',b:'Eine Tasse mit warmem Inhalt mit beiden Händen umschließen.',img:'',n:['beruhigen','erden']},
+  {id:'d10',k:'Körper',t:'Oberfläche anfassen',b:'Kühle oder warme Oberfläche berühren – Tischplatte, Fenster, Wand.',img:'',n:['erden']},
+  {id:'d11',k:'Körper',t:'Stoff befühlen',b:'Pullover, Decke oder Kissen nehmen und den Stoff reiben.',img:'',n:['erden','beruhigen']},
+  {id:'d12',k:'Theo',t:'Theo streicheln',b:'Einfach die Hand in sein Fell legen. Seinen Herzschlag wahrnehmen.',img:'__theo__',n:['beruhigen','erden']},
+  {id:'d13',k:'Theo',t:'An Theos Fell riechen',b:'Hunde haben ihren ganz eigenen Geruch. Einfach kurz riechen.',img:'__theo__',n:['beruhigen','ablenken']},
+  {id:'d14',k:'Theo',t:'Theo beobachten',b:'Einfach zuschauen wie er schläft, atmet, sich bewegt.',img:'__theo__',n:['ablenken','beruhigen']},
+  {id:'d15',k:'Theo',t:'Theo zuhören',b:'Auf seinen Atem, sein Schnaufen, sein Schnarchen fokussieren.',img:'__theo__',n:['beruhigen','erden']},
+  {id:'d16',k:'Theo',t:'Mit Theo spielen',b:'Sitzen bleiben und einen Ball werfen, so oft du magst.',img:'__theo__',n:['ablenken','bewegen']},
+  {id:'d17',k:'Theo',t:'Mit Theo in den Garten',b:'Rausgehen, Theo laufen lassen und einfach dabei sein.',img:'__theo__',n:['bewegen','erden']},
+  {id:'d18',k:'Theo',t:'Frische Luft mit Theo',b:'Kurz vor die Tür, Theo schnuppern lassen, selbst tief einatmen.',img:'__theo__',n:['erden','bewegen']},
+  {id:'d19',k:'Geruch',t:'Lieblingsparfüm',b:'Kurz ans Handgelenk oder an die Flasche riechen.',img:'',n:['erden','beruhigen']},
+  {id:'d20',k:'Geruch',t:'Frische Luft',b:'Fenster auf, kurz die Nase rausstrecken.',img:'',n:['erden']},
+  {id:'d21',k:'Geruch',t:'Gewürz oder Tee',b:'Eine Dose aufmachen und reinriechen.',img:'',n:['erden','ablenken']},
+  {id:'d22',k:'Fokus',t:'3 Dinge benennen',b:'Was siehst du? Was hörst du? Was spürst du?',img:'',n:['erden']},
+  {id:'d23',k:'Fokus',t:'Was war heute okay?',b:'Was war heute schon in Ordnung? Auch Kleines zählt.',img:'',n:['ablenken','beruhigen']},
+  {id:'d24',k:'Fokus',t:'Rückwärts zählen',b:'Von 20 rückwärts in 3er-Schritten: 20, 17, 14 …',img:'',n:['ablenken','erden']},
+  {id:'d25',k:'Fokus',t:'3 blaue Dinge finden',b:'Im Raum nach 3 blauen oder roten Dingen suchen.',img:'',n:['ablenken','erden']},
+  {id:'d26',k:'Fokus',t:'Gegenstand beschreiben',b:'Irgendetwas in die Hand nehmen. Farbe, Gewicht, Textur.',img:'',n:['erden','ablenken']},
+  {id:'d27',k:'Fokus',t:'Eine Karte ziehen',b:'Aus dem Tarot- oder Kipper-Stapel – einfach als Blickpunkt.',img:'',n:['ablenken']},
+  {id:'d28',k:'Fokus',t:'Kerze anschauen',b:'Eine Kerze anzünden und die Flamme 20–30 Sekunden beobachten.',img:'',n:['beruhigen','erden']},
+  {id:'d29',k:'Fokus',t:'5-4-3-2-1 Methode',b:'5 Dinge sehen, 4 hören, 3 fühlen, 2 riechen, 1 schmecken.',img:'',n:['erden']},
+  {id:'d30',k:'Atem',t:'4-7-8 Atem',b:'4 Sekunden einatmen, 7 Sekunden halten, 8 Sekunden ausatmen.',img:'',n:['beruhigen']},
+  {id:'d31',k:'Atem',t:'Einfach ausatmen',b:'Tief einatmen und dann langsam, ganz lang ausatmen.',img:'',n:['beruhigen']},
+  {id:'d32',k:'Atem',t:'Box Breathing',b:'4 Sekunden einatmen, 4 halten, 4 ausatmen, 4 halten.',img:'',n:['beruhigen']},
+  {id:'d33',k:'Atem',t:'Langer Ausatem',b:'4 Sekunden einatmen, 8 Sekunden ausatmen.',img:'',n:['beruhigen']},
+  {id:'d34',k:'Atem',t:'Bauchatmung',b:'Hand auf den Bauch legen. Bewusst in den Bauch atmen.',img:'',n:['beruhigen','erden']},
+  {id:'d35',k:'Atem',t:'Seufzen',b:'Tief einatmen, dann einen langen hörbaren Seufzer rauslassen.',img:'',n:['beruhigen']},
+  {id:'d36',k:'Atem',t:'Nasenwechselatmung',b:'Rechtes Nasenloch zuhalten, links einatmen. Dann wechseln.',img:'',n:['beruhigen']},
+  {id:'d37',k:'Atem',t:'Summen beim Ausatmen',b:'Einatmen, dann beim Ausatmen leise summen.',img:'',n:['beruhigen']},
+  {id:'d38',k:'Hören',t:'Ein Lied bewusst hören',b:'Ein Lied anmachen und 30 Sekunden nur zuhören.',img:'',n:['ablenken','beruhigen']},
+  {id:'d39',k:'Hören',t:'Stille aushalten',b:'Alle Geräte ausmachen. Einfach hören was übrig bleibt.',img:'',n:['erden','beruhigen']},
+  {id:'d40',k:'Hören',t:'Geräusche im Raum zählen',b:'Wie viele verschiedene Geräusche kannst du gerade hören?',img:'',n:['erden','ablenken']},
+  {id:'d41',k:'Hören',t:'Ein Lied summen',b:'Ein Lied leise summen. Auch falsch, auch leise.',img:'',n:['ablenken']},
+  {id:'d42',k:'Handy',t:'Theo-Fotos anschauen',b:'Album mit Theo-Fotos aufmachen und durchscrollen.',img:'',n:['ablenken']},
+  {id:'d43',k:'Handy',t:'Kevin eine Sprachnachricht',b:'"Hey, kurze Meldung." Auch wenn er arbeitet.',img:'',n:['ablenken']},
+  {id:'d44',k:'Rausgehen',t:'Mit Theo in den Garten',b:'Rausgehen, Theo laufen lassen und dabei sein.',img:'__theo__',n:['bewegen','erden']},
+  {id:'d45',k:'Rausgehen',t:'Frische Luft holen',b:'Kurz vor die Tür. Einfach stehen, atmen, ankommen.',img:'',n:['erden','bewegen']},
+  {id:'d46',k:'Rausgehen',t:'Barfuß ins Gras',b:'Schuhe aus, Füße ins Gras. Den Boden spüren.',img:'',n:['erden']},
+  {id:'d47',k:'Rausgehen',t:'Himmel anschauen',b:'Einfach nach oben schauen. Wolken, Licht, Farbe.',img:'',n:['beruhigen','erden']},
+  {id:'d48',k:'Rausgehen',t:'Draußen sitzen',b:'Hinsetzen, nichts tun. Wind, Temperatur wahrnehmen.',img:'',n:['beruhigen','erden']},
+  {id:'d49',k:'Rausgehen',t:'Einen Moment stehen bleiben',b:'Kurz draußen: Wind auf der Haut, Temperatur, Geräusche.',img:'',n:['erden']},
+  {id:'d50',k:'Körper',t:'Nacken sanft dehnen',b:'Kopf langsam zur einen, dann zur anderen Seite neigen.',img:'',n:['bewegen','beruhigen']},
+  {id:'d51',k:'Körper',t:'Faust und Feder',b:'Hand fest zur Faust ballen, dann Finger weit spreizen wie eine Feder.',img:'',n:['erden','bewegen']},
+  {id:'d52',k:'Körper',t:'Fersen wippen',b:'Im Sitzen die Fersen ein paar Mal vom Boden heben und senken.',img:'',n:['bewegen','erden']},
+  {id:'d53',k:'Körper',t:'Zehen krallen',b:'Zehen in den Boden oder in Socken krallen, dann loslassen.',img:'',n:['erden']},
+  {id:'d54',k:'Körper',t:'Ohrläppchen reiben',b:'Beide Ohrläppchen sanft zwischen den Fingern reiben.',img:'',n:['beruhigen','erden']},
+  {id:'d55',k:'Körper',t:'Kopfhaut massieren',b:'Mit den Fingerspitzen sanft über die Kopfhaut kreisen.',img:'',n:['beruhigen']},
+  {id:'d56',k:'Körper',t:'Schmetterlingsumarmung',b:'Arme über der Brust kreuzen, abwechselnd sanft auf die Schultern klopfen.',img:'',n:['beruhigen','erden']},
+  {id:'d57',k:'Körper',t:'Handgelenke kreisen',b:'Beide Handgelenke ein paar Mal in beide Richtungen kreisen.',img:'',n:['bewegen']},
+  {id:'d58',k:'Körper',t:'Wangen sanft abklopfen',b:'Mit den Fingerspitzen leicht über die Wangen klopfen.',img:'',n:['beruhigen','erden']},
+  {id:'d59',k:'Körper',t:'Bauch sanft kreisen',b:'Flache Hand auf den Bauch, langsam im Kreis reiben.',img:'',n:['beruhigen']},
+  {id:'d60',k:'Körper',t:'Zunge gegen Gaumen',b:'Zunge fest gegen den Gaumen drücken, 5 Sekunden halten.',img:'',n:['erden']},
+  {id:'d61',k:'Theo',t:'Theos Pfoten anschauen',b:'Einfach mal die Pfötchen genauer betrachten.',img:'__theo__',n:['ablenken','beruhigen']},
+  {id:'d62',k:'Theo',t:'Mit Theo kuscheln',b:'Auf dem Sofa nah zu ihm setzen und einfach da sein.',img:'__theo__',n:['beruhigen']},
+  {id:'d63',k:'Theo',t:'Theos Herzschlag fühlen',b:'Hand auf seine Brust legen und den Herzschlag spüren.',img:'__theo__',n:['erden','beruhigen']},
+  {id:'d64',k:'Geruch',t:'Kaffee riechen',b:'Kaffeepulver oder eine frische Tasse riechen.',img:'',n:['erden','ablenken']},
+  {id:'d65',k:'Geruch',t:'Zitrone schnuppern',b:'Eine Zitrone anschneiden und daran riechen.',img:'',n:['erden']},
+  {id:'d66',k:'Geruch',t:'Minze oder Pfefferminzöl',b:'An Minzblättern oder ätherischem Öl riechen.',img:'',n:['erden','ablenken']},
+  {id:'d67',k:'Geruch',t:'Frische Wäsche',b:'An einem frisch gewaschenen Kleidungsstück riechen.',img:'',n:['beruhigen','erden']},
+  {id:'d68',k:'Geruch',t:'Ein altes Buch riechen',b:'Ein Buch aufschlagen und am Papier riechen.',img:'',n:['ablenken','erden']},
+  {id:'d69',k:'Fokus',t:'Formen im Raum zählen',b:'Wie viele runde, wie viele eckige Dinge siehst du?',img:'',n:['ablenken','erden']},
+  {id:'d70',k:'Fokus',t:'ABC-Spiel',b:'Für jeden Buchstaben des Alphabets ein Ding im Raum finden.',img:'',n:['ablenken']},
+  {id:'d71',k:'Fokus',t:'Zahlen addieren',b:'Im Kopf von 1 bis 20 in 2er-Schritten hochzählen.',img:'',n:['ablenken']},
+  {id:'d72',k:'Fokus',t:'Kritzeln ohne Ziel',b:'Stift nehmen und einfach drauflos kritzeln, ohne Plan.',img:'',n:['ablenken','beruhigen']},
+  {id:'d73',k:'Fokus',t:'Ein Wort wiederholen',b:'Ein ruhiges Wort in Gedanken mehrmals wiederholen.',img:'',n:['beruhigen','erden']},
+  {id:'d74',k:'Fokus',t:'Finger einzeln bewegen',b:'Jeden Finger einzeln bewegen und dabei mitzählen.',img:'',n:['erden','ablenken']},
+  {id:'d75',k:'Fokus',t:'Buchstaben rückwärts',b:'Deinen Namen in Gedanken rückwärts buchstabieren.',img:'',n:['ablenken']},
+  {id:'d76',k:'Fokus',t:'Muster verfolgen',b:'Mit den Augen einem Muster an der Wand oder Decke folgen.',img:'',n:['ablenken','beruhigen']},
+  {id:'d77',k:'Atem',t:'Lippenbremse',b:'Durch die Nase einatmen, durch fast geschlossene Lippen ausatmen.',img:'',n:['beruhigen']},
+  {id:'d78',k:'Atem',t:'10 Atemzüge zählen',b:'Einfach 10 Atemzüge bewusst zählen, ohne sie zu verändern.',img:'',n:['beruhigen','erden']},
+  {id:'d79',k:'Atem',t:'Dreifacher Seufzer',b:'Drei Mal hintereinander tief einatmen und hörbar seufzen.',img:'',n:['beruhigen']},
+  {id:'d80',k:'Atem',t:'Atem in die Hände',b:'In die eigenen Handflächen atmen und die Wärme spüren.',img:'',n:['beruhigen','erden']},
+  {id:'d81',k:'Hören',t:'Naturgeräusche',b:'Regen, Meer oder Wald im Audio-Tab anmachen und lauschen.',img:'',n:['beruhigen']},
+  {id:'d82',k:'Hören',t:'Ein Instrument raushören',b:'Bei einem Lied versuchen, nur ein Instrument zu verfolgen.',img:'',n:['ablenken']},
+  {id:'d83',k:'Hören',t:'Eigenen Atem hören',b:'Ganz bewusst nur das eigene Ein- und Ausatmen hören.',img:'',n:['beruhigen','erden']},
+  {id:'d84',k:'Handy',t:'Ein schönes Foto machen',b:'Etwas fotografieren das dir gerade gefällt.',img:'',n:['ablenken']},
+  {id:'d85',k:'Handy',t:'Sprachmemo aufnehmen',b:'Kurz aufnehmen wie es dir gerade geht. Nur für dich.',img:'',n:['ablenken','erden']},
+  {id:'d86',k:'Rausgehen',t:'Regen spüren',b:'Falls es regnet: kurz raus und die Tropfen spüren.',img:'',n:['erden']},
+  {id:'d87',k:'Rausgehen',t:'Sonne im Gesicht',b:'Gesicht in Richtung Sonne oder Licht halten, Augen schließen.',img:'',n:['beruhigen','erden']},
+  {id:'d88',k:'Rausgehen',t:'Eine Blume riechen',b:'Draußen eine Blume oder Pflanze finden und daran riechen.',img:'',n:['erden','ablenken']},
+  {id:'d89',k:'Rausgehen',t:'Vögel zählen',b:'Wie viele verschiedene Vögel oder Geräusche hörst du?',img:'',n:['ablenken','erden']},
+  {id:'d90',k:'Kreativ',t:'Kritzelbild',b:'Ohne nachzudenken 2 Minuten lang zeichnen, was kommt.',img:'',n:['ablenken','beruhigen']},
+  {id:'d91',k:'Kreativ',t:'Reimwörter finden',b:'Zu einem Wort so viele Reime wie möglich finden.',img:'',n:['ablenken']},
+  {id:'d92',k:'Kreativ',t:'Eine Melodie summen',b:'Eine kleine Melodie erfinden und leise summen.',img:'',n:['ablenken','beruhigen']},
+  {id:'d93',k:'Kreativ',t:'Kneten oder Knautschen',b:'Knete, ein Kissen oder Papier in den Händen kneten.',img:'',n:['erden','ablenken']},
+  {id:'d94',k:'Kreativ',t:'Geschichte in 3 Worten',b:'Eine ganze Geschichte in nur 3 Worten erzählen.',img:'',n:['ablenken']},
+  {id:'d95',k:'Selbstfürsorge',t:'Warme Dusche',b:'Falls möglich: eine warme Dusche nehmen, bewusst spüren.',img:'',n:['beruhigen']},
+  {id:'d96',k:'Selbstfürsorge',t:'In eine Decke einwickeln',b:'Dich komplett in eine weiche Decke einwickeln.',img:'',n:['beruhigen','erden']},
+  {id:'d97',k:'Selbstfürsorge',t:'Lieblingstee machen',b:'Bewusst einen Tee zubereiten – riechen, spüren, trinken.',img:'',n:['beruhigen']},
+  {id:'d98',k:'Selbstfürsorge',t:'Hände eincremen',b:'Langsam und bewusst die Hände eincremen.',img:'',n:['beruhigen','erden']},
+  {id:'d99',k:'Selbstfürsorge',t:'Weiche Socken anziehen',b:'Kuschelsocken oder weiche Kleidung anziehen.',img:'',n:['beruhigen']},
+  {id:'d100',k:'Selbstfürsorge',t:'Dir selbst gut zureden',b:'Sag dir laut oder leise etwas, das eine gute Freundin sagen würde.',img:'',n:['beruhigen']},
+  {id:'d101',k:'Gedanken',t:'3 Dinge Dankbarkeit',b:'3 kleine Dinge aufschreiben oder denken, für die du dankbar bist.',img:'',n:['beruhigen','ablenken']},
+  {id:'d102',k:'Gedanken',t:'Satz umformulieren',b:'"Ich schaffe das nicht" → "Ich probiere es Schritt für Schritt."',img:'',n:['beruhigen']},
+  {id:'d103',k:'Gedanken',t:'Sorge aufschreiben',b:'Was dich beschäftigt kurz aufschreiben und zur Seite legen.',img:'',n:['beruhigen','ablenken']},
+  {id:'d104',k:'Gedanken',t:'Was würde Theo sagen?',b:'Stell dir vor, Theo könnte sprechen. Was würde er dir jetzt sagen?',img:'',n:['beruhigen','ablenken']},
+  {id:'d105',k:'Gedanken',t:'Ein Wort für jetzt',b:'Ein einzelnes Wort finden, das gerade passt. Nur beobachten.',img:'',n:['erden']},
+  {id:'d106',k:'Bewegung',t:'Auf der Stelle wippen',b:'Sanft von einem Fuß auf den anderen wippen.',img:'',n:['bewegen','erden']},
+  {id:'d107',k:'Bewegung',t:'Arme kreisen',b:'Beide Arme langsam große Kreise machen lassen.',img:'',n:['bewegen']},
+  {id:'d108',k:'Bewegung',t:'Katze-Kuh Bewegung',b:'Im Sitzen Rücken rund machen, dann hohl – langsam wechseln.',img:'',n:['bewegen','beruhigen']},
+  {id:'d109',k:'Bewegung',t:'Kurz aufstehen und strecken',b:'Aufstehen, den ganzen Körper einmal kurz durchstrecken.',img:'',n:['bewegen']},
+  {id:'d110',k:'Bewegung',t:'Auf der Stelle gehen',b:'Ein paar Schritte auf der Stelle, langsam und bewusst.',img:'',n:['bewegen','erden']},
 ];
 const LSK='pva',LST='ptv3',LSF='pfv1',LSS='psnd1';
-function load(){try{const r=localStorage.getItem(LSK);if(r)return JSON.parse(r);}catch(e){}return DEFAULTS.map(d=>({...d}));}
+function load(){
+  try{
+    const r=localStorage.getItem(LSK);
+    if(r){
+      const saved=JSON.parse(r);
+      const savedIds=new Set(saved.map(u=>u.id));
+      const neu=DEFAULTS.filter(d=>!savedIds.has(d.id));
+      if(neu.length){const merged=[...saved,...neu.map(d=>({...d}))];sv(merged);return merged;}
+      return saved;
+    }
+  }catch(e){}
+  return DEFAULTS.map(d=>({...d}));
+}
 function sv(l){
   try{localStorage.setItem(LSK,JSON.stringify(l));}catch(e){}
   fbSet('uebungen',{data:JSON.stringify(l)});
@@ -798,7 +873,7 @@ function kats(){return[...new Set(UB.map(u=>u.k))];}
 let activeSoundId=localStorage.getItem(LSS)||'chime';
 
 /* STARTSCREEN */
-function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst'){rEinst();setTimeout(rEmbedList,100);}if(name==='inspo')rInspo();if(name==='audio'){rAudio();setTimeout(rAudioEmbeds,100);}if(name==='messenger')initMsgTab();if(name==='inspo-edit')rInspoEdit();}
+function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst'){rEinst();setTimeout(rEmbedList,100);}if(name==='inspo')rInspo();if(name==='audio'){rAudio();setTimeout(rAudioEmbeds,100);}if(name==='messenger')initMsgTab();if(name==='inspo-edit')rInspoEdit();if(name==='karten')rKarten();if(name==='horoskop')rHoroskop();}
 function hideStart(){document.getElementById('startScreen').classList.add('hidden');}
 function showStart(){document.getElementById('startScreen').classList.remove('hidden');}
 window.goTab=goTab;window.hideStart=hideStart;window.showStart=showStart;
@@ -918,6 +993,7 @@ const CIRC=2*Math.PI*62;let tMin=10,tTotal=600,tLeft=600,tRun=false,tIv=null;
 let wakeLock=null;
 async function reqWakeLock(){try{if('wakeLock' in navigator){wakeLock=await navigator.wakeLock.request('screen');const el=document.getElementById('wakeLockStatus');if(el)el.textContent='🔆 Bildschirm bleibt an';}}catch(e){}}
 async function relWakeLock(){try{if(wakeLock){await wakeLock.release();wakeLock=null;const el=document.getElementById('wakeLockStatus');if(el)el.textContent='⏱ Bildschirm bleibt an während der Timer läuft';}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(tRun||pomRun)&&!wakeLock){reqWakeLock();}});
 const tRingEl=document.getElementById('tRing'),tValEl=document.getElementById('tVal');
 tRingEl.style.strokeDasharray=CIRC;tRingEl.style.strokeDashoffset=0;
 function uT(){const m=Math.floor(tLeft/60),s=tLeft%60;tValEl.textContent=m+':'+(s<10?'0':'')+s;tRingEl.style.strokeDashoffset=CIRC*(1-tLeft/tTotal);}
@@ -2014,9 +2090,12 @@ function iMessenger(){initMsgTab();}
 
 
 /* ÜBUNG */
+const NEEDS=[{id:'beruhigen',e:'🧘',l:'Beruhigen'},{id:'ablenken',e:'🎯',l:'Ablenken'},{id:'erden',e:'🌍',l:'Erden'},{id:'bewegen',e:'🏃',l:'Bewegen'}];
+let aktiveNeeds=new Set(NEEDS.map(n=>n.id));
 let aktive=new Set(kats()),history=[];
 function rFilter(){const row=document.getElementById('filterRow');row.innerHTML='';kats().forEach(k=>{const b=document.createElement('button');b.className='pill'+(aktive.has(k)?' active':'');b.textContent=k;b.onclick=()=>{if(aktive.has(k)){if(aktive.size>1)aktive.delete(k);}else aktive.add(k);rFilter();zZ();};row.appendChild(b);});}
-function gef(){return UB.filter(u=>aktive.has(u.k));}
+function rNeedFilter(){const row=document.getElementById('needFilterRow');if(!row)return;row.innerHTML='';NEEDS.forEach(n=>{const b=document.createElement('button');b.className='pill'+(aktiveNeeds.has(n.id)?' active':'');b.textContent=n.e+' '+n.l;b.style.fontSize='0.78rem';b.onclick=()=>{if(aktiveNeeds.has(n.id)){if(aktiveNeeds.size>1)aktiveNeeds.delete(n.id);}else aktiveNeeds.add(n.id);rNeedFilter();zZ();};row.appendChild(b);});}
+function gef(){return UB.filter(u=>aktive.has(u.k)&&(!u.n||u.n.some(n=>aktiveNeeds.has(n))));}
 function zU(u){const card=document.getElementById('mainCard');card.classList.add('fade-out');setTimeout(()=>{document.getElementById('mainTag').textContent=u.k;document.getElementById('mainTitel').textContent=u.t;document.getElementById('mainBesch').textContent=u.b;const img=document.getElementById('mainImg'),ph=document.getElementById('mainPh');if(u.img&&u.img!=='__theo__'){img.src=u.img;img.classList.add('visible');ph.classList.remove('visible');}else if(u.img==='__theo__'){if(THEO){img.src=THEO;img.classList.add('visible');ph.classList.remove('visible');}else{img.classList.remove('visible');ph.classList.add('visible');}}else{img.classList.remove('visible');ph.classList.remove('visible');}document.getElementById('counter').textContent=gef().length+' Übungen';card.classList.remove('fade-out');},195);}
 function zZ(){const l=gef();if(!l.length)return;if(history.length>=l.length)history=[];const rem=l.filter(u=>!history.includes(u.id));const u=rem[Math.floor(Math.random()*rem.length)];history.push(u.id);zU(u);}
 document.getElementById('btnNeu').onclick=zZ;
@@ -2044,7 +2123,7 @@ function apF(idx){
 }
 function rFarben(){const g=document.getElementById('farbGrid');g.innerHTML='';const grid=document.createElement('div');grid.className='farb-grid';FARBEN.forEach((f,i)=>{const wrap=document.createElement('div');const sw=document.createElement('div');sw.className='f-sw'+(i===aF?' active':'');sw.style.background=f.h;sw.innerHTML='<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';sw.onclick=()=>{aF=i;apF(i);try{localStorage.setItem(LSF,i);}catch(e){}rFarben();toast(f.n+' ✓');};const lbl=document.createElement('div');lbl.className='f-nm';lbl.textContent=f.n;wrap.appendChild(sw);wrap.appendChild(lbl);grid.appendChild(wrap);});g.appendChild(grid);}
 apF(aF);
-rFilter();zZ();pKS();rEL();rInspo();
+rFilter();rNeedFilter();zZ();pKS();rEL();rInspo();
 </script>
 </body>
 </html>
