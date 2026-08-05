@@ -91,6 +91,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;dis
 .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
 .tc{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:0.95rem 0.7rem;display:flex;flex-direction:column;align-items:center;gap:0.4rem;cursor:pointer;transition:border-color 0.15s,transform 0.12s;}
 .tc:active{border-color:var(--accent);transform:scale(0.97);}
+.tc.selected{border-color:var(--accent);background:rgba(var(--aRGB),0.14);}
+.tc.selected .tc-label{color:var(--accent);}
 .tc-icon{font-size:1.7rem;line-height:1;}
 .tc-label{font-size:0.73rem;font-weight:500;color:var(--text);text-align:center;}
 .tc-sub{font-size:0.6rem;color:var(--muted);text-align:center;}
@@ -357,14 +359,14 @@ console.log('Firebase Pause: verbunden ✓');
 <div class="screen active" id="screen-uebung">
   <div id="uebungStep1" class="uebung-step" style="display:flex;flex-direction:column;gap:0.85rem;">
     <div class="section-title">Was brauchst du gerade?</div>
-    <div class="pill-row" id="needFilterRow" style="flex-wrap:wrap;gap:0.5rem;"></div>
-    <button class="btn btn-p" onclick="uebungGoStep(2)">Weiter →</button>
+    <div class="tool-grid" id="needFilterRow"></div>
+    <button class="btn btn-p" id="uebungWeiter1" onclick="uebungGoStep(2)" disabled style="opacity:0.4;">Weiter →</button>
   </div>
   <div id="uebungStep2" class="uebung-step" style="display:none;flex-direction:column;gap:0.85rem;">
     <button class="back-btn" onclick="uebungGoStep(1)"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Zurück</button>
     <div class="section-title">Was kannst du gerade nutzen?</div>
-    <div class="pill-row" id="filterRow" style="flex-wrap:wrap;gap:0.5rem;"></div>
-    <button class="btn btn-p" onclick="uebungGoStep(3)">Übung zeigen →</button>
+    <div class="tool-grid" id="filterRow"></div>
+    <button class="btn btn-p" id="uebungWeiter2" onclick="uebungGoStep(3)" disabled style="opacity:0.4;">Übung zeigen →</button>
   </div>
   <div id="uebungStep3" class="uebung-step" style="display:none;flex-direction:column;gap:0.85rem;">
     <button class="back-btn" onclick="uebungGoStep(2)"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Zurück</button>
@@ -862,6 +864,20 @@ const DEFAULTS=[
   {id:'d108',k:'Bewegung',t:'Katze-Kuh Bewegung',b:'Im Sitzen Rücken rund machen, dann hohl – langsam wechseln.',img:'',n:['bewegen','beruhigen']},
   {id:'d109',k:'Bewegung',t:'Kurz aufstehen und strecken',b:'Aufstehen, den ganzen Körper einmal kurz durchstrecken.',img:'',n:['bewegen']},
   {id:'d110',k:'Bewegung',t:'Auf der Stelle gehen',b:'Ein paar Schritte auf der Stelle, langsam und bewusst.',img:'',n:['bewegen','erden']},
+  {id:'d111',k:'Dehnen',t:'Schulterkreisen vorwärts',b:'Beide Schultern ein paar Mal langsam nach vorne kreisen.',img:'',n:['bewegen']},
+  {id:'d112',k:'Dehnen',t:'Schulterkreisen rückwärts',b:'Beide Schultern ein paar Mal langsam nach hinten kreisen.',img:'',n:['bewegen']},
+  {id:'d113',k:'Dehnen',t:'Schultern hochziehen und fallen lassen',b:'Schultern zu den Ohren ziehen, kurz halten, dann locker fallen lassen.',img:'',n:['bewegen','beruhigen']},
+  {id:'d114',k:'Dehnen',t:'Arme über dem Kopf strecken',b:'Beide Arme sanft nach oben strecken, so weit es angenehm ist.',img:'',n:['bewegen']},
+  {id:'d115',k:'Dehnen',t:'Seitliche Rumpfdehnung',b:'Im Sitzen einen Arm nach oben strecken und sanft zur Seite lehnen.',img:'',n:['bewegen']},
+  {id:'d116',k:'Dehnen',t:'Ellenbogen kreisen',b:'Arme anwinkeln und die Ellenbogen kleine Kreise machen lassen.',img:'',n:['bewegen']},
+  {id:'d117',k:'Dehnen',t:'Fußgelenke kreisen',b:'Einen Fuß leicht anheben und das Gelenk in beide Richtungen kreisen.',img:'',n:['bewegen']},
+  {id:'d118',k:'Dehnen',t:'Waden dehnen im Sitzen',b:'Bein ausstrecken, Fußspitze zu dir ziehen, kurz halten.',img:'',n:['bewegen']},
+  {id:'d119',k:'Dehnen',t:'Brustkorb öffnen',b:'Hände hinter dem Rücken verschränken, Brust sanft nach vorne öffnen.',img:'',n:['bewegen','erden']},
+  {id:'d120',k:'Dehnen',t:'Kiefer lockern',b:'Mund langsam weit öffnen und wieder schließen, ein paar Mal.',img:'',n:['bewegen','beruhigen']},
+  {id:'d121',k:'Dehnen',t:'Zehen strecken und anziehen',b:'Zehen abwechselnd weit strecken und zu dir anziehen.',img:'',n:['bewegen','erden']},
+  {id:'d122',k:'Dehnen',t:'Handflächen gegeneinander drücken',b:'Handflächen vor der Brust zusammenpressen, kurz halten, lösen.',img:'',n:['bewegen','erden']},
+  {id:'d123',k:'Dehnen',t:'Hüfte kreisen im Sitzen',b:'Im Sitzen das Becken sanft in kleinen Kreisen bewegen.',img:'',n:['bewegen']},
+  {id:'d124',k:'Dehnen',t:'Schulterblätter zusammenziehen',b:'Schulterblätter sanft nach hinten zusammenziehen, halten, lösen.',img:'',n:['bewegen','erden']},
 ];
 const LSK='pva',LST='ptv3',LSF='pfv1',LSS='psnd1';
 function load(){
@@ -2098,11 +2114,17 @@ function iMessenger(){initMsgTab();}
 
 /* ÜBUNG */
 const NEEDS=[{id:'beruhigen',e:'🧘',l:'Beruhigen'},{id:'ablenken',e:'🎯',l:'Ablenken'},{id:'erden',e:'🌍',l:'Erden'},{id:'bewegen',e:'🏃',l:'Bewegen'}];
-let aktiveNeeds=new Set(NEEDS.map(n=>n.id));
-let aktive=new Set(kats()),history=[];
-const KAT_ICONS={'Körper':'🖐️','Theo':'🐾','Geruch':'👃','Fokus':'🧠','Atem':'🌬️','Hören':'👂','Handy':'📱','Rausgehen':'🚪','Kreativ':'🎨','Selbstfürsorge':'🛁','Gedanken':'💭','Bewegung':'🤸'};
-function rFilter(){const row=document.getElementById('filterRow');row.innerHTML='';kats().forEach(k=>{const b=document.createElement('button');b.className='pill'+(aktive.has(k)?' active':'');b.style.fontSize='0.82rem';b.style.padding='0.5em 0.9em';b.textContent=(KAT_ICONS[k]?KAT_ICONS[k]+' ':'')+k;b.onclick=()=>{if(aktive.has(k)){if(aktive.size>1)aktive.delete(k);}else aktive.add(k);rFilter();zZ();};row.appendChild(b);});}
-function rNeedFilter(){const row=document.getElementById('needFilterRow');if(!row)return;row.innerHTML='';NEEDS.forEach(n=>{const b=document.createElement('button');b.className='pill'+(aktiveNeeds.has(n.id)?' active':'');b.style.fontSize='0.85rem';b.style.padding='0.6em 1em';b.textContent=n.e+' '+n.l;b.onclick=()=>{if(aktiveNeeds.has(n.id)){if(aktiveNeeds.size>1)aktiveNeeds.delete(n.id);}else aktiveNeeds.add(n.id);rNeedFilter();zZ();};row.appendChild(b);});}
+let aktiveNeeds=new Set();
+let aktive=new Set(),history=[];
+const KAT_ICONS={'Körper':'🖐️','Theo':'🐾','Geruch':'👃','Fokus':'🧠','Atem':'🌬️','Hören':'👂','Handy':'📱','Rausgehen':'🚪','Kreativ':'🎨','Selbstfürsorge':'🛁','Gedanken':'💭','Bewegung':'🤸','Dehnen':'🤸‍♀️'};
+function rFilter(){const row=document.getElementById('filterRow');row.innerHTML='';kats().forEach(k=>{const b=document.createElement('div');b.className='tc'+(aktive.has(k)?' selected':'');b.innerHTML=`<div class="tc-icon">${KAT_ICONS[k]||'✨'}</div><div class="tc-label">${k}</div>`;b.onclick=()=>{if(aktive.has(k))aktive.delete(k);else aktive.add(k);rFilter();updWeiterBtns();};row.appendChild(b);});}
+function rNeedFilter(){const row=document.getElementById('needFilterRow');if(!row)return;row.innerHTML='';NEEDS.forEach(n=>{const b=document.createElement('div');b.className='tc'+(aktiveNeeds.has(n.id)?' selected':'');b.innerHTML=`<div class="tc-icon">${n.e}</div><div class="tc-label">${n.l}</div>`;b.onclick=()=>{if(aktiveNeeds.has(n.id))aktiveNeeds.delete(n.id);else aktiveNeeds.add(n.id);rNeedFilter();updWeiterBtns();};row.appendChild(b);});}
+function updWeiterBtns(){
+  const b1=document.getElementById('uebungWeiter1');
+  if(b1){const ok=aktiveNeeds.size>0;b1.disabled=!ok;b1.style.opacity=ok?'1':'0.4';}
+  const b2=document.getElementById('uebungWeiter2');
+  if(b2){const ok=aktive.size>0;b2.disabled=!ok;b2.style.opacity=ok?'1':'0.4';}
+}
 function gef(){return UB.filter(u=>aktive.has(u.k)&&(!u.n||u.n.some(n=>aktiveNeeds.has(n))));}
 function zU(u){const card=document.getElementById('mainCard');card.classList.add('fade-out');setTimeout(()=>{document.getElementById('mainTag').textContent=u.k;document.getElementById('mainTitel').textContent=u.t;document.getElementById('mainBesch').textContent=u.b;const img=document.getElementById('mainImg'),ph=document.getElementById('mainPh');if(u.img&&u.img!=='__theo__'){img.src=u.img;img.classList.add('visible');ph.classList.remove('visible');}else if(u.img==='__theo__'){if(THEO){img.src=THEO;img.classList.add('visible');ph.classList.remove('visible');}else{img.classList.remove('visible');ph.classList.add('visible');}}else{img.classList.remove('visible');ph.classList.remove('visible');}document.getElementById('counter').textContent=gef().length+' Übungen';card.classList.remove('fade-out');},195);}
 function zZ(){const l=gef();if(!l.length)return;if(history.length>=l.length)history=[];const rem=l.filter(u=>!history.includes(u.id));const u=rem[Math.floor(Math.random()*rem.length)];history.push(u.id);zU(u);}
@@ -2111,9 +2133,10 @@ function uebungGoStep(step){
     const el=document.getElementById('uebungStep'+s);
     if(el)el.style.display=(s===step?'flex':'none');
   });
-  if(step===1)rNeedFilter();
+  if(step===1){aktiveNeeds=new Set();aktive=new Set();rNeedFilter();}
   if(step===2)rFilter();
   if(step===3)zZ();
+  updWeiterBtns();
 }
 window.uebungGoStep=uebungGoStep;
 document.getElementById('btnNeu').onclick=zZ;
@@ -2141,7 +2164,7 @@ function apF(idx){
 }
 function rFarben(){const g=document.getElementById('farbGrid');g.innerHTML='';const grid=document.createElement('div');grid.className='farb-grid';FARBEN.forEach((f,i)=>{const wrap=document.createElement('div');const sw=document.createElement('div');sw.className='f-sw'+(i===aF?' active':'');sw.style.background=f.h;sw.innerHTML='<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';sw.onclick=()=>{aF=i;apF(i);try{localStorage.setItem(LSF,i);}catch(e){}rFarben();toast(f.n+' ✓');};const lbl=document.createElement('div');lbl.className='f-nm';lbl.textContent=f.n;wrap.appendChild(sw);wrap.appendChild(lbl);grid.appendChild(wrap);});g.appendChild(grid);}
 apF(aF);
-rFilter();rNeedFilter();zZ();pKS();rEL();rInspo();
+rNeedFilter();updWeiterBtns();pKS();rEL();rInspo();
 </script>
 </body>
 </html>
