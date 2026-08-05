@@ -355,28 +355,40 @@ console.log('Firebase Pause: verbunden ✓');
 </div>
 <div class="screens">
 <div class="screen active" id="screen-uebung">
-  <div class="section-title" style="margin-bottom:-0.15rem;">Was brauchst du gerade?</div>
-  <div class="pill-row" id="needFilterRow" style="gap:0.4rem;"></div>
-  <div class="pill-row" id="filterRow" style="opacity:0.75;"></div>
-  <div class="card" id="mainCard">
-    <span class="label-tag" id="mainTag"></span>
-    <img class="card-img" id="mainImg" src="" alt="">
-    <div class="card-img-ph" id="mainPh">📸 Theo-Foto kommt noch</div>
-    <div class="display" id="mainTitel"></div>
-    <div class="beschreibung" id="mainBesch"></div>
+  <div id="uebungStep1" class="uebung-step" style="display:flex;flex-direction:column;gap:0.85rem;">
+    <div class="section-title">Was brauchst du gerade?</div>
+    <div class="pill-row" id="needFilterRow" style="flex-wrap:wrap;gap:0.5rem;"></div>
+    <button class="btn btn-p" onclick="uebungGoStep(2)">Weiter →</button>
   </div>
-  <div class="counter" id="counter"></div>
-  <button class="btn btn-p" id="btnNeu">Neue Übung →</button>
-  <button class="btn btn-g" onclick="goTab('timer')" style="font-size:0.78rem;">⏱ Timer starten</button>
-  <button class="btn btn-g" onclick="openOv('worrytime')" style="font-size:0.78rem;">🧠 Worry Time</button>
+  <div id="uebungStep2" class="uebung-step" style="display:none;flex-direction:column;gap:0.85rem;">
+    <button class="back-btn" onclick="uebungGoStep(1)"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Zurück</button>
+    <div class="section-title">Was kannst du gerade nutzen?</div>
+    <div class="pill-row" id="filterRow" style="flex-wrap:wrap;gap:0.5rem;"></div>
+    <button class="btn btn-p" onclick="uebungGoStep(3)">Übung zeigen →</button>
+  </div>
+  <div id="uebungStep3" class="uebung-step" style="display:none;flex-direction:column;gap:0.85rem;">
+    <button class="back-btn" onclick="uebungGoStep(2)"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Zurück</button>
+    <div class="card" id="mainCard">
+      <span class="label-tag" id="mainTag"></span>
+      <img class="card-img" id="mainImg" src="" alt="">
+      <div class="card-img-ph" id="mainPh">📸 Theo-Foto kommt noch</div>
+      <div class="display" id="mainTitel"></div>
+      <div class="beschreibung" id="mainBesch"></div>
+    </div>
+    <div class="counter" id="counter"></div>
+    <button class="btn btn-p" id="btnNeu">Neue Übung →</button>
+    <button class="btn btn-g" onclick="goTab('timer')" style="font-size:0.78rem;">⏱ Timer starten</button>
+    <button class="btn btn-g" onclick="openOv('worrytime')" style="font-size:0.78rem;">🧠 Worry Time</button>
+    <button class="back-btn" onclick="uebungGoStep(1)" style="align-self:center;margin-top:0.15rem;">🔄 Bedürfnis neu wählen</button>
+  </div>
 </div>
 <div class="screen" id="screen-timer">
   <button class="back-btn" onclick="showStart()"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start</button>
     <div class="section-title">Timer</div>
   <div class="card" style="align-items:center;gap:1rem;">
     <div class="timer-opts">
-      <button class="timer-opt" data-min="5">5 Min</button>
-      <button class="timer-opt active" data-min="10">10 Min</button>
+      <button class="timer-opt active" data-min="5">5 Min</button>
+      <button class="timer-opt" data-min="10">10 Min</button>
       <button class="timer-opt" data-min="20">20 Min</button>
       <button class="timer-opt" data-min="custom">Eigene</button>
     </div>
@@ -387,7 +399,7 @@ console.log('Firebase Pause: verbunden ✓');
     </div>
     <div class="t-wrap-big">
       <svg viewBox="0 0 140 140" width="140" height="140"><circle class="t-track" cx="70" cy="70" r="62"/><circle class="t-ring" id="tRing" cx="70" cy="70" r="62"/></svg>
-      <div class="t-val-big" id="tVal">10:00</div>
+      <div class="t-val-big" id="tVal">5:00</div>
     </div>
     <div class="tbts">
       <button class="btn-sm sm-s" id="btnStart">Start</button>
@@ -876,7 +888,7 @@ function kats(){return[...new Set(UB.map(u=>u.k))];}
 let activeSoundId=localStorage.getItem(LSS)||'chime';
 
 /* STARTSCREEN */
-function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst'){rEinst();setTimeout(rEmbedList,100);}if(name==='inspo')rInspo();if(name==='audio'){rAudio();setTimeout(rAudioEmbeds,100);}if(name==='messenger')initMsgTab();if(name==='inspo-edit')rInspoEdit();if(name==='karten')rKarten();if(name==='horoskop')rHoroskop();}
+function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='uebung')uebungGoStep(1);if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst'){rEinst();setTimeout(rEmbedList,100);}if(name==='inspo')rInspo();if(name==='audio'){rAudio();setTimeout(rAudioEmbeds,100);}if(name==='messenger')initMsgTab();if(name==='inspo-edit')rInspoEdit();if(name==='karten')rKarten();if(name==='horoskop')rHoroskop();}
 function hideStart(){document.getElementById('startScreen').classList.add('hidden');}
 function showStart(){document.getElementById('startScreen').classList.remove('hidden');}
 window.goTab=goTab;window.hideStart=hideStart;window.showStart=showStart;
@@ -903,13 +915,13 @@ function toggleYT(){
   }
 }
 window.toggleYT=toggleYT;
-function beep(freq=600,dur=0.06,vol=0.14,type='square'){try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur+0.01);}catch(e){}}
+function beep(freq=600,dur=0.06,vol=0.14,type='square'){try{const c=gCtx();if(c.state==='suspended')c.resume();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur+0.01);}catch(e){}}
 function popSound(n=0){try{const freqs=[260,294,330,349,392,440,494,523,587,659];const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(freqs[n%10]*1.5,c.currentTime);o.frequency.exponentialRampToValueAtTime(freqs[n%10]*0.5,c.currentTime+0.1);g.gain.setValueAtTime(0.22,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.13);o.start();o.stop(c.currentTime+0.15);}catch(e){}}
-const TIMER_SOUNDS={chime:{label:'🔔 Glocke (sanft)',fn:()=>{try{const c=new(window.AudioContext||window.webkitAudioContext)();[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*0.22;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.2,t+0.05);g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);o.start(t);o.stop(t+0.95);});}catch(e){}}},bowl:{label:'🫙 Klangschale',fn:()=>{try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.type='sine';o.frequency.value=432;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.3,c.currentTime+0.1);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+4);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+4.1);}catch(e){}}},ding:{label:'✨ Einfaches Ding',fn:()=>beep(880,0.4,0.2,'sine')},none:{label:'🔕 Kein Ton',fn:()=>{}}};
-let _aCtxWarmed=false;
-function warmAudioCtx(){if(_aCtxWarmed)return;try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();g.gain.value=0;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.001);_aCtxWarmed=true;}catch(e){}}
+const TIMER_SOUNDS={chime:{label:'🔔 Glocke (sanft)',fn:()=>{try{const c=gCtx();if(c.state==='suspended')c.resume();[523.25,659.25,783.99,1046.5].forEach((f,i)=>{const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;const t=c.currentTime+i*0.22;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.2,t+0.05);g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);o.start(t);o.stop(t+0.95);});}catch(e){}}},bowl:{label:'🫙 Klangschale',fn:()=>{try{const c=gCtx();if(c.state==='suspended')c.resume();const o=c.createOscillator();const g=c.createGain();o.type='sine';o.frequency.value=432;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.3,c.currentTime+0.1);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+4);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+4.1);}catch(e){}}},ding:{label:'✨ Einfaches Ding',fn:()=>beep(880,0.4,0.2,'sine')},none:{label:'🔕 Kein Ton',fn:()=>{}}};
+function warmAudioCtx(){try{const c=gCtx();if(c.state==='suspended')c.resume();const o=c.createOscillator();const g=c.createGain();g.gain.value=0;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.001);}catch(e){}}
 function playTimerSound(){
   try{
+    const c=gCtx();if(c.state==='suspended')c.resume();
     const fn=TIMER_SOUNDS[activeSoundId]?.fn;
     if(fn)fn();
     else beep(880,0.4,0.2,'sine');
@@ -992,7 +1004,7 @@ document.getElementById('pomReset')&&(document.getElementById('pomReset').onclic
 });
 
 /* TIMER */
-const CIRC=2*Math.PI*62;let tMin=10,tTotal=600,tLeft=600,tRun=false,tIv=null;
+const CIRC=2*Math.PI*62;let tMin=5,tTotal=300,tLeft=300,tRun=false,tIv=null;
 let wakeLock=null;
 async function reqWakeLock(){try{if('wakeLock' in navigator){wakeLock=await navigator.wakeLock.request('screen');const el=document.getElementById('wakeLockStatus');if(el)el.textContent='🔆 Bildschirm bleibt an';}}catch(e){}}
 async function relWakeLock(){try{if(wakeLock){await wakeLock.release();wakeLock=null;const el=document.getElementById('wakeLockStatus');if(el)el.textContent='⏱ Bildschirm bleibt an während der Timer läuft';}}catch(e){}}
@@ -2088,11 +2100,22 @@ function iMessenger(){initMsgTab();}
 const NEEDS=[{id:'beruhigen',e:'🧘',l:'Beruhigen'},{id:'ablenken',e:'🎯',l:'Ablenken'},{id:'erden',e:'🌍',l:'Erden'},{id:'bewegen',e:'🏃',l:'Bewegen'}];
 let aktiveNeeds=new Set(NEEDS.map(n=>n.id));
 let aktive=new Set(kats()),history=[];
-function rFilter(){const row=document.getElementById('filterRow');row.innerHTML='';kats().forEach(k=>{const b=document.createElement('button');b.className='pill'+(aktive.has(k)?' active':'');b.textContent=k;b.onclick=()=>{if(aktive.has(k)){if(aktive.size>1)aktive.delete(k);}else aktive.add(k);rFilter();zZ();};row.appendChild(b);});}
-function rNeedFilter(){const row=document.getElementById('needFilterRow');if(!row)return;row.innerHTML='';NEEDS.forEach(n=>{const b=document.createElement('button');b.className='pill'+(aktiveNeeds.has(n.id)?' active':'');b.textContent=n.e+' '+n.l;b.style.fontSize='0.78rem';b.onclick=()=>{if(aktiveNeeds.has(n.id)){if(aktiveNeeds.size>1)aktiveNeeds.delete(n.id);}else aktiveNeeds.add(n.id);rNeedFilter();zZ();};row.appendChild(b);});}
+const KAT_ICONS={'Körper':'🖐️','Theo':'🐾','Geruch':'👃','Fokus':'🧠','Atem':'🌬️','Hören':'👂','Handy':'📱','Rausgehen':'🚪','Kreativ':'🎨','Selbstfürsorge':'🛁','Gedanken':'💭','Bewegung':'🤸'};
+function rFilter(){const row=document.getElementById('filterRow');row.innerHTML='';kats().forEach(k=>{const b=document.createElement('button');b.className='pill'+(aktive.has(k)?' active':'');b.style.fontSize='0.82rem';b.style.padding='0.5em 0.9em';b.textContent=(KAT_ICONS[k]?KAT_ICONS[k]+' ':'')+k;b.onclick=()=>{if(aktive.has(k)){if(aktive.size>1)aktive.delete(k);}else aktive.add(k);rFilter();zZ();};row.appendChild(b);});}
+function rNeedFilter(){const row=document.getElementById('needFilterRow');if(!row)return;row.innerHTML='';NEEDS.forEach(n=>{const b=document.createElement('button');b.className='pill'+(aktiveNeeds.has(n.id)?' active':'');b.style.fontSize='0.85rem';b.style.padding='0.6em 1em';b.textContent=n.e+' '+n.l;b.onclick=()=>{if(aktiveNeeds.has(n.id)){if(aktiveNeeds.size>1)aktiveNeeds.delete(n.id);}else aktiveNeeds.add(n.id);rNeedFilter();zZ();};row.appendChild(b);});}
 function gef(){return UB.filter(u=>aktive.has(u.k)&&(!u.n||u.n.some(n=>aktiveNeeds.has(n))));}
 function zU(u){const card=document.getElementById('mainCard');card.classList.add('fade-out');setTimeout(()=>{document.getElementById('mainTag').textContent=u.k;document.getElementById('mainTitel').textContent=u.t;document.getElementById('mainBesch').textContent=u.b;const img=document.getElementById('mainImg'),ph=document.getElementById('mainPh');if(u.img&&u.img!=='__theo__'){img.src=u.img;img.classList.add('visible');ph.classList.remove('visible');}else if(u.img==='__theo__'){if(THEO){img.src=THEO;img.classList.add('visible');ph.classList.remove('visible');}else{img.classList.remove('visible');ph.classList.add('visible');}}else{img.classList.remove('visible');ph.classList.remove('visible');}document.getElementById('counter').textContent=gef().length+' Übungen';card.classList.remove('fade-out');},195);}
 function zZ(){const l=gef();if(!l.length)return;if(history.length>=l.length)history=[];const rem=l.filter(u=>!history.includes(u.id));const u=rem[Math.floor(Math.random()*rem.length)];history.push(u.id);zU(u);}
+function uebungGoStep(step){
+  [1,2,3].forEach(s=>{
+    const el=document.getElementById('uebungStep'+s);
+    if(el)el.style.display=(s===step?'flex':'none');
+  });
+  if(step===1)rNeedFilter();
+  if(step===2)rFilter();
+  if(step===3)zZ();
+}
+window.uebungGoStep=uebungGoStep;
 document.getElementById('btnNeu').onclick=zZ;
 let fA=new Set(kats());
 function rFA(){const row=document.getElementById('filterRowAlle');row.innerHTML='';kats().forEach(k=>{const b=document.createElement('button');b.className='pill'+(fA.has(k)?' active':'');b.textContent=k;b.onclick=()=>{if(fA.has(k)){if(fA.size>1)fA.delete(k);}else fA.add(k);rFA();rL();};row.appendChild(b);});}
