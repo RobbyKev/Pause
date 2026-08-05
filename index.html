@@ -263,20 +263,23 @@ textarea{resize:vertical;min-height:72px;line-height:1.55;}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAW7tz-iWiomOVfyVNXzfKECOBTVz-22_8",
-  authDomain: "pause-83f0e.firebaseapp.com",
-  projectId: "pause-83f0e",
-  storageBucket: "pause-83f0e.firebasestorage.app",
-  messagingSenderId: "371466156586",
-  appId: "1:371466156586:web:bef67804de4ad61a196153"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+var db=null;
+try{
+  const firebaseConfig = {
+    apiKey: "AIzaSyAW7tz-iWiomOVfyVNXzfKECOBTVz-22_8",
+    authDomain: "pause-83f0e.firebaseapp.com",
+    projectId: "pause-83f0e",
+    storageBucket: "pause-83f0e.firebasestorage.app",
+    messagingSenderId: "371466156586",
+    appId: "1:371466156586:web:bef67804de4ad61a196153"
+  };
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+}catch(e){console.log('Firebase init failed, running offline:',e);}
 
 // Gemini Key sicher in Firestore speichern/laden
 async function fbSaveGeminiKey(key){
-  try{await db.collection('config').doc('groq').set({key});}catch(e){console.log('FB save err',e);}
+  try{if(!db)return;await db.collection('config').doc('groq').set({key});}catch(e){console.log('FB save err',e);}
 }
 async function fbLoadGeminiKey(){
   try{const d=await db.collection('config').doc('groq').get();return d.exists?d.data().key:null;}catch(e){return null;}
@@ -1105,12 +1108,13 @@ const LS_IP='pause_inspo_profiles_v1',LS_IH='pause_inspo_tags_v1',LS_GKEY='pause
 // ── FIRESTORE SYNC ──
 async function fbSet(docId, data){
   try{
-    if(typeof db!=='undefined') await db.collection('config').doc(docId).set(data);
+    if(!db) return;
+    await db.collection('config').doc(docId).set(data);
   }catch(e){console.log('FB write err:',e);}
 }
 async function fbGet(docId){
   try{
-    if(typeof db==='undefined')return null;
+    if(!db) return null;
     const d=await db.collection('config').doc(docId).get();
     return d.exists?d.data():null;
   }catch(e){return null;}
@@ -1652,15 +1656,6 @@ let qtA=-1,qtS=0,qtIv=null;
 /* BREAKOUT */
 
 /* REACTION */
-
-/* TIC TAC TOE */
-window.initTTT=initTTT;
-
-/* ZAHLENFOLGE */
-window.initZahlen=initZahlen;
-
-/* STEIN SCHERE PAPIER */
-window.initSSP=initSSP;
 
 /* HOT SPOT */
 
