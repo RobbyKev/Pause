@@ -380,7 +380,20 @@ console.log('Firebase Pause: verbunden ✓');
     </div>
     <div class="counter" id="counter"></div>
     <button class="btn btn-p" id="btnNeu">Neue Übung →</button>
-    <button class="btn btn-g" onclick="goTab('timer')" style="font-size:0.78rem;">⏱ Timer starten</button>
+    <button class="btn btn-g" onclick="goTab('timer')" style="font-size:0.78rem;">⏱ Zum vollen Timer</button>
+    <div class="card" style="align-items:center;gap:0.6rem;padding:0.85rem;">
+      <div style="position:relative;width:84px;height:84px;">
+        <svg viewBox="0 0 84 84" width="84" height="84">
+          <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="5"/>
+          <circle id="uebTRing" cx="42" cy="42" r="36" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" transform="rotate(-90 42 42)" stroke-dasharray="226.19" stroke-dashoffset="0"/>
+        </svg>
+        <div id="uebTVal" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text);">5:00</div>
+      </div>
+      <div style="display:flex;gap:0.4rem;">
+        <button class="btn-sm sm-s" id="uebTStart">▶ 5 Min Timer</button>
+        <button class="btn-sm sm-r" id="uebTReset">Reset</button>
+      </div>
+    </div>
     <button class="btn btn-g" onclick="openOv('worrytime')" style="font-size:0.78rem;">🧠 Worry Time</button>
     <button class="back-btn" onclick="uebungGoStep(1)" style="align-self:center;margin-top:0.15rem;">🔄 Bedürfnis neu wählen</button>
   </div>
@@ -1029,7 +1042,7 @@ const CIRC=2*Math.PI*62;let tMin=5,tTotal=300,tLeft=300,tRun=false,tIv=null;
 let wakeLock=null;
 async function reqWakeLock(){try{if('wakeLock' in navigator){wakeLock=await navigator.wakeLock.request('screen');const el=document.getElementById('wakeLockStatus');if(el)el.textContent='🔆 Bildschirm bleibt an';}}catch(e){}}
 async function relWakeLock(){try{if(wakeLock){await wakeLock.release();wakeLock=null;const el=document.getElementById('wakeLockStatus');if(el)el.textContent='⏱ Bildschirm bleibt an während der Timer läuft';}}catch(e){}}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(tRun||pomRun)&&!wakeLock){reqWakeLock();}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(tRun||pomRun||uebTRun)&&!wakeLock){reqWakeLock();}});
 const tRingEl=document.getElementById('tRing'),tValEl=document.getElementById('tVal');
 tRingEl.style.strokeDasharray=CIRC;tRingEl.style.strokeDashoffset=0;
 function uT(){const m=Math.floor(tLeft/60),s=tLeft%60;tValEl.textContent=m+':'+(s<10?'0':'')+s;tRingEl.style.strokeDashoffset=CIRC*(1-tLeft/tTotal);}
@@ -2149,6 +2162,37 @@ function uebungUeberrasch(){
   uebungGoStep(3);
 }
 window.uebungUeberrasch=uebungUeberrasch;
+
+/* INLINE 5-MIN TIMER (Übungs-Screen) */
+const UEB_CIRC=2*Math.PI*36;
+let uebTLeft=300,uebTTotal=300,uebTRun=false,uebTIv=null;
+function uebTUpdate(){
+  const m=Math.floor(uebTLeft/60),s=uebTLeft%60;
+  const el=document.getElementById('uebTVal');if(el)el.textContent=m+':'+(s<10?'0':'')+s;
+  const ring=document.getElementById('uebTRing');if(ring)ring.style.strokeDashoffset=UEB_CIRC*(1-uebTLeft/uebTTotal);
+}
+function uebTReset(){
+  clearInterval(uebTIv);uebTRun=false;relWakeLock();uebTLeft=uebTTotal;
+  const b=document.getElementById('uebTStart');if(b)b.textContent='▶ 5 Min Timer';
+  uebTUpdate();
+}
+function uebTDone(){
+  clearInterval(uebTIv);uebTRun=false;relWakeLock();playTimerSound();
+  const b=document.getElementById('uebTStart');if(b)b.textContent='▶ 5 Min Timer';
+  uebTLeft=uebTTotal;uebTUpdate();
+}
+document.getElementById('uebTStart')&&(document.getElementById('uebTStart').onclick=()=>{
+  if(!uebTRun){
+    uebTRun=true;warmAudioCtx();reqWakeLock();
+    document.getElementById('uebTStart').textContent='⏸ Pause';
+    uebTIv=setInterval(()=>{uebTLeft--;uebTUpdate();if(uebTLeft<=0)uebTDone();},1000);
+  } else {
+    clearInterval(uebTIv);uebTRun=false;relWakeLock();
+    document.getElementById('uebTStart').textContent='▶ Weiter';
+  }
+});
+document.getElementById('uebTReset')&&(document.getElementById('uebTReset').onclick=uebTReset);
+uebTUpdate();
 window.uebungGoStep=uebungGoStep;
 document.getElementById('btnNeu').onclick=zZ;
 let fA=new Set(kats());
