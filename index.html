@@ -361,6 +361,7 @@ console.log('Firebase Pause: verbunden ✓');
     <div class="section-title">Was brauchst du gerade?</div>
     <div class="tool-grid" id="needFilterRow"></div>
     <button class="btn btn-p" id="uebungWeiter1" onclick="uebungGoStep(2)" disabled style="opacity:0.4;">Weiter →</button>
+    <button class="back-btn" onclick="uebungUeberrasch()" style="align-self:center;">🎲 Überrasch mich – entscheide du</button>
   </div>
   <div id="uebungStep2" class="uebung-step" style="display:none;flex-direction:column;gap:0.85rem;">
     <button class="back-btn" onclick="uebungGoStep(1)"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Zurück</button>
@@ -864,30 +865,34 @@ const DEFAULTS=[
   {id:'d108',k:'Bewegung',t:'Katze-Kuh Bewegung',b:'Im Sitzen Rücken rund machen, dann hohl – langsam wechseln.',img:'',n:['bewegen','beruhigen']},
   {id:'d109',k:'Bewegung',t:'Kurz aufstehen und strecken',b:'Aufstehen, den ganzen Körper einmal kurz durchstrecken.',img:'',n:['bewegen']},
   {id:'d110',k:'Bewegung',t:'Auf der Stelle gehen',b:'Ein paar Schritte auf der Stelle, langsam und bewusst.',img:'',n:['bewegen','erden']},
-  {id:'d111',k:'Dehnen',t:'Schulterkreisen vorwärts',b:'Beide Schultern ein paar Mal langsam nach vorne kreisen.',img:'',n:['bewegen']},
-  {id:'d112',k:'Dehnen',t:'Schulterkreisen rückwärts',b:'Beide Schultern ein paar Mal langsam nach hinten kreisen.',img:'',n:['bewegen']},
-  {id:'d113',k:'Dehnen',t:'Schultern hochziehen und fallen lassen',b:'Schultern zu den Ohren ziehen, kurz halten, dann locker fallen lassen.',img:'',n:['bewegen','beruhigen']},
-  {id:'d114',k:'Dehnen',t:'Arme über dem Kopf strecken',b:'Beide Arme sanft nach oben strecken, so weit es angenehm ist.',img:'',n:['bewegen']},
-  {id:'d115',k:'Dehnen',t:'Seitliche Rumpfdehnung',b:'Im Sitzen einen Arm nach oben strecken und sanft zur Seite lehnen.',img:'',n:['bewegen']},
-  {id:'d116',k:'Dehnen',t:'Ellenbogen kreisen',b:'Arme anwinkeln und die Ellenbogen kleine Kreise machen lassen.',img:'',n:['bewegen']},
-  {id:'d117',k:'Dehnen',t:'Fußgelenke kreisen',b:'Einen Fuß leicht anheben und das Gelenk in beide Richtungen kreisen.',img:'',n:['bewegen']},
-  {id:'d118',k:'Dehnen',t:'Waden dehnen im Sitzen',b:'Bein ausstrecken, Fußspitze zu dir ziehen, kurz halten.',img:'',n:['bewegen']},
-  {id:'d119',k:'Dehnen',t:'Brustkorb öffnen',b:'Hände hinter dem Rücken verschränken, Brust sanft nach vorne öffnen.',img:'',n:['bewegen','erden']},
-  {id:'d120',k:'Dehnen',t:'Kiefer lockern',b:'Mund langsam weit öffnen und wieder schließen, ein paar Mal.',img:'',n:['bewegen','beruhigen']},
-  {id:'d121',k:'Dehnen',t:'Zehen strecken und anziehen',b:'Zehen abwechselnd weit strecken und zu dir anziehen.',img:'',n:['bewegen','erden']},
-  {id:'d122',k:'Dehnen',t:'Handflächen gegeneinander drücken',b:'Handflächen vor der Brust zusammenpressen, kurz halten, lösen.',img:'',n:['bewegen','erden']},
-  {id:'d123',k:'Dehnen',t:'Hüfte kreisen im Sitzen',b:'Im Sitzen das Becken sanft in kleinen Kreisen bewegen.',img:'',n:['bewegen']},
-  {id:'d124',k:'Dehnen',t:'Schulterblätter zusammenziehen',b:'Schulterblätter sanft nach hinten zusammenziehen, halten, lösen.',img:'',n:['bewegen','erden']},
+  {id:'d111',k:'Bewegung',t:'Schulterkreisen vorwärts',b:'Beide Schultern ein paar Mal langsam nach vorne kreisen.',img:'',n:['bewegen']},
+  {id:'d112',k:'Bewegung',t:'Schulterkreisen rückwärts',b:'Beide Schultern ein paar Mal langsam nach hinten kreisen.',img:'',n:['bewegen']},
+  {id:'d113',k:'Bewegung',t:'Schultern hochziehen und fallen lassen',b:'Schultern zu den Ohren ziehen, kurz halten, dann locker fallen lassen.',img:'',n:['bewegen','beruhigen']},
+  {id:'d114',k:'Bewegung',t:'Arme über dem Kopf strecken',b:'Beide Arme sanft nach oben strecken, so weit es angenehm ist.',img:'',n:['bewegen']},
+  {id:'d115',k:'Bewegung',t:'Seitliche Rumpfdehnung',b:'Im Sitzen einen Arm nach oben strecken und sanft zur Seite lehnen.',img:'',n:['bewegen']},
+  {id:'d116',k:'Bewegung',t:'Ellenbogen kreisen',b:'Arme anwinkeln und die Ellenbogen kleine Kreise machen lassen.',img:'',n:['bewegen']},
+  {id:'d117',k:'Bewegung',t:'Fußgelenke kreisen',b:'Einen Fuß leicht anheben und das Gelenk in beide Richtungen kreisen.',img:'',n:['bewegen']},
+  {id:'d118',k:'Bewegung',t:'Waden dehnen im Sitzen',b:'Bein ausstrecken, Fußspitze zu dir ziehen, kurz halten.',img:'',n:['bewegen']},
+  {id:'d119',k:'Bewegung',t:'Brustkorb öffnen',b:'Hände hinter dem Rücken verschränken, Brust sanft nach vorne öffnen.',img:'',n:['bewegen','erden']},
+  {id:'d120',k:'Bewegung',t:'Kiefer lockern',b:'Mund langsam weit öffnen und wieder schließen, ein paar Mal.',img:'',n:['bewegen','beruhigen']},
+  {id:'d121',k:'Bewegung',t:'Zehen strecken und anziehen',b:'Zehen abwechselnd weit strecken und zu dir anziehen.',img:'',n:['bewegen','erden']},
+  {id:'d122',k:'Bewegung',t:'Handflächen gegeneinander drücken',b:'Handflächen vor der Brust zusammenpressen, kurz halten, lösen.',img:'',n:['bewegen','erden']},
+  {id:'d123',k:'Bewegung',t:'Hüfte kreisen im Sitzen',b:'Im Sitzen das Becken sanft in kleinen Kreisen bewegen.',img:'',n:['bewegen']},
+  {id:'d124',k:'Bewegung',t:'Schulterblätter zusammenziehen',b:'Schulterblätter sanft nach hinten zusammenziehen, halten, lösen.',img:'',n:['bewegen','erden']},
 ];
 const LSK='pva',LST='ptv3',LSF='pfv1',LSS='psnd1';
 function load(){
   try{
     const r=localStorage.getItem(LSK);
     if(r){
-      const saved=JSON.parse(r);
+      let saved=JSON.parse(r);
+      let changed=false;
+      // Migration: Dehnen wurde in Bewegung zusammengeführt
+      saved=saved.map(u=>{if(u.k==='Dehnen'){changed=true;return{...u,k:'Bewegung'};}return u;});
       const savedIds=new Set(saved.map(u=>u.id));
       const neu=DEFAULTS.filter(d=>!savedIds.has(d.id));
-      if(neu.length){const merged=[...saved,...neu.map(d=>({...d}))];sv(merged);return merged;}
+      if(neu.length){changed=true;saved=[...saved,...neu.map(d=>({...d}))];}
+      if(changed)sv(saved);
       return saved;
     }
   }catch(e){}
@@ -2116,7 +2121,7 @@ function iMessenger(){initMsgTab();}
 const NEEDS=[{id:'beruhigen',e:'🧘',l:'Beruhigen'},{id:'ablenken',e:'🎯',l:'Ablenken'},{id:'erden',e:'🌍',l:'Erden'},{id:'bewegen',e:'🏃',l:'Bewegen'}];
 let aktiveNeeds=new Set();
 let aktive=new Set(),history=[];
-const KAT_ICONS={'Körper':'🖐️','Theo':'🐾','Geruch':'👃','Fokus':'🧠','Atem':'🌬️','Hören':'👂','Handy':'📱','Rausgehen':'🚪','Kreativ':'🎨','Selbstfürsorge':'🛁','Gedanken':'💭','Bewegung':'🤸','Dehnen':'🤸‍♀️'};
+const KAT_ICONS={'Körper':'🖐️','Theo':'🐾','Geruch':'👃','Fokus':'🧠','Atem':'🌬️','Hören':'👂','Handy':'📱','Rausgehen':'🚪','Kreativ':'🎨','Selbstfürsorge':'🛁','Gedanken':'💭','Bewegung':'🤸'};
 function rFilter(){const row=document.getElementById('filterRow');row.innerHTML='';kats().forEach(k=>{const b=document.createElement('div');b.className='tc'+(aktive.has(k)?' selected':'');b.innerHTML=`<div class="tc-icon">${KAT_ICONS[k]||'✨'}</div><div class="tc-label">${k}</div>`;b.onclick=()=>{if(aktive.has(k))aktive.delete(k);else aktive.add(k);rFilter();updWeiterBtns();};row.appendChild(b);});}
 function rNeedFilter(){const row=document.getElementById('needFilterRow');if(!row)return;row.innerHTML='';NEEDS.forEach(n=>{const b=document.createElement('div');b.className='tc'+(aktiveNeeds.has(n.id)?' selected':'');b.innerHTML=`<div class="tc-icon">${n.e}</div><div class="tc-label">${n.l}</div>`;b.onclick=()=>{if(aktiveNeeds.has(n.id))aktiveNeeds.delete(n.id);else aktiveNeeds.add(n.id);rNeedFilter();updWeiterBtns();};row.appendChild(b);});}
 function updWeiterBtns(){
@@ -2138,6 +2143,12 @@ function uebungGoStep(step){
   if(step===3)zZ();
   updWeiterBtns();
 }
+function uebungUeberrasch(){
+  aktiveNeeds=new Set(NEEDS.map(n=>n.id));
+  aktive=new Set(kats());
+  uebungGoStep(3);
+}
+window.uebungUeberrasch=uebungUeberrasch;
 window.uebungGoStep=uebungGoStep;
 document.getElementById('btnNeu').onclick=zZ;
 let fA=new Set(kats());
