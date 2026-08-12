@@ -331,6 +331,7 @@ console.log('Firebase Pause: verbunden ✓');
     <div class="start-card" onclick="goTab('visuell')"><div class="start-card-icon">🌈</div><div class="start-card-label">Visuell</div><div class="start-card-sub">Spirograph & mehr</div></div>
     <div class="start-card" onclick="goTab('spiele')"><div class="start-card-icon">🎮</div><div class="start-card-label">Spiele</div><div class="start-card-sub">Tetris, 2048 & mehr</div></div>
     <div class="start-card" onclick="goTab('entscheider')"><div class="start-card-icon">🎲</div><div class="start-card-label">Entscheider</div><div class="start-card-sub">Finger-Chooser & mehr</div></div>
+    <div class="start-card" onclick="goTab('skills')"><div class="start-card-icon">🧩</div><div class="start-card-label">Skills</div><div class="start-card-sub">DBT-Techniken</div></div>
     <div class="start-card" onclick="goTab('karten')"><div class="start-card-icon">🃏</div><div class="start-card-label">Karten</div><div class="start-card-sub">Tarot · Lenormand · Kipper</div></div>
     <div class="start-card" onclick="goTab('horoskop')"><div class="start-card-icon">⭐</div><div class="start-card-label">Sterne</div><div class="start-card-sub">Tages-Horoskop</div></div>
     <div class="start-card" onclick="goTab('inspo')"><div class="start-card-icon">📸</div><div class="start-card-label">Inspiration</div><div class="start-card-sub">Instagram & Natur</div></div>
@@ -550,6 +551,17 @@ console.log('Firebase Pause: verbunden ✓');
       <div style="font-size:0.78rem;color:var(--muted);margin-top:0.35rem;">Finger-Chooser, Roulette, Würfel & mehr</div>
     </div>
     <button class="btn btn-p" onclick="openSubFrame('entscheider.html')" style="max-width:220px;">🎲 Entscheider öffnen</button>
+    <button class="back-btn" onclick="showStart()">← Start</button>
+  </div>
+</div>
+<div class="screen" id="screen-skills" style="padding:0;gap:0;">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;">
+    <div style="text-align:center;">
+      <div style="font-size:3rem;margin-bottom:0.5rem;">🧩</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text);">Skills</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:0.35rem;">DBT-Techniken zum Nachlesen & Üben</div>
+    </div>
+    <button class="btn btn-p" onclick="openSubFrame('skills.html')" style="max-width:220px;">🧩 Skills öffnen</button>
     <button class="back-btn" onclick="showStart()">← Start</button>
   </div>
 </div>
