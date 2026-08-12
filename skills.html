@@ -7,298 +7,475 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#12121f;--surface:#1c1c2e;--surface2:#242438;--border:rgba(255,255,255,0.07);--accent:#4ade80;--accent2:#2dd4bf;--text:#f1f0f5;--muted:#6b6b8a;--muted2:#9898b8;--danger:#f87171;--aRGB:74,222,128;}
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;height:100dvh;}
-
-/* STARTSCREEN */
-#startScreen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;overflow-y:auto;padding:1.5rem 1rem 2rem;}
-#startScreen.hidden{display:none;}
-.start-logo{font-family:'DM Serif Display',serif;font-size:3rem;color:var(--accent);letter-spacing:-0.03em;margin-bottom:0.2rem;}
-.start-sub{font-size:0.82rem;color:var(--muted);margin-bottom:2rem;text-align:center;}
-.start-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;width:100%;max-width:360px;}
-.start-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem 1rem;display:flex;flex-direction:column;align-items:center;gap:0.5rem;cursor:pointer;transition:border-color 0.15s,transform 0.12s;}
-.start-card:active{border-color:var(--accent);transform:scale(0.97);}
-.start-card-icon{font-size:2.2rem;}
-.start-card-label{font-size:0.82rem;font-weight:600;color:var(--text);}
-.start-card-sub{font-size:0.62rem;color:var(--muted);text-align:center;}
-.start-all{margin-top:0.65rem;width:100%;max-width:360px;}
-
-/* TABS */
-.tabs{display:none;}
-.back-btn{display:flex;align-items:center;gap:0.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:100px;color:var(--muted2);font-family:"DM Sans",sans-serif;font-size:0.75rem;font-weight:500;cursor:pointer;padding:0.35rem 0.75rem;margin-bottom:0.5rem;flex-shrink:0;width:fit-content;}
-
-.tabs::-webkit-scrollbar{display:none;}
-.tab{flex:0 0 auto;min-width:52px;padding:0.65rem 0.3rem 0.45rem;border:none;background:transparent;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:0.52rem;font-weight:500;letter-spacing:0.03em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.14rem;transition:color 0.15s;border-radius:0;}
-.tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.tab.active{color:var(--accent);}
-.screens{flex:1;overflow:hidden;position:relative;}
-.screen{position:absolute;inset:0;overflow-y:auto;padding:0.9rem 0.85rem 2rem;display:none;flex-direction:column;gap:0.85rem;-webkit-overflow-scrolling:touch;}
-.screen.active{display:flex;}
-.display{font-family:'DM Serif Display',serif;font-size:1.3rem;line-height:1.25;color:var(--text);}
-.label-tag{display:inline-flex;align-items:center;background:rgba(var(--aRGB),0.12);color:var(--accent);font-size:0.63rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.2em 0.6em;border-radius:100px;width:fit-content;}
-.section-title{font-size:0.6rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:1.1rem;display:flex;flex-direction:column;gap:0.75rem;transition:opacity 0.22s,transform 0.22s,box-shadow 0.5s,border-color 0.5s;}
-.card.fade-out{opacity:0;transform:translateY(5px);}
-.card.done-flash{box-shadow:0 0 0 2px var(--accent),0 0 24px rgba(var(--aRGB),0.35);border-color:var(--accent);}
-.card-img{width:100%;height:145px;object-fit:cover;border-radius:10px;display:none;}
-.card-img.visible{display:block;}
-.card-img-ph{width:100%;height:60px;border-radius:10px;border:1px dashed rgba(var(--aRGB),0.2);display:none;align-items:center;justify-content:center;color:var(--muted);font-size:0.72rem;text-align:center;}
-.card-img-ph.visible{display:flex;}
-.beschreibung{font-size:0.8rem;color:var(--muted2);line-height:1.6;font-weight:300;}
-.pill-row{display:flex;flex-wrap:wrap;gap:0.3rem;}
-.pill{padding:0.22em 0.62em;border-radius:100px;font-size:0.65rem;font-weight:500;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted2);cursor:pointer;transition:all 0.15s;width:auto;}
-.pill.active{background:rgba(var(--aRGB),0.12);border-color:var(--accent);color:var(--accent);}
-.timer-wrap{display:flex;flex-direction:column;align-items:center;gap:0.65rem;}
-.timer-opts{display:flex;gap:0.3rem;}
-.timer-opt{padding:0.22em 0.68em;border-radius:100px;font-size:0.67rem;font-weight:500;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted2);cursor:pointer;transition:all 0.15s;width:auto;}
-.timer-opt.active{background:rgba(var(--aRGB),0.12);border-color:var(--accent);color:var(--accent);}
-.t-wrap-big{position:relative;width:140px;height:140px;}
-.t-wrap-big svg{transform:rotate(-90deg);width:140px;height:140px;}
-.t-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:6;}
-.t-ring{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
-.t-val-big{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'DM Serif Display',serif;font-size:2rem;color:var(--text);letter-spacing:-0.02em;}
-.tbts{display:flex;gap:0.38rem;}
-.btn{border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.86rem;font-weight:500;cursor:pointer;padding:0.8rem 0.95rem;transition:transform 0.1s,opacity 0.1s;width:100%;}
-.btn:active{transform:scale(0.97);opacity:0.82;}
-.btn-p{background:var(--accent);color:#fff;}
-.btn-g{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--accent2);}
-.btn-sm{border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:500;cursor:pointer;padding:0.36rem 0.88rem;transition:transform 0.1s,opacity 0.1s;width:auto;}
-.btn-sm:active{transform:scale(0.96);}
-.sm-s{background:var(--accent);color:#fff;}
-.sm-r{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted2);}
-.counter{font-size:0.65rem;color:var(--muted);text-align:center;}
-.audio-btn{display:flex;align-items:center;gap:0.6rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.8rem;cursor:pointer;transition:border-color 0.15s;width:100%;text-align:left;}
-.audio-btn.playing{border-color:var(--accent);background:rgba(var(--aRGB),0.08);}
-.a-icon{width:27px;height:27px;border-radius:50%;background:rgba(var(--aRGB),0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.a-icon svg{width:11px;height:11px;fill:var(--accent);stroke:none;}
-.a-title{font-size:0.78rem;font-weight:500;color:var(--text);}
-.a-sub{font-size:0.66rem;color:var(--muted);margin-top:0.07rem;}
-.a-stop{font-size:0.63rem;color:var(--accent);font-weight:500;margin-left:auto;flex-shrink:0;}
-.atem-wrap{display:flex;flex-direction:column;align-items:center;gap:1.1rem;padding:1rem 0;}
-.atem-c{width:130px;height:130px;border-radius:50%;background:rgba(var(--aRGB),0.12);border:2px solid rgba(var(--aRGB),0.25);display:flex;align-items:center;justify-content:center;font-size:0.82rem;color:var(--accent);font-weight:500;transition:transform 4s ease-in-out,background 1s,border-color 1s;}
-.atem-c.expand{transform:scale(1.4);background:rgba(var(--aRGB),0.22);border-color:rgba(var(--aRGB),0.6);}
-.atem-c.hold{transform:scale(1.4);border-color:rgba(var(--aRGB),0.8);}
-.atem-c.shrink{transform:scale(1);background:rgba(var(--aRGB),0.08);border-color:rgba(var(--aRGB),0.2);}
-.atem-lbl{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--text);text-align:center;}
-.atem-sub2{font-size:0.72rem;color:var(--muted);text-align:center;}
-.atem-methods{display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;}
-.atem-method{padding:0.28em 0.75em;border-radius:100px;font-size:0.68rem;font-weight:500;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted2);cursor:pointer;transition:all 0.15s;width:auto;}
-.atem-method.active{background:rgba(var(--aRGB),0.12);border-color:var(--accent);color:var(--accent);}
-.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
-.tc{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:0.95rem 0.7rem;display:flex;flex-direction:column;align-items:center;gap:0.4rem;cursor:pointer;transition:border-color 0.15s,transform 0.12s;}
-.tc:active{border-color:var(--accent);transform:scale(0.97);}
-.tc.selected{border-color:var(--accent);background:rgba(var(--aRGB),0.14);}
-.tc.selected .tc-label{color:var(--accent);}
-.tc-icon{font-size:1.7rem;line-height:1;}
-.tc-label{font-size:0.73rem;font-weight:500;color:var(--text);text-align:center;}
-.tc-sub{font-size:0.6rem;color:var(--muted);text-align:center;}
 .overlay{position:fixed;inset:0;background:var(--bg);z-index:600;display:none;flex-direction:column;}
 .overlay.active{display:flex;}
-.ov-hdr{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0.95rem;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);}
-.ov-close{background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:0.9rem;flex-shrink:0;}
-.ov-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);}
-.ov-close{background:transparent;border:none;color:var(--muted2);font-size:1.3rem;cursor:pointer;padding:0.12rem 0.3rem;line-height:1;}
-.ov-body{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;background:var(--bg);}
-.g-score{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--accent);text-align:center;position:absolute;top:0.7rem;left:50%;transform:translateX(-50%);pointer-events:none;z-index:10;}
-/* INSPO */
-.inspo-section-label{font-size:0.62rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);padding:0.25rem 0;}
-.inspo-card{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:1rem;display:flex;align-items:center;gap:0.85rem;cursor:pointer;transition:border-color 0.15s,transform 0.12s;text-decoration:none;}
-.inspo-card:active{border-color:var(--accent);transform:scale(0.98);}
-.inspo-avatar-ph{width:46px;height:46px;border-radius:50%;background:rgba(var(--aRGB),0.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
-.inspo-info{flex:1;}.inspo-name{font-size:0.85rem;font-weight:500;color:var(--text);}
-.inspo-desc{font-size:0.7rem;color:var(--muted);margin-top:0.12rem;line-height:1.4;}
-.inspo-arrow{color:var(--muted);font-size:1rem;flex-shrink:0;}
-/* KALIMBA */
-.kalimba-tines{display:flex;align-items:flex-end;gap:4px;height:220px;}
-.tine{border-radius:4px 4px 0 0;cursor:pointer;touch-action:manipulation;flex-shrink:0;border:none;position:relative;}
-.tine:active{filter:brightness(1.5);}
-/* LAUNCHPAD */
-.lp-modes{display:flex;gap:0.35rem;flex-wrap:wrap;padding:0.5rem 0.75rem;justify-content:center;flex-shrink:0;}
-.lp-mode{padding:0.28em 0.75em;border-radius:100px;font-size:0.68rem;font-weight:500;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted2);cursor:pointer;transition:all 0.15s;width:auto;}
-.lp-mode.active{background:rgba(var(--aRGB),0.12);border-color:var(--accent);color:var(--accent);}
-.lp-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding:0.75rem;width:100%;}
-.lp-btn{aspect-ratio:1;border-radius:8px;border:none;cursor:pointer;transition:filter 0.1s,transform 0.08s;touch-action:manipulation;display:block;width:100%;}
-.lp-btn:active{filter:brightness(1.8);transform:scale(0.88);}
-/* SOUND SETTINGS */
-.sound-opt{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.85rem 1rem;cursor:pointer;transition:border-color 0.15s;}
-.sound-opt.active{border-color:var(--accent);background:rgba(var(--aRGB),0.08);}
-/* LIST */
-.list-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.75rem 0.85rem;display:flex;flex-direction:column;gap:0.25rem;cursor:pointer;transition:border-color 0.15s;}
-.list-item:active{border-color:var(--accent);}
-.li-cat{font-size:0.59rem;color:var(--accent);font-weight:500;letter-spacing:0.06em;text-transform:uppercase;}
-.li-title{font-size:0.86rem;font-weight:500;color:var(--text);}
-.li-desc{font-size:0.7rem;color:var(--muted2);line-height:1.5;font-weight:300;}
-/* EDITOR */
-.ed-sec{display:flex;flex-direction:column;gap:0.38rem;}
-.ed-lbl{font-size:0.6rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);}
-input[type=text],input[type=number],textarea,select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.82rem;padding:0.6rem 0.8rem;outline:none;transition:border-color 0.15s;-webkit-appearance:none;}
-input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{border-color:var(--accent);}
-textarea{resize:vertical;min-height:72px;line-height:1.55;}
-.img-up{width:100%;min-height:62px;border-radius:10px;border:1px dashed rgba(var(--aRGB),0.3);display:flex;align-items:center;justify-content:center;gap:0.28rem;color:var(--muted);font-size:0.74rem;cursor:pointer;padding:0.75rem;text-align:center;}
-.img-prev{width:100%;height:88px;object-fit:cover;border-radius:8px;display:none;}
-.img-prev.visible{display:block;}
-.ed-act{display:flex;gap:0.42rem;margin-top:0.12rem;}
-.btn-save{flex:1;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:500;padding:0.72rem;cursor:pointer;width:auto;}
-.btn-cancel{flex:0;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:0.82rem;padding:0.72rem 0.82rem;cursor:pointer;width:auto;}
-.divider{height:1px;background:var(--border);margin:0.1rem 0;}
-.ex-item{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:0.65rem 0.75rem;display:flex;align-items:center;gap:0.55rem;}
-.ex-text{flex:1;}.ex-title{font-size:0.78rem;font-weight:500;color:var(--text);}.ex-cat{font-size:0.62rem;color:var(--muted);margin-top:0.08rem;}
-.ex-acts{display:flex;gap:0.26rem;flex-shrink:0;}
-.ib{border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;width:auto;padding:0.22rem 0.38rem;}
-.ib.edit{background:rgba(129,140,248,0.15);color:var(--accent2);}
-.ib.del{background:rgba(248,113,113,0.12);color:var(--danger);}
-.ib svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.farb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.55rem;}
-.f-sw{width:100%;aspect-ratio:1;border-radius:12px;border:3px solid transparent;cursor:pointer;transition:transform 0.12s,border-color 0.15s;display:flex;align-items:center;justify-content:center;}
-.f-sw:active{transform:scale(0.93);}
-.f-sw.active{border-color:#fff;}
-.f-sw svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;display:none;}
-.f-sw.active svg{display:block;}
-.f-nm{font-size:0.62rem;color:var(--muted);text-align:center;margin-top:0.2rem;}
-/* GAMES */
-.snake-controls{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px);gap:3px;}
-.sk-btn{width:44px;height:44px;border:none;border-radius:8px;background:var(--surface2);color:var(--text);font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.sk-btn:active{background:var(--accent);color:#fff;}
-.qt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0.35rem;width:100%;max-width:290px;}
-.qt-btn{aspect-ratio:1;border-radius:13px;border:none;cursor:pointer;transition:filter 0.1s,transform 0.08s;}
-.qt-btn.lit{filter:brightness(1.5);transform:scale(1.06);}
-.tap-c{width:200px;height:200px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;transition:transform 0.08s;box-shadow:0 0 60px rgba(var(--aRGB),0.5);cursor:pointer;user-select:none;-webkit-user-select:none;}
-.tap-c:active{transform:scale(0.9);}
-.tap-cnt{font-family:'DM Serif Display',serif;font-size:2.8rem;color:var(--text);}
-.pop-bubble{border-radius:50%;cursor:pointer;transition:transform 0.12s;border:none;touch-action:manipulation;}
-.draw-tools{display:flex;gap:0.45rem;align-items:center;flex-wrap:wrap;padding:0.45rem 0.7rem;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;}
-.d-col{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform 0.1s;flex-shrink:0;}
-.d-col.active{border-color:#fff;transform:scale(1.2);}
-.d-sz{font-size:0.67rem;color:var(--muted2);display:flex;align-items:center;gap:0.28rem;margin-left:auto;}
-.d-sz input{width:72px;accent-color:var(--accent);}
-.d-clr{background:rgba(248,113,113,0.15);color:var(--danger);border:none;border-radius:7px;padding:0.28rem 0.6rem;font-size:0.68rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.geo-controls{display:flex;flex-direction:column;gap:0.45rem;padding:0.65rem;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;}
-.geo-row{display:flex;align-items:center;gap:0.45rem;font-size:0.68rem;color:var(--muted2);}
-.geo-row input{flex:1;accent-color:var(--accent);}
-.geo-row span{min-width:85px;}
-.konfetti-tap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.65rem;cursor:pointer;}
-/* SENSO */
-.senso-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:300px;}
-.senso-btn{aspect-ratio:1;border-radius:16px;border:none;cursor:pointer;transition:filter 0.1s,transform 0.08s;touch-action:manipulation;}
-.senso-btn:active{transform:scale(0.95);}
-.senso-btn.flash{filter:brightness(2.5);}
-/* REACTION */
-.react-time{font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent);text-align:center;}
-/* TIC TAC TOE */
-.ttt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:240px;height:240px;}
-.ttt-cell{background:var(--surface2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;cursor:pointer;transition:background 0.15s;}
-.ttt-cell:active{background:rgba(var(--aRGB),0.2);}
-/* ZAHLENFOLGE */
-.num-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0.5rem;width:100%;max-width:340px;}
-.num-btn{aspect-ratio:1;border-radius:10px;border:none;font-family:'DM Serif Display',serif;font-size:1.1rem;cursor:pointer;transition:background 0.1s,transform 0.08s;touch-action:manipulation;}
-.num-btn:active{transform:scale(0.92);}
-.num-btn.done{background:rgba(var(--aRGB),0.2);color:var(--accent);border:1px solid rgba(var(--aRGB),0.4);}
-.num-btn.wrong{background:rgba(248,113,113,0.3);color:var(--danger);}
-/* TETRIS */
-#tetrisC{display:block;border-radius:8px;}
-.tetris-side{display:flex;flex-direction:column;gap:0.5rem;align-items:center;}
-.tetris-next{width:60px;height:60px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
-/* METRONOM */
-.metro-body{position:relative;width:140px;height:185px;}
-.metro-box{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:110px;height:120px;background:var(--surface2);border-radius:10px 10px 5px 5px;border:1px solid var(--border);}
-.metro-stick{position:absolute;bottom:76px;left:50%;width:4px;height:135px;background:var(--accent);transform-origin:bottom center;border-radius:2px;margin-left:-2px;}
-.metro-weight{position:absolute;width:18px;height:12px;background:var(--accent);border-radius:4px;left:50%;transform:translateX(-50%);top:9px;}
-/* FAKE MESSENGER */
-.msg-wrap{display:flex;flex-direction:column;height:100%;width:100%;background:var(--bg);}
-.msg-list{flex:1;overflow-y:auto;padding:0.75rem;display:flex;flex-direction:column;gap:0.5rem;-webkit-overflow-scrolling:touch;}
-.msg-bubble{max-width:75%;padding:0.55rem 0.85rem;border-radius:18px;font-size:0.85rem;line-height:1.45;animation:msgSlideIn 0.3s ease;}
-.msg-bubble.out,.msg-bubble.sent{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
-.msg-bubble.in,.msg-bubble.recv{background:var(--surface2);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
-@keyframes msgSlideIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-@keyframes msgFlyUp{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-60px);}}
-.msg-fly{animation:msgFlyUp 0.5s ease forwards;}
-.msg-input-row{display:flex;gap:0.5rem;padding:0.65rem;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;}
-.msg-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:22px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:0.6rem 1rem;outline:none;resize:none;max-height:80px;overflow-y:auto;}
-.msg-input:focus{border-color:var(--accent);}
-.msg-send{width:40px;height:40px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-/* HOT SPOT */
-.hotspot-area{position:absolute;inset:0;touch-action:none;cursor:crosshair;}
-.hotspot-indicator{position:absolute;pointer-events:none;border-radius:50%;transition:none;}
-/* SSP */
-.ssp-btns{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;}
-.ssp-btn{width:90px;height:90px;border-radius:18px;border:2px solid var(--border);background:var(--surface2);font-size:2.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color 0.15s,transform 0.1s;}
-.ssp-btn:active{transform:scale(0.92);border-color:var(--accent);}
-.ssp-result{font-family:'DM Serif Display',serif;font-size:1.4rem;text-align:center;}
-.ssp-sub{font-size:0.78rem;color:var(--muted);text-align:center;}
-/* TEXT ADVENTURE */
-.adv-wrap{display:flex;flex-direction:column;height:100%;width:100%;padding:1rem;}
-.adv-story{flex:1;overflow-y:auto;font-size:0.88rem;line-height:1.7;color:var(--text);margin-bottom:0.75rem;-webkit-overflow-scrolling:touch;}
-.adv-story p{margin-bottom:0.5rem;}
-.adv-story .new{color:var(--accent2);}
-.adv-choices{display:flex;flex-direction:column;gap:0.4rem;flex-shrink:0;}
-.adv-choice{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.7rem 0.9rem;font-size:0.82rem;color:var(--text);cursor:pointer;text-align:left;transition:border-color 0.15s;}
-.adv-choice:active{border-color:var(--accent);}
-.karten-flip{perspective:800px;width:100%;max-width:280px;height:360px;margin:0 auto;cursor:pointer;}
-.karten-flip-inner{position:relative;width:100%;height:100%;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d;}
-.karten-flip.flipped .karten-flip-inner{transform:rotateY(180deg);}
-.karten-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;padding:1.2rem;}
-.karten-back{background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);border:1px solid var(--border);}
-.karten-front{background:linear-gradient(160deg,var(--surface) 0%,var(--surface2) 100%);border:2px solid rgba(var(--aRGB),0.4);transform:rotateY(180deg);}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* KARTEN SPREADS */
-.karte-slot{perspective:600px;cursor:pointer;}
-.karte-inner{position:relative;width:100%;height:100%;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d;}
-.karte-slot.revealed .karte-inner{transform:rotateY(180deg);}
-.karte-slot.reversed .karte-inner{transform:rotateY(180deg) rotate(180deg);}
-.karte-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;padding:0.4rem;}
-.karte-back-face{background:var(--surface2);border:1px solid rgba(var(--aRGB),0.3);}
-.karte-back-pattern{font-size:1.4rem;opacity:0.4;}
-.karte-front-face{background:var(--surface);border:2px solid rgba(var(--aRGB),0.5);transform:rotateY(180deg);}
-.karte-front-face.reversed-face{transform:rotateY(180deg) rotate(180deg);}
-.karte-slot-label{font-size:0.52rem;color:var(--muted);text-align:center;margin-top:0.25rem;letter-spacing:0.05em;}
-.toast{position:fixed;bottom:4.2rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:0.4rem 0.95rem;font-size:0.74rem;color:var(--text);opacity:0;transition:opacity 0.2s,transform 0.2s;pointer-events:none;white-space:nowrap;z-index:300;}
+.ov-hdr{display:flex;align-items:center;justify-content:space-between;gap:0.6rem;padding:0.75rem 0.95rem;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);}
+.ov-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);line-height:1.2;}
+.ov-close{background:transparent;border:none;color:var(--muted2);font-size:1.3rem;cursor:pointer;padding:0.12rem 0.3rem;line-height:1;flex-shrink:0;}
+.ov-body{flex:1;position:relative;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;background:var(--bg);}
+.btn{border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.86rem;font-weight:500;cursor:pointer;padding:0.8rem 0.95rem;transition:transform 0.1s,opacity 0.1s;width:100%;}
+.btn:active{transform:scale(0.97);opacity:0.82;}
+.btn-p{background:var(--accent);color:#12121f;font-weight:600;}
+.btn-g{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted2);}
+input[type=text],textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.86rem;padding:0.7rem 0.85rem;outline:none;transition:border-color 0.15s;-webkit-appearance:none;}
+input[type=text]:focus,textarea:focus{border-color:var(--accent);}
+textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:0.45rem 1rem;font-size:0.75rem;color:var(--text);opacity:0;transition:opacity 0.2s,transform 0.2s;pointer-events:none;white-space:nowrap;z-index:900;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.empty-state{text-align:center;color:var(--muted);font-size:0.78rem;padding:1.2rem 0;line-height:1.6;}
-</style>
-<style>
-.skill-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1rem;display:flex;flex-direction:column;gap:0.4rem;cursor:pointer;transition:border-color 0.15s,transform 0.12s;}
-.skill-card:active{border-color:var(--accent);transform:scale(0.98);}
-.skill-cat-label{font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);}
-.skill-title{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text);}
-.skill-sub{font-size:0.75rem;color:var(--muted2);line-height:1.5;}
+
+/* ---------- FILTER ---------- */
+.filter-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1rem 1.1rem 1.15rem;display:flex;flex-direction:column;gap:0.7rem;}
+.filter-top{display:flex;align-items:baseline;justify-content:space-between;gap:0.5rem;}
+.filter-lbl{font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.filter-val{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--accent);line-height:1;}
+.filter-state{font-size:0.72rem;color:var(--muted2);line-height:1.45;}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;background:transparent;height:26px;}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:100px;background:linear-gradient(90deg,var(--accent2),var(--accent));}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;margin-top:-8px;border:3px solid var(--accent);cursor:pointer;}
+input[type=range]::-moz-range-track{height:6px;border-radius:100px;background:linear-gradient(90deg,var(--accent2),var(--accent));}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--accent);cursor:pointer;}
+.scale-marks{display:flex;justify-content:space-between;font-size:0.6rem;color:var(--muted);margin-top:-0.35rem;}
+.filter-toggle{display:flex;gap:0.35rem;}
+.ftog{flex:1;padding:0.4em 0.6em;border-radius:100px;font-size:0.7rem;font-weight:500;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted2);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.ftog.active{background:rgba(var(--aRGB),0.12);border-color:var(--accent);color:var(--accent);}
+
+/* ---------- LISTE ---------- */
+.kat-head{font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);padding:0.6rem 0.15rem 0.1rem;}
+.skill-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:0.95rem 1rem;display:flex;align-items:flex-start;gap:0.8rem;cursor:pointer;transition:border-color 0.15s,transform 0.12s;}
+.skill-card:active{border-color:var(--accent);transform:scale(0.985);}
+.skill-ic{width:40px;height:40px;border-radius:12px;background:rgba(var(--aRGB),0.13);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;}
+.skill-body{flex:1;min-width:0;}
+.skill-title{font-family:'DM Serif Display',serif;font-size:1.02rem;color:var(--text);line-height:1.25;}
+.skill-sub{font-size:0.73rem;color:var(--muted2);line-height:1.5;margin-top:0.18rem;font-weight:300;}
+.skill-meta{display:flex;align-items:center;gap:0.4rem;margin-top:0.45rem;}
+.range-pill{font-size:0.58rem;letter-spacing:0.04em;color:var(--accent);background:rgba(var(--aRGB),0.1);border-radius:100px;padding:0.18em 0.6em;font-weight:500;}
+.dauer-pill{font-size:0.58rem;color:var(--muted);}
+.empty-state{text-align:center;color:var(--muted);font-size:0.8rem;padding:2rem 1rem;line-height:1.7;}
+
+/* ---------- SCHRITT-ENGINE ---------- */
+.st-wrap{width:100%;max-width:540px;margin:0 auto;padding:1.1rem 1rem 1.4rem;display:flex;flex-direction:column;gap:1rem;flex:1;}
+.st-prog{height:4px;border-radius:100px;background:rgba(255,255,255,0.07);overflow:hidden;flex-shrink:0;}
+.st-bar{height:100%;background:var(--accent);border-radius:100px;transition:width 0.35s cubic-bezier(0.4,0,0.2,1);}
+.st-count{font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.st-main{flex:1;display:flex;flex-direction:column;gap:0.85rem;}
+.st-h{font-family:'DM Serif Display',serif;font-size:1.45rem;line-height:1.3;color:var(--text);}
+.st-p{font-size:0.88rem;color:var(--muted2);line-height:1.7;font-weight:300;}
+.st-li{display:flex;flex-direction:column;gap:0.45rem;margin-top:0.15rem;}
+.st-li-item{display:flex;gap:0.6rem;font-size:0.83rem;color:var(--muted2);line-height:1.55;font-weight:300;}
+.st-li-dot{color:var(--accent);flex-shrink:0;font-weight:600;}
+.st-note{font-size:0.72rem;color:var(--muted);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);border-radius:8px;padding:0.65rem 0.8rem;}
+.st-nav{display:flex;gap:0.45rem;flex-shrink:0;padding-top:0.3rem;}
+.st-nav .btn-g{width:auto;flex:0 0 auto;padding:0.8rem 1.1rem;}
+/* Timer */
+.tm-wrap{display:flex;flex-direction:column;align-items:center;gap:0.9rem;padding:0.5rem 0;}
+.tm-ring{position:relative;width:150px;height:150px;}
+.tm-ring svg{transform:rotate(-90deg);width:150px;height:150px;}
+.tm-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:6;}
+.tm-fill{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+.tm-val{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'DM Serif Display',serif;font-size:2.1rem;color:var(--text);}
+.tm-btns{display:flex;gap:0.4rem;}
+.tm-b{border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:0.74rem;font-weight:500;cursor:pointer;padding:0.4rem 1rem;background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--muted2);}
+.tm-b.prim{background:var(--accent);color:#12121f;border-color:var(--accent);font-weight:600;}
+/* Atem */
+.at-wrap{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1.4rem 0 0.6rem;}
+.at-c{width:120px;height:120px;border-radius:50%;background:rgba(var(--aRGB),0.12);border:2px solid rgba(var(--aRGB),0.28);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--accent);font-family:'DM Serif Display',serif;transition:transform 1s ease-in-out,background 1s,border-color 1s;}
+.at-lbl{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--text);}
+.at-sub{font-size:0.73rem;color:var(--muted);}
+/* Check */
+.ck-item{display:flex;align-items:center;gap:0.7rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.75rem 0.85rem;cursor:pointer;transition:border-color 0.15s,background 0.15s;}
+.ck-item.on{border-color:var(--accent);background:rgba(var(--aRGB),0.09);}
+.ck-box{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.7rem;color:#12121f;}
+.ck-item.on .ck-box{background:var(--accent);border-color:var(--accent);}
+.ck-txt{font-size:0.82rem;color:var(--text);line-height:1.45;}
+/* Skala */
+.sk-val{font-family:'DM Serif Display',serif;font-size:2.6rem;color:var(--accent);text-align:center;line-height:1;}
+/* Zusammenfassung */
+.zf-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem;font-size:0.86rem;line-height:1.75;color:var(--text);white-space:pre-wrap;font-weight:300;}
+.zf-lbl{font-size:0.6rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:0.15rem;display:block;}
+.zf-blk{margin-bottom:0.85rem;}
+.zf-blk:last-child{margin-bottom:0;}
+.done-ic{font-size:2.6rem;text-align:center;}
 </style>
 </head>
-<body style="display:flex;flex-direction:column;height:100dvh;overflow:hidden;">
+<body>
 
-<div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0;">
-  <button onclick="goHome()" style="background:var(--surface2);border:1px solid var(--border);border-radius:100px;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:500;cursor:pointer;padding:0.35rem 0.75rem;display:flex;align-items:center;gap:0.4rem;">
-    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start
-  </button>
-  <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);">🧩 Skills</div>
-</div>
-
-<div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1rem;display:flex;flex-direction:column;gap:0.6rem;" id="skillsList">
-  <div style="text-align:center;color:var(--muted);font-size:0.82rem;padding:2rem 1rem;line-height:1.7;">
-    🚧 Hier entstehen die DBT-Skills.<br>Dieser Chat baut die Inhalte auf.
+<div class="ov-hdr">
+  <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;">
+    <button onclick="goHome()" style="background:var(--surface2);border:1px solid var(--border);border-radius:100px;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:500;cursor:pointer;padding:0.35rem 0.75rem;display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
+      <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Start
+    </button>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);">🧩 Skills</div>
   </div>
 </div>
 
-<!-- Vorbereitetes Overlay-System für einzelne Skill-Detailansichten -->
+<div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1rem 1rem 2.5rem;display:flex;flex-direction:column;gap:0.55rem;">
+  <div class="filter-box">
+    <div class="filter-top">
+      <div class="filter-lbl">Anspannung gerade</div>
+      <div class="filter-val" id="lvlVal">5</div>
+    </div>
+    <input type="range" min="0" max="10" step="1" value="5" id="lvlSlider">
+    <div class="scale-marks"><span>0 ruhig</span><span>5</span><span>10 Hochstress</span></div>
+    <div class="filter-state" id="lvlState"></div>
+    <div class="filter-toggle">
+      <button class="ftog active" id="tgFilter" onclick="setModus(true)">Passend zu mir</button>
+      <button class="ftog" id="tgAlle" onclick="setModus(false)">Alle Skills</button>
+    </div>
+  </div>
+  <div id="skillsList" style="display:flex;flex-direction:column;gap:0.55rem;"></div>
+  <div style="font-size:0.68rem;color:var(--muted);line-height:1.6;text-align:center;padding:1rem 0.5rem 0;">
+    Skills ersetzen keine Therapie. Wenn es akut zu viel wird, hol dir Unterstützung bei einem Menschen, dem du vertraust.
+  </div>
+</div>
+
 <div class="overlay" id="ov-skill-detail">
   <div class="ov-hdr">
     <div class="ov-title" id="skillDetailTitle">Skill</div>
     <button class="ov-close" onclick="closeSkillDetail()">✕</button>
   </div>
-  <div class="ov-body" style="align-items:stretch;padding:1.2rem;overflow-y:auto;" id="skillDetailBody"></div>
+  <div class="ov-body" id="skillDetailBody"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-function toast(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
-function beep(freq=600,dur=0.06,vol=0.14,type='square'){try{const c=gCtx();if(c.state==='suspended')c.resume();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+dur);o.start();o.stop(c.currentTime+dur+0.01);}catch(e){}}
+/* ============ BASICS ============ */
 let audioCtx=null;
 function gCtx(){if(!audioCtx||audioCtx.state==='closed')audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function beep(freq,dur,vol,type){try{const c=gCtx();if(c.state==='suspended')c.resume();const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=type||'sine';o.frequency.value=freq||600;g.gain.setValueAtTime(vol||0.12,c.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+(dur||0.25));o.start();o.stop(c.currentTime+(dur||0.25)+0.02);}catch(e){}}
 function vib(ms){try{if(navigator.vibrate)navigator.vibrate(ms||22);}catch(e){}}
+function toast(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function goHome(){if(window.parent!==window){window.parent.postMessage('closeFrame','*');}else window.location.href='index.html';}
+window.goHome=goHome;
+
+/* Akzentfarbe aus der Haupt-App */
+try{
+  const FARBEN=[{h:'#c084fc',h2:'#818cf8',rgb:'192,132,252'},{h:'#f472b6',h2:'#e879f9',rgb:'244,114,182'},{h:'#f87171',h2:'#fb923c',rgb:'248,113,113'},{h:'#fb923c',h2:'#fbbf24',rgb:'251,146,60'},{h:'#fbbf24',h2:'#a3e635',rgb:'251,191,36'},{h:'#4ade80',h2:'#2dd4bf',rgb:'74,222,128'},{h:'#2dd4bf',h2:'#38bdf8',rgb:'45,212,191'},{h:'#60a5fa',h2:'#818cf8',rgb:'96,165,250'},{h:'#818cf8',h2:'#a78bfa',rgb:'129,140,248'},{h:'#e2e8f0',h2:'#cbd5e1',rgb:'226,232,240'},{h:'#f59e0b',h2:'#fbbf24',rgb:'245,158,11'},{h:'#fb7185',h2:'#f472b6',rgb:'251,113,133'}];
+  const saved=localStorage.getItem('pfv1');
+  if(saved!==null){const f=FARBEN[parseInt(saved)]||FARBEN[5];
+    document.documentElement.style.setProperty('--accent',f.h);
+    document.documentElement.style.setProperty('--accent2',f.h2);
+    document.documentElement.style.setProperty('--aRGB',f.rgb);}
+}catch(e){}
+
+/* ============ SKILL-DATEN ============ */
+const KAT={
+  st:{name:'Stresstoleranz',info:'Durch den Sturm kommen, ohne dass es hinterher schlimmer ist.'},
+  er:{name:'Emotionsregulation',info:'Gefühle verstehen und beeinflussen, statt von ihnen gefahren zu werden.'},
+  zw:{name:'Zwischenmenschliche Fertigkeiten',info:'Sagen, was du brauchst – ohne dich oder die Beziehung zu verlieren.'}
+};
+
+const SKILLS=[
+/* ---------- STRESSTOLERANZ ---------- */
+{
+  id:'stop',kat:'st',icon:'✋',titel:'STOP',sub:'Der Notbremse-Skill, bevor du etwas tust, das du bereust.',min:7,max:10,dauer:'3 Min',
+  steps:[
+    {t:'info',h:'S – Stopp',p:'Halte körperlich inne. Nicht bewegen, nicht antworten, nicht schicken, nicht losgehen. Der Impuls ist gerade lauter als du. Das ändert sich in wenigen Minuten.',note:'Du musst nichts entscheiden. Du musst nur kurz nichts tun.'},
+    {t:'timer',h:'T – Tritt zurück',p:'Eine Minute lang nichts tun. Der Drang darf bleiben. Beobachte ihn, wie eine Welle, die steigt – und wieder fällt.',sek:60},
+    {t:'atem',h:'Atme, bevor du weitergehst',p:'Langes Ausatmen bremst das Nervensystem.',ein:4,halt:0,aus:6,runden:4},
+    {t:'eingabe',h:'O – Ordne die Lage',p:'Nur Fakten. Was ist tatsächlich passiert? Was fühlst du? Was will der Impuls von dir?',ph:'Was ist passiert …',key:'lage',multi:true},
+    {t:'eingabe',h:'P – Plane bewusst',p:'Was ist der nächste kleine Schritt, den du morgen nicht bereust?',ph:'Ich werde jetzt …',key:'plan',multi:true},
+    {t:'skala',h:'Wo stehst du jetzt?',p:'Ehrlich – auch kleine Veränderungen zählen.',key:'ende_lvl'},
+    {t:'zf',h:'Dein STOP',fn:d=>[['Die Lage',d.lage],['Mein nächster Schritt',d.plan]]}
+  ]
+},
+{
+  id:'koerper',kat:'st',icon:'🌊',titel:'Körper runterfahren',sub:'Wenn der Kopf nicht mehr mitkommt: über den Körper aus dem Alarm.',min:8,max:10,dauer:'5 Min',
+  steps:[
+    {t:'info',h:'Dein Körper ist im Alarm',p:'Bei sehr hoher Anspannung kommst du über Gedanken nicht mehr weiter – das Denken ist gerade offline. Der Weg führt über den Körper: erst Bewegung, dann Atmung, dann Muskeln.',note:'Die klassische DBT-Variante enthält auch eine Temperatur-Komponente. Wie du die für dich einsetzt, besprich am besten mit deiner Therapeutin oder deinem Therapeuten.'},
+    {t:'timer',h:'Intensive Bewegung',p:'Eine Minute Vollgas: auf der Stelle laufen, Hampelmänner, Treppe hoch, Liegestütze an der Wand. Verbrauche die Energie, die gerade in dir steckt.',sek:60},
+    {t:'atem',h:'Atmung verlangsamen',p:'Ausatmen doppelt so lang wie einatmen. Das ist der Schalter, der den Körper aus dem Alarm holt.',ein:4,halt:0,aus:8,runden:6},
+    {t:'timer',h:'Anspannen und lösen',p:'Fäuste fest ballen – 5 Sekunden halten – lösen. Dann Schultern zu den Ohren – halten – fallen lassen. Dann Beine fest – halten – lösen. Achte jedes Mal auf den Moment des Loslassens.',sek:75},
+    {t:'skala',h:'Und jetzt?',p:'Vergleiche mit dem Wert von vorhin.',key:'ende_lvl'},
+    {t:'ende',h:'Geschafft',p:'Dein Körper hat gerade gemerkt, dass keine Gefahr da ist. Wenn du noch hoch bist: wiederhole den Durchgang. Das ist keine Niederlage, das ist Dosierung.'}
+  ]
+},
+{
+  id:'54321',kat:'st',icon:'👀',titel:'5-4-3-2-1',sub:'Zurück in den Raum, wenn Kopfkino oder Dissoziation übernehmen.',min:5,max:9,dauer:'4 Min',
+  steps:[
+    {t:'info',h:'Zurück ins Hier',p:'Deine Aufmerksamkeit ist gerade irgendwo anders – in der Vergangenheit, in der Angst, im Nebel. Die Sinne holen sie zurück. Nimm dir für jeden Schritt Zeit und benenne wirklich konkret.'},
+    {t:'eingabe',h:'5 Dinge, die du siehst',p:'Schau dich um. Nicht nur „Wand“ – sondern: ein Kratzer im Holz, ein blauer Stift, Staub im Licht.',ph:'1. …\n2. …\n3. …\n4. …\n5. …',key:'sehen',multi:true},
+    {t:'eingabe',h:'4 Dinge, die du hörst',p:'Auch die leisen: Kühlschrank, Verkehr, dein eigener Atem.',ph:'1. …\n2. …\n3. …\n4. …',key:'hoeren',multi:true},
+    {t:'eingabe',h:'3 Dinge, die du spürst',p:'Boden unter den Füßen, Stoff auf der Haut, Temperatur der Luft.',ph:'1. …\n2. …\n3. …',key:'spueren',multi:true},
+    {t:'eingabe',h:'2 Dinge, die du riechst',p:'Wenn nichts da ist: hol dir bewusst etwas – Kaffee, Seife, frische Luft.',ph:'1. …\n2. …',key:'riechen',multi:true},
+    {t:'eingabe',h:'1 Sache, die du schmeckst',p:'Ein Schluck Wasser, ein Kaugummi, der Geschmack im Mund.',ph:'…',key:'schmecken',multi:false},
+    {t:'ende',h:'Du bist hier',p:'Dein Körper ist in diesem Raum, an diesem Tag. Was auch immer im Kopf lief – hier ist gerade Boden unter dir.'}
+  ]
+},
+{
+  id:'accepts',kat:'st',icon:'🎯',titel:'Ablenken mit ACCEPTS',sub:'Aufmerksamkeit gezielt umlenken, bis die Welle vorbei ist.',min:5,max:8,dauer:'5-15 Min',
+  steps:[
+    {t:'info',h:'Ablenkung ist kein Ausweichen',p:'Ablenken heißt nicht wegdrücken. Es heißt: du überbrückst die Zeit, bis die Anspannung von selbst sinkt – und triffst Entscheidungen später, wenn du wieder denken kannst.'},
+    {t:'check',h:'Was passt gerade?',p:'Wähle ein bis zwei Dinge, die du in den nächsten Minuten wirklich tun kannst.',items:[
+      'Aktivität – etwas tun, das die Hände beschäftigt (aufräumen, kochen, spülen)',
+      'Contribution – jemandem etwas Gutes tun, eine Nachricht schreiben',
+      'Comparison – dich an eine Situation erinnern, die du schon überstanden hast',
+      'Emotions – Gegenbild erzeugen: lustiges Video, laute Musik, Kälte-Kick der Frischluft',
+      'Push away – das Thema bildlich in eine Kiste packen, Deckel zu, morgen wieder öffnen',
+      'Thoughts – Kopf füllen: rückwärts zählen, Songtext aufsagen, Länder von A bis Z',
+      'Sensations – starker Sinnesreiz: laute Musik über Kopfhörer, Zitrone, Igelball'
+    ]},
+    {t:'eingabe',h:'Was machst du konkret?',p:'Ein Satz. Je konkreter, desto wahrscheinlicher tust du es auch.',ph:'Ich räume jetzt 10 Minuten die Küche auf.',key:'plan',multi:false},
+    {t:'timer',h:'Los – die Zeit läuft',p:'Leg das Handy weg und mach die Sache. Der Timer holt dich zurück.',sek:300},
+    {t:'skala',h:'Wo bist du jetzt?',p:'',key:'ende_lvl'},
+    {t:'ende',h:'Welle überbrückt',p:'Wenn du noch hoch bist: nimm dir eine zweite Runde. Wenn es besser ist, ist jetzt der Moment für den Skill, der wirklich an die Sache rangeht.'}
+  ]
+},
+{
+  id:'sinne',kat:'st',icon:'🫧',titel:'Selbstberuhigung über die 5 Sinne',sub:'Sich freundlich behandeln, wenn es unangenehm ist.',min:2,max:7,dauer:'6 Min',
+  steps:[
+    {t:'info',h:'Freundlich zu dir sein',p:'Nicht ablenken, nicht analysieren – trösten. Für viele Menschen ist das der ungewohnteste Skill überhaupt. Genau deshalb lohnt er sich.'},
+    {t:'check',h:'Such dir zwei Sinne aus',p:'Was ist gerade erreichbar?',items:[
+      'Sehen – Fotos von einem schönen Ort, Kerze, Fenster, Pflanze',
+      'Hören – ruhige Musik, Regengeräusche, eine vertraute Stimme',
+      'Riechen – Tee, Duschgel, Zitrone, frische Wäsche, Waldluft',
+      'Schmecken – langsam Tee trinken, ein Stück Schokolade wirklich schmecken',
+      'Fühlen – weiche Decke, warme Dusche, Handcreme, Haustier streicheln'
+    ]},
+    {t:'timer',h:'Drei Minuten für dich',p:'Mach die Sache – langsam und mit voller Aufmerksamkeit. Wenn Gedanken kommen: freundlich zurück zum Sinn.',sek:180},
+    {t:'eingabe',h:'Was hat gutgetan?',p:'Notiere es. Beim nächsten Mal musst du dann nicht neu überlegen.',ph:'Mir hat geholfen …',key:'gut',multi:true},
+    {t:'zf',h:'Dein Trostvorrat',fn:d=>[['Das tut mir gut',d.gut]]}
+  ]
+},
+{
+  id:'akzeptanz',kat:'st',icon:'🪨',titel:'Radikale Akzeptanz',sub:'Für das, was du nicht ändern kannst – und was dich trotzdem festhält.',min:3,max:8,dauer:'8 Min',
+  steps:[
+    {t:'info',h:'Akzeptieren heißt nicht gutheißen',p:'Radikale Akzeptanz bedeutet nicht, dass etwas okay ist oder du es willst. Es bedeutet nur: es ist so. Der Kampf gegen die Realität kostet Kraft und ändert nichts – das ist das Leid, das obendrauf kommt.'},
+    {t:'eingabe',h:'Was ist die Realität?',p:'Schreib die Tatsache auf, gegen die du gerade ankämpfst. Ohne Bewertung, ohne „aber“.',ph:'Die Tatsache ist …',key:'fakt',multi:true},
+    {t:'eingabe',h:'Was hat dahin geführt?',p:'Ursachen, nicht Schuld. Jede Situation hat eine Vorgeschichte, in der sie Sinn ergab – auch wenn sie weh tut.',ph:'Das kam so, weil …',key:'ursache',multi:true},
+    {t:'eingabe',h:'Was kostet dich das Ankämpfen?',p:'Was hast du davon, dass du dich dagegen wehrst? Was nimmt es dir?',ph:'Der Kampf kostet mich …',key:'kosten',multi:true},
+    {t:'atem',h:'Halbes Lächeln, offene Hände',p:'Entspanne das Gesicht, ein Hauch von Lächeln. Lege die Hände offen auf die Oberschenkel. Der Körper lernt Akzeptanz schneller als der Kopf.',ein:4,halt:2,aus:6,runden:5},
+    {t:'info',h:'Sag es dir',p:'„Das ist gerade so. Ich kann es in diesem Moment nicht ändern. Ich kann entscheiden, was ich jetzt tue.“',note:'Akzeptanz ist kein Schalter. Du wirst sie oft wiederholen müssen – manchmal hundertmal am Tag. Das ist normal, nicht Scheitern.'},
+    {t:'eingabe',h:'Was liegt in deiner Hand?',p:'Ein Ding, das du beeinflussen kannst.',ph:'Ich kann …',key:'handlung',multi:true},
+    {t:'zf',h:'Deine Akzeptanz-Notiz',fn:d=>[['Die Realität',d.fakt],['Was der Kampf kostet',d.kosten],['Was in meiner Hand liegt',d.handlung]]}
+  ]
+},
+{
+  id:'procontra',kat:'st',icon:'⚖️',titel:'Pro & Contra',sub:'Für den Moment, in dem der Impuls sehr überzeugend klingt.',min:5,max:8,dauer:'6 Min',
+  steps:[
+    {t:'info',h:'Beide Seiten anschauen',p:'Der Impuls zeigt dir nur seine Vorteile. Wir schauen uns alle vier Felder an – auch die Vorteile, denn die sind real. Nur eben kurzfristig.'},
+    {t:'eingabe',h:'Worum geht es?',p:'Der Impuls oder die Handlung, um die es gerade geht.',ph:'Ich habe den Drang, …',key:'impuls',multi:false},
+    {t:'eingabe',h:'Vorteile, wenn du dem Impuls folgst',p:'Ehrlich sein. Wenn es nichts bringen würde, wäre der Drang nicht so stark.',ph:'Kurzfristig würde es …',key:'pro1',multi:true},
+    {t:'eingabe',h:'Nachteile, wenn du dem Impuls folgst',p:'Denk an morgen früh. An nächste Woche.',ph:'Danach wäre …',key:'con1',multi:true},
+    {t:'eingabe',h:'Vorteile, wenn du es aushältst',p:'Was gewinnst du, wenn du die Welle vorbeiziehen lässt?',ph:'Wenn ich es aushalte …',key:'pro2',multi:true},
+    {t:'eingabe',h:'Nachteile, wenn du es aushältst',p:'Auch das ist real – es ist unangenehm und anstrengend.',ph:'Es wäre schwer, weil …',key:'con2',multi:true},
+    {t:'zf',h:'Deine Bilanz',fn:d=>[['Der Impuls',d.impuls],['Dafür (kurzfristig)',d.pro1],['Dagegen (danach)',d.con1],['Für das Aushalten',d.pro2],['Gegen das Aushalten',d.con2]]}
+  ]
+},
+
+/* ---------- EMOTIONSREGULATION ---------- */
+{
+  id:'welle',kat:'er',icon:'🌀',titel:'Emotion benennen & Welle reiten',sub:'Das Gefühl da sein lassen, ohne es zu werden.',min:4,max:8,dauer:'7 Min',
+  steps:[
+    {t:'info',h:'Gefühle sind Wellen',p:'Eine einzelne Emotion dauert körperlich meist unter einer Minute. Was sie am Leben hält, sind Gedanken darüber und der Kampf dagegen. Wir machen hier das Gegenteil: hinsehen, benennen, dabeibleiben.'},
+    {t:'eingabe',h:'Wie heißt das Gefühl?',p:'Ein Wort, wenn möglich: Wut, Angst, Scham, Trauer, Einsamkeit, Neid, Schuld, Leere.',ph:'Ich fühle …',key:'emotion',multi:false},
+    {t:'eingabe',h:'Wo im Körper sitzt es?',p:'Enge im Hals, Druck auf der Brust, Hitze im Gesicht, Ziehen im Bauch, Zittern.',ph:'Ich spüre es …',key:'koerper',multi:true},
+    {t:'eingabe',h:'Was war der Auslöser?',p:'Nur die Fakten – was ist passiert, kurz bevor es losging?',ph:'Ausgelöst hat es …',key:'ausloeser',multi:true},
+    {t:'atem',h:'Die Welle reiten',p:'Atme in die Stelle im Körper. Du musst das Gefühl nicht wegmachen. Du bist die Welle nicht – du bist das Wasser drumherum.',ein:4,halt:2,aus:6,runden:8},
+    {t:'eingabe',h:'Was braucht dieses Gefühl?',p:'Jede Emotion hat eine Botschaft. Wut zeigt Grenzen, Angst zeigt Gefahr, Trauer zeigt Verlust, Scham zeigt einen wunden Punkt.',ph:'Es sagt mir, dass …',key:'botschaft',multi:true},
+    {t:'zf',h:'Deine Emotion',fn:d=>[['Gefühl',d.emotion],['Im Körper',d.koerper],['Auslöser',d.ausloeser],['Botschaft',d.botschaft]]}
+  ]
+},
+{
+  id:'fakten',kat:'er',icon:'🔍',titel:'Faktencheck',sub:'Passt die Intensität zur Situation – oder zur Interpretation?',min:3,max:7,dauer:'6 Min',
+  steps:[
+    {t:'info',h:'Gefühle folgen Gedanken',p:'Nicht die Situation macht das Gefühl, sondern was du über sie denkst. Wenn ein Gefühl viel größer ist als der Anlass, lohnt sich der Blick auf die Interpretation dazwischen.'},
+    {t:'eingabe',h:'Was ist passiert?',p:'Nur was eine Kamera aufzeichnen würde. Keine Deutung, keine Absichten.',ph:'Die Kamera hätte gesehen …',key:'fakt',multi:true},
+    {t:'eingabe',h:'Was hast du dir dazu gedacht?',p:'Die Interpretation: Was bedeutet das aus deiner Sicht?',ph:'Ich habe gedacht …',key:'deutung',multi:true},
+    {t:'eingabe',h:'Welche andere Erklärung wäre möglich?',p:'Mindestens eine, die nicht gegen dich spricht. Auch wenn du sie nicht glaubst.',ph:'Es könnte auch sein, dass …',key:'alt',multi:true},
+    {t:'eingabe',h:'Angenommen, das Schlimmste tritt ein – wie würdest du damit umgehen?',p:'Nicht: wie schrecklich wäre es. Sondern: was würdest du tun?',ph:'Dann würde ich …',key:'bewaeltigung',multi:true},
+    {t:'skala',h:'Und die Anspannung jetzt?',p:'',key:'ende_lvl'},
+    {t:'zf',h:'Dein Faktencheck',fn:d=>[['Fakten',d.fakt],['Meine Deutung',d.deutung],['Andere Möglichkeit',d.alt],['Mein Umgang',d.bewaeltigung]]}
+  ]
+},
+{
+  id:'gegenteil',kat:'er',icon:'↩️',titel:'Entgegengesetztes Handeln',sub:'Wenn das Gefühl nicht passt: das Gegenteil von dem tun, was es will.',min:4,max:8,dauer:'6 Min',
+  steps:[
+    {t:'info',h:'Jede Emotion hat einen Handlungsdrang',p:'Angst will fliehen, Wut will angreifen, Scham will sich verstecken, Traurigkeit will sich zurückziehen. Wenn du dem folgst, bestätigst du das Gefühl. Wenn es nicht zur Lage passt, wird es durch das Gegenteil kleiner.'},
+    {t:'eingabe',h:'Welches Gefühl und welcher Drang?',p:'Was willst du gerade tun?',ph:'Ich fühle … und will …',key:'drang',multi:true},
+    {t:'check',h:'Passt das Gefühl zu den Fakten?',p:'Kreuze an, was zutrifft.',items:[
+      'Es gibt eine reale, gegenwärtige Gefahr',
+      'Meine Grenze wurde tatsächlich verletzt',
+      'Ich habe wirklich gegen meine eigenen Werte gehandelt',
+      'Ich habe wirklich etwas verloren',
+      'Nichts davon trifft eindeutig zu'
+    ],note:'Wenn eine der ersten vier Zeilen klar zutrifft: dann passt das Gefühl und der Impuls hat recht. Dann ist Problemlösen dran, nicht dieser Skill.'},
+    {t:'info',h:'Das Gegenteil – ganz',p:'Angst → hingehen, immer wieder, bis es kleiner wird.\nWut → freundlich bleiben, sanfte Stimme, weggehen statt draufgehen.\nScham → zeigen statt verstecken, Kopf hoch, Blickkontakt.\nTraurigkeit → aktiv werden, aufrecht hinsetzen, Menschen aufsuchen.',note:'„Ganz“ heißt: auch Körperhaltung, Stimme und Gesicht. Halbherzig wirkt es nicht.'},
+    {t:'eingabe',h:'Dein entgegengesetzter Schritt',p:'Klein und in den nächsten 30 Minuten machbar.',ph:'Ich werde …',key:'schritt',multi:true},
+    {t:'zf',h:'Dein Gegenprogramm',fn:d=>[['Gefühl & Drang',d.drang],['Mein Gegenschritt',d.schritt]]}
+  ]
+},
+{
+  id:'please',kat:'er',icon:'🫀',titel:'PLEASE Check-in',sub:'Die körperliche Basis, die deine Verletzlichkeit für Gefühle steuert.',min:0,max:5,dauer:'4 Min',
+  steps:[
+    {t:'info',h:'Emotionen haben eine Hardware',p:'Zu wenig Schlaf, kein Essen, Krankheit – dann kippt die Stimmung schneller und der Kopf hat weniger Puffer. Dieser Skill ist Vorbeugung: er wirkt nicht in der Krise, sondern verhindert die nächste.'},
+    {t:'check',h:'Wie sieht es heute aus?',p:'Ehrlicher Check. Hak ab, was heute stimmt.',items:[
+      'PhysicaL – körperliche Beschwerden versorgt, Medikamente genommen',
+      'Eating – heute regelmäßig und ausreichend gegessen',
+      'Avoid – keine stimmungsverändernden Substanzen',
+      'Sleep – halbwegs ausreichend geschlafen',
+      'Exercise – heute bewegt, mindestens ein kurzer Spaziergang'
+    ]},
+    {t:'eingabe',h:'Welcher Punkt fehlt am meisten?',p:'Nimm den, bei dem die Lücke am größten ist.',ph:'Am meisten fehlt mir …',key:'luecke',multi:false},
+    {t:'eingabe',h:'Was ist der kleinste Schritt heute?',p:'Nicht die perfekte Lösung. Die machbare.',ph:'Heute schaffe ich …',key:'schritt',multi:true},
+    {t:'zf',h:'Dein Check-in',fn:d=>[['Größte Lücke',d.luecke],['Heute',d.schritt]]}
+  ]
+},
+{
+  id:'positiv',kat:'er',icon:'✨',titel:'Positives aufbauen',sub:'Vorrat anlegen für die Tage, an denen wenig geht.',min:0,max:4,dauer:'5 Min',
+  steps:[
+    {t:'info',h:'Nicht erst, wenn du dich gut fühlst',p:'Angenehme Erfahrungen sind kein Belohnung für gute Tage, sondern die Grundlage dafür. Ein Tag mit einem einzigen bewusst schönen Moment ist ein anderer Tag.'},
+    {t:'eingabe',h:'Was war heute schon gut?',p:'Auch Winzigkeiten zählen: ein Kaffee, ein Song, Sonne im Gesicht, ein Satz von jemandem.',ph:'Heute war gut …',key:'heute',multi:true},
+    {t:'eingabe',h:'Eine kleine Sache für heute',p:'Etwas Angenehmes, das du dir in den nächsten Stunden bewusst nimmst.',ph:'Ich mache heute noch …',key:'klein',multi:true},
+    {t:'eingabe',h:'Was ist dir langfristig wichtig?',p:'Ein Bereich, der dir etwas bedeutet – Beziehungen, Kreatives, Bewegung, Lernen, Natur.',ph:'Mir ist wichtig …',key:'wert',multi:true},
+    {t:'eingabe',h:'Ein Schritt in diese Richtung',p:'Diese Woche, konkret, klein genug, dass es sicher klappt.',ph:'Diese Woche …',key:'schritt',multi:true},
+    {t:'zf',h:'Dein Aufbau',fn:d=>[['Heute schon gut',d.heute],['Heute noch',d.klein],['Wichtig für mich',d.wert],['Diese Woche',d.schritt]]}
+  ]
+},
+
+/* ---------- ZWISCHENMENSCHLICH ---------- */
+{
+  id:'dearman',kat:'zw',icon:'🗣️',titel:'DEARMAN',sub:'Etwas bekommen: eine Bitte oder ein Nein klar formulieren.',min:0,max:6,dauer:'10 Min',
+  steps:[
+    {t:'info',h:'Du baust dir einen Satz',p:'DEARMAN ist ein Bauplan für schwierige Gespräche. Am Ende hast du einen Text, den du wirklich sagen kannst – schau ihn dir vorher noch einmal an.'},
+    {t:'eingabe',h:'Um wen und was geht es?',p:'Mit wem sprichst du, und was willst du erreichen?',ph:'Ich spreche mit … und möchte …',key:'ziel',multi:true},
+    {t:'eingabe',h:'D – Describe: die Situation in Fakten',p:'Nur Beobachtbares, kein Vorwurf. „Du immer“ und „nie“ gehören nicht hierher.',ph:'Die letzten drei Male, als …',key:'d',multi:true},
+    {t:'eingabe',h:'E – Express: dein Gefühl dazu',p:'Ich-Botschaft. „Ich fühle mich …“ statt „Du machst mich …“.',ph:'Ich fühle mich dabei …',key:'e',multi:true},
+    {t:'eingabe',h:'A – Assert: die klare Bitte',p:'Konkret sagen, was du willst oder nicht willst. Kein Andeuten, kein Hoffen, dass es jemand errät.',ph:'Ich bitte dich darum, …',key:'a',multi:true},
+    {t:'eingabe',h:'R – Reinforce: was hat das Gegenüber davon?',p:'Was wird dadurch besser – auch für die andere Person?',ph:'Dann hätten wir beide …',key:'r',multi:true},
+    {t:'check',h:'M A N – die Haltung',p:'Das kommt nicht in den Text, sondern ins Gespräch.',items:[
+      'Mindful – beim Thema bleiben, die Bitte notfalls ruhig wiederholen',
+      'Appear confident – aufrechte Haltung, ruhige Stimme, Blickkontakt',
+      'Negotiate – bereit sein, einen Mittelweg zu finden'
+    ]},
+    {t:'zf',h:'Dein Gesprächstext',fn:d=>[['Mein Ziel',d.ziel],['Situation',d.d],['Mein Gefühl',d.e],['Meine Bitte',d.a],['Was es bringt',d.r]]}
+  ]
+},
+{
+  id:'give',kat:'zw',icon:'🤝',titel:'GIVE',sub:'Die Beziehung halten, auch wenn das Thema schwierig ist.',min:0,max:6,dauer:'6 Min',
+  steps:[
+    {t:'info',h:'Wenn die Beziehung wichtiger ist als das Ergebnis',p:'Manchmal ist das Ziel nicht, recht zu bekommen, sondern dass ihr danach noch miteinander reden könnt. GIVE ist die Haltung dafür.'},
+    {t:'eingabe',h:'Um welches Gespräch geht es?',p:'',ph:'Es geht um …',key:'thema',multi:true},
+    {t:'check',h:'Die vier Bausteine',p:'Nimm dir vor dem Gespräch bewusst vor, was du davon umsetzt.',items:[
+      'Gentle – kein Angriff, keine Drohung, kein Urteil, kein Augenrollen',
+      'Interested – zuhören, ausreden lassen, nachfragen statt gleich kontern',
+      'Validate – zeigen, dass du die Sicht des anderen verstehst („Ich sehe, dass dich das nervt“)',
+      'Easy manner – leichter Ton, wo es geht: ein Lächeln, etwas Humor, kein Verhör'
+    ]},
+    {t:'eingabe',h:'Was kannst du ehrlich validieren?',p:'Etwas an der Sicht des anderen, das nachvollziehbar ist – auch wenn du anderer Meinung bist.',ph:'Ich kann verstehen, dass …',key:'valid',multi:true},
+    {t:'eingabe',h:'Was willst du auf keinen Fall sagen?',p:'Der Satz, der rausrutschen könnte und danach schwer zurückzunehmen ist.',ph:'Ich sage nicht …',key:'nicht',multi:true},
+    {t:'zf',h:'Deine Vorbereitung',fn:d=>[['Thema',d.thema],['Das kann ich verstehen',d.valid],['Das sage ich nicht',d.nicht]]}
+  ]
+},
+{
+  id:'fast',kat:'zw',icon:'🛡️',titel:'FAST',sub:'Selbstachtung behalten – nicht kleiner machen, als du bist.',min:0,max:6,dauer:'6 Min',
+  steps:[
+    {t:'info',h:'Nach dem Gespräch noch du selbst sein',p:'FAST ist der Skill gegen das schale Gefühl danach: dass du dich verbogen, überentschuldigt oder etwas versprochen hast, das gegen deine Werte geht.'},
+    {t:'eingabe',h:'Worum geht es?',p:'',ph:'Die Situation …',key:'thema',multi:true},
+    {t:'check',h:'Die vier Punkte',p:'',items:[
+      'Fair – fair zu dir selbst und zum anderen, nicht nur zu einer Seite',
+      'Apologies – keine Entschuldigungen für Dinge, für die du nichts kannst. Nicht für deine Existenz, deine Meinung, dein Nein',
+      'Stick to values – bei dem bleiben, was dir wirklich wichtig ist',
+      'Truthful – ehrlich bleiben, nicht übertreiben, keine Ausreden erfinden'
+    ]},
+    {t:'eingabe',h:'Welcher Wert steht hier auf dem Spiel?',p:'Was wäre verletzt, wenn du einknickst?',ph:'Mir ist wichtig, dass …',key:'wert',multi:true},
+    {t:'eingabe',h:'Wofür entschuldigst du dich nicht?',p:'Schreib es auf, damit du es im Gespräch wiedererkennst.',ph:'Ich entschuldige mich nicht dafür, dass …',key:'keine_ent',multi:true},
+    {t:'zf',h:'Deine Linie',fn:d=>[['Situation',d.thema],['Mein Wert',d.wert],['Dafür entschuldige ich mich nicht',d.keine_ent]]}
+  ]
+},
+{
+  id:'nein',kat:'zw',icon:'🚫',titel:'Nein sagen',sub:'Wie hart darf dein Nein sein? Intensität bewusst wählen.',min:1,max:7,dauer:'6 Min',
+  steps:[
+    {t:'info',h:'Nein ist ein vollständiger Satz',p:'Und trotzdem ist die Frage berechtigt, wie viel Nachdruck angemessen ist. Das hängt davon ab, wie dringend deine Gründe sind, wie die Beziehung ist und was auf dem Spiel steht.'},
+    {t:'eingabe',h:'Wozu willst du nein sagen?',p:'',ph:'Ich soll …',key:'frage',multi:true},
+    {t:'check',h:'Was spricht für ein klares Nein?',p:'Je mehr zutrifft, desto deutlicher darf es sein.',items:[
+      'Ich habe die Kapazität dafür gerade wirklich nicht',
+      'Es geht gegen etwas, das mir wichtig ist',
+      'Ich sage bei dieser Person überdurchschnittlich oft ja',
+      'Ich würde es später bereuen',
+      'Die andere Person kann es auch selbst oder anders lösen'
+    ]},
+    {t:'eingabe',h:'Dein Nein in einem Satz',p:'Ohne lange Rechtfertigung. Ein kurzer Grund reicht – oder gar keiner.',ph:'Nein, das geht bei mir nicht, weil …',key:'satz',multi:true},
+    {t:'eingabe',h:'Was bietest du stattdessen an – wenn du willst?',p:'Freiwillig. Ein Nein braucht kein Trostpflaster.',ph:'Ich könnte stattdessen …',key:'alt',multi:true},
+    {t:'info',h:'Wenn nachgehakt wird',p:'Die „kaputte Schallplatte“: ruhig denselben Satz wiederholen, freundlich, ohne neue Begründungen. Neue Gründe laden zu neuen Diskussionen ein.'},
+    {t:'zf',h:'Dein Nein',fn:d=>[['Worum es geht',d.frage],['Mein Satz',d.satz],['Mein Angebot',d.alt]]}
+  ]
+}
+];
+
+/* ============ LISTE & FILTER ============ */
+let LVL=5, FILTER_AN=true;
+try{const s=localStorage.getItem('skl_lvl');if(s!==null)LVL=parseInt(s);const f=localStorage.getItem('skl_filter');if(f!==null)FILTER_AN=(f==='1');}catch(e){}
+
+const LVL_TEXT=[
+  'Ruhig. Guter Moment, um vorzubauen und Skills zu üben, solange es leicht geht.',
+  'Ruhig. Guter Moment, um vorzubauen und Skills zu üben, solange es leicht geht.',
+  'Leichte Anspannung. Du kannst noch gut denken – Zeit für die Skills, die etwas verändern.',
+  'Spürbar unruhig. Emotionsregulation greift hier noch gut.',
+  'Deutlich angespannt. Erst runterkommen, dann analysieren.',
+  'Mittlere Anspannung. Ablenkung und Selbstberuhigung sind jetzt sinnvoll.',
+  'Hoch. Denken wird schwierig – nimm die körpernahen Skills.',
+  'Sehr hoch. Jetzt keine Entscheidungen treffen. Erst STOP, dann Körper.',
+  'Sehr hoch. Über den Körper arbeiten, nicht über den Kopf.',
+  'Hochstress. Nur noch kurze, körperliche Skills. Ein Schritt nach dem anderen.',
+  'Hochstress. Nur noch kurze, körperliche Skills. Ein Schritt nach dem anderen.'
+];
+
+function setModus(an){
+  FILTER_AN=an;
+  try{localStorage.setItem('skl_filter',an?'1':'0');}catch(e){}
+  document.getElementById('tgFilter').classList.toggle('active',an);
+  document.getElementById('tgAlle').classList.toggle('active',!an);
+  renderListe();
+}
+window.setModus=setModus;
+
+function renderListe(){
+  const host=document.getElementById('skillsList');
+  const liste=FILTER_AN?SKILLS.filter(s=>LVL>=s.min&&LVL<=s.max):SKILLS;
+  if(!liste.length){
+    host.innerHTML='<div class="empty-state">Für diesen Wert ist gerade nichts hinterlegt.<br>Schau dir alle Skills an oder verschiebe den Regler.</div>';
+    return;
+  }
+  let html='';
+  ['st','er','zw'].forEach(k=>{
+    const grp=liste.filter(s=>s.kat===k);
+    if(!grp.length)return;
+    html+='<div class="kat-head">'+KAT[k].name+'</div>';
+    grp.forEach(s=>{
+      html+='<div class="skill-card" onclick="startSkill(\''+s.id+'\')">'
+        +'<div class="skill-ic">'+s.icon+'</div>'
+        +'<div class="skill-body">'
+        +'<div class="skill-title">'+esc(s.titel)+'</div>'
+        +'<div class="skill-sub">'+esc(s.sub)+'</div>'
+        +'<div class="skill-meta"><span class="range-pill">Anspannung '+s.min+'–'+s.max+'</span><span class="dauer-pill">'+esc(s.dauer)+'</span></div>'
+        +'</div></div>';
+    });
+  });
+  host.innerHTML=html;
+}
+
+function updateLvl(v){
+  LVL=parseInt(v);
+  document.getElementById('lvlVal').textContent=LVL;
+  document.getElementById('lvlState').textContent=LVL_TEXT[LVL];
+  try{localStorage.setItem('skl_lvl',String(LVL));}catch(e){}
+  renderListe();
+}
+
+/* ============ SCHRITT-ENGINE ============ */
+let RUN=null;
+
+function stopTimers(){
+  if(!RUN)return;
+  if(RUN.iv){clearInterval(RUN.iv);RUN.iv=null;}
+  if(RUN.to){clearTimeout(RUN.to);RUN.to=null;}
+}
 
 function openSkillDetail(title,html){
   document.getElementById('skillDetailTitle').textContent=title;
@@ -306,28 +483,210 @@ function openSkillDetail(title,html){
   document.getElementById('ov-skill-detail').classList.add('active');
 }
 function closeSkillDetail(){
+  stopTimers();
+  RUN=null;
   document.getElementById('ov-skill-detail').classList.remove('active');
+  document.getElementById('skillDetailBody').innerHTML='';
 }
 window.openSkillDetail=openSkillDetail;
 window.closeSkillDetail=closeSkillDetail;
 
-function goHome(){
-  if(window.parent!==window){window.parent.postMessage('closeFrame','*');}
-  else window.location.href='index.html';
+function startSkill(id){
+  const s=SKILLS.find(x=>x.id===id);
+  if(!s)return;
+  RUN={s:s,i:0,d:{},iv:null,to:null};
+  openSkillDetail(s.titel,'<div class="st-wrap" id="stHost"></div>');
+  renderStep();
 }
-window.goHome=goHome;
+window.startSkill=startSkill;
 
-// Akzentfarbe aus der Haupt-App übernehmen
-try{
-  const FARBEN=[{h:'#c084fc',h2:'#818cf8',rgb:'192,132,252'},{h:'#f472b6',h2:'#e879f9',rgb:'244,114,182'},{h:'#f87171',h2:'#fb923c',rgb:'248,113,113'},{h:'#fb923c',h2:'#fbbf24',rgb:'251,146,60'},{h:'#fbbf24',h2:'#a3e635',rgb:'251,191,36'},{h:'#4ade80',h2:'#2dd4bf',rgb:'74,222,128'},{h:'#2dd4bf',h2:'#38bdf8',rgb:'45,212,191'},{h:'#60a5fa',h2:'#818cf8',rgb:'96,165,250'},{h:'#818cf8',h2:'#a78bfa',rgb:'129,140,248'},{h:'#e2e8f0',h2:'#cbd5e1',rgb:'226,232,240'},{h:'#f59e0b',h2:'#fbbf24',rgb:'245,158,11'},{h:'#fb7185',h2:'#f472b6',rgb:'251,113,133'}];
-  const saved=localStorage.getItem('pfv1');
-  if(saved!==null){
-    const f=FARBEN[parseInt(saved)]||FARBEN[5];
-    document.documentElement.style.setProperty('--accent',f.h);
-    document.documentElement.style.setProperty('--accent2',f.h2);
-    document.documentElement.style.setProperty('--aRGB',f.rgb);
+function saveCurrentInput(){
+  if(!RUN)return;
+  const st=RUN.s.steps[RUN.i];
+  if(!st)return;
+  if(st.t==='eingabe'){
+    const el=document.getElementById('stInput');
+    if(el)RUN.d[st.key]=el.value.trim();
+  }else if(st.t==='skala'){
+    const el=document.getElementById('stSkala');
+    if(el)RUN.d[st.key]=el.value;
+  }else if(st.t==='check'){
+    RUN.d['_check_'+RUN.i]=Array.from(document.querySelectorAll('.ck-item.on')).map(e=>e.dataset.txt);
   }
-}catch(e){}
+}
+
+function nextStep(){
+  saveCurrentInput();stopTimers();
+  if(RUN.i<RUN.s.steps.length-1){RUN.i++;renderStep();}
+  else closeSkillDetail();
+}
+function prevStep(){
+  saveCurrentInput();stopTimers();
+  if(RUN.i>0){RUN.i--;renderStep();}
+}
+window.nextStep=nextStep;window.prevStep=prevStep;
+
+function renderStep(){
+  const st=RUN.s.steps[RUN.i], n=RUN.s.steps.length, host=document.getElementById('stHost');
+  const pct=Math.round(((RUN.i+1)/n)*100);
+  let body='';
+
+  if(st.t==='info'||st.t==='ende'){
+    body='<div class="st-h">'+esc(st.h)+'</div>'+(st.p?'<div class="st-p">'+esc(st.p).replace(/\n/g,'<br>')+'</div>':'');
+    if(st.t==='ende')body='<div class="done-ic">🌿</div>'+body;
+  }
+  else if(st.t==='timer'){
+    body='<div class="st-h">'+esc(st.h)+'</div><div class="st-p">'+esc(st.p)+'</div>'
+      +'<div class="tm-wrap">'
+      +'<div class="tm-ring"><svg viewBox="0 0 150 150"><circle class="tm-track" cx="75" cy="75" r="66"/><circle class="tm-fill" id="tmFill" cx="75" cy="75" r="66" stroke-dasharray="414.7" stroke-dashoffset="0"/></svg><div class="tm-val" id="tmVal">'+fmt(st.sek)+'</div></div>'
+      +'<div class="tm-btns"><button class="tm-b prim" id="tmBtn" onclick="toggleTimer()">Start</button><button class="tm-b" onclick="resetTimer()">Zurücksetzen</button></div>'
+      +'</div>';
+  }
+  else if(st.t==='atem'){
+    body='<div class="st-h">'+esc(st.h)+'</div><div class="st-p">'+esc(st.p)+'</div>'
+      +'<div class="at-wrap"><div class="at-c" id="atC">'+st.runden+'</div>'
+      +'<div class="at-lbl" id="atLbl">Bereit?</div><div class="at-sub" id="atSub">'+st.ein+' ein'+(st.halt?' · '+st.halt+' halten':'')+' · '+st.aus+' aus</div>'
+      +'<button class="tm-b prim" id="atBtn" onclick="toggleAtem()">Start</button></div>';
+  }
+  else if(st.t==='eingabe'){
+    const val=RUN.d[st.key]||'';
+    body='<div class="st-h">'+esc(st.h)+'</div>'+(st.p?'<div class="st-p">'+esc(st.p)+'</div>':'')
+      +(st.multi
+        ?'<textarea id="stInput" rows="5" placeholder="'+esc(st.ph)+'">'+esc(val)+'</textarea>'
+        :'<input type="text" id="stInput" placeholder="'+esc(st.ph)+'" value="'+esc(val)+'">');
+  }
+  else if(st.t==='check'){
+    const prev=RUN.d['_check_'+RUN.i]||[];
+    body='<div class="st-h">'+esc(st.h)+'</div>'+(st.p?'<div class="st-p">'+esc(st.p)+'</div>':'')+'<div class="st-li">';
+    st.items.forEach(it=>{
+      const on=prev.indexOf(it)>=0;
+      body+='<div class="ck-item'+(on?' on':'')+'" data-txt="'+esc(it)+'" onclick="this.classList.toggle(\'on\');vib(12);"><div class="ck-box">✓</div><div class="ck-txt">'+esc(it)+'</div></div>';
+    });
+    body+='</div>';
+  }
+  else if(st.t==='skala'){
+    const val=RUN.d[st.key]||LVL;
+    body='<div class="st-h">'+esc(st.h)+'</div>'+(st.p?'<div class="st-p">'+esc(st.p)+'</div>':'')
+      +'<div class="sk-val" id="skVal">'+val+'</div>'
+      +'<input type="range" min="0" max="10" step="1" value="'+val+'" id="stSkala" oninput="document.getElementById(\'skVal\').textContent=this.value">'
+      +'<div class="scale-marks"><span>0</span><span>5</span><span>10</span></div>';
+  }
+  else if(st.t==='zf'){
+    const blocks=st.fn(RUN.d).filter(b=>b[1]&&String(b[1]).trim());
+    body='<div class="st-h">'+esc(st.h)+'</div>';
+    if(!blocks.length){
+      body+='<div class="st-p">Du hast nichts notiert – das ist auch okay. Der Durchgang zählt trotzdem.</div>';
+    }else{
+      body+='<div class="zf-box" id="zfBox">';
+      blocks.forEach(b=>{body+='<div class="zf-blk"><span class="zf-lbl">'+esc(b[0])+'</span>'+esc(b[1]).replace(/\n/g,'<br>')+'</div>';});
+      body+='</div><button class="tm-b" style="align-self:flex-start;" onclick="kopiere()">Text kopieren</button>';
+      RUN.zfText=blocks.map(b=>b[0].toUpperCase()+'\n'+b[1]).join('\n\n');
+    }
+  }
+
+  if(st.note)body+='<div class="st-note">'+esc(st.note)+'</div>';
+
+  const letzter=RUN.i===n-1;
+  host.innerHTML='<div class="st-prog"><div class="st-bar" style="width:'+pct+'%"></div></div>'
+    +'<div class="st-count">Schritt '+(RUN.i+1)+' von '+n+' · '+KAT[RUN.s.kat].name+'</div>'
+    +'<div class="st-main">'+body+'</div>'
+    +'<div class="st-nav">'
+    +(RUN.i>0?'<button class="btn btn-g" onclick="prevStep()">Zurück</button>':'')
+    +'<button class="btn btn-p" onclick="nextStep()">'+(letzter?'Fertig':'Weiter')+'</button>'
+    +'</div>';
+  document.getElementById('skillDetailBody').scrollTop=0;
+}
+
+function fmt(s){const m=Math.floor(s/60),r=s%60;return m+':'+(r<10?'0':'')+r;}
+
+/* --- Timer --- */
+function toggleTimer(){
+  const st=RUN.s.steps[RUN.i], btn=document.getElementById('tmBtn');
+  if(RUN.iv){stopTimers();btn.textContent='Weiter';return;}
+  if(RUN.rest==null||RUN.rest<=0)RUN.rest=st.sek;
+  btn.textContent='Pause';
+  try{gCtx().resume();}catch(e){}
+  tick(st);
+  RUN.iv=setInterval(()=>tick(st),1000);
+}
+function tick(st){
+  RUN.rest--;
+  const v=document.getElementById('tmVal'),f=document.getElementById('tmFill');
+  if(!v||!f){stopTimers();return;}
+  v.textContent=fmt(Math.max(0,RUN.rest));
+  f.setAttribute('stroke-dashoffset',String(414.7*(1-Math.max(0,RUN.rest)/st.sek)));
+  if(RUN.rest<=0){
+    stopTimers();RUN.rest=null;
+    beep(660,0.5,0.14,'sine');vib([60,60,60]);
+    const b=document.getElementById('tmBtn');if(b)b.textContent='Nochmal';
+  }
+}
+function resetTimer(){
+  const st=RUN.s.steps[RUN.i];stopTimers();RUN.rest=st.sek;
+  const v=document.getElementById('tmVal'),f=document.getElementById('tmFill'),b=document.getElementById('tmBtn');
+  if(v)v.textContent=fmt(st.sek);if(f)f.setAttribute('stroke-dashoffset','0');if(b)b.textContent='Start';
+}
+window.toggleTimer=toggleTimer;window.resetTimer=resetTimer;
+
+/* --- Atem --- */
+function toggleAtem(){
+  const st=RUN.s.steps[RUN.i],btn=document.getElementById('atBtn');
+  if(RUN.to||RUN.atLauft){stopTimers();RUN.atLauft=false;btn.textContent='Weiter';
+    const c=document.getElementById('atC');if(c)c.style.transform='';
+    const l=document.getElementById('atLbl');if(l)l.textContent='Pause';return;}
+  RUN.atLauft=true;RUN.runde=0;btn.textContent='Stopp';
+  try{gCtx().resume();}catch(e){}
+  atemPhase(st,0);
+}
+function atemPhase(st,p){
+  if(!RUN||!RUN.atLauft)return;
+  const c=document.getElementById('atC'),l=document.getElementById('atLbl'),s=document.getElementById('atSub');
+  if(!c||!l)return;
+  const phasen=[['Einatmen',st.ein,1.35],['Halten',st.halt,1.35],['Ausatmen',st.aus,1]].filter(x=>x[1]>0);
+  if(p>=phasen.length){
+    RUN.runde++;
+    if(RUN.runde>=st.runden){
+      RUN.atLauft=false;l.textContent='Fertig';c.textContent='✓';s.textContent='';
+      beep(660,0.5,0.12,'sine');
+      const b=document.getElementById('atBtn');if(b)b.textContent='Nochmal';
+      return;
+    }
+    p=0;
+  }
+  const [name,sek,scale]=phasen[p];
+  l.textContent=name;
+  c.style.transition='transform '+sek+'s ease-in-out, background 1s, border-color 1s';
+  c.style.transform='scale('+scale+')';
+  c.textContent=st.runden-RUN.runde;
+  s.textContent='Runde '+(RUN.runde+1)+' von '+st.runden;
+  if(name==='Einatmen')beep(520,0.14,0.07,'sine');
+  if(name==='Ausatmen')beep(390,0.14,0.07,'sine');
+  let left=sek;
+  RUN.iv=setInterval(()=>{left--;if(left>0&&l)l.textContent=name+' · '+left;},1000);
+  RUN.to=setTimeout(()=>{if(RUN&&RUN.iv){clearInterval(RUN.iv);RUN.iv=null;}atemPhase(st,p+1);},sek*1000);
+}
+window.toggleAtem=toggleAtem;
+
+/* --- Kopieren --- */
+function kopiere(){
+  const txt=RUN&&RUN.zfText?RUN.zfText:'';
+  if(!txt)return;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>toast('Kopiert')).catch(()=>toast('Kopieren nicht möglich'));
+  }else{
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');toast('Kopiert');}catch(e){toast('Kopieren nicht möglich');}
+    document.body.removeChild(ta);
+  }
+}
+window.kopiere=kopiere;
+
+/* ============ INIT ============ */
+document.getElementById('lvlSlider').value=LVL;
+document.getElementById('lvlSlider').addEventListener('input',e=>updateLvl(e.target.value));
+document.getElementById('tgFilter').classList.toggle('active',FILTER_AN);
+document.getElementById('tgAlle').classList.toggle('active',!FILTER_AN);
+updateLvl(LVL);
 </script>
 </body>
 </html>
