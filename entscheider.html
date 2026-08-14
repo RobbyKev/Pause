@@ -75,9 +75,7 @@ textarea:focus{border-color:var(--accent);}
 .fc-team-row{display:flex;align-items:center;gap:0.4rem;font-size:0.68rem;color:var(--muted);margin-left:auto;}
 .fc-team-row input{width:44px;padding:0.25rem 0.3rem;font-size:0.72rem;}
 .fc-area{position:absolute;inset:0;touch-action:none;}
-.fc-ring{position:absolute;width:74px;height:74px;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;display:flex;align-items:center;justify-content:center;transition:width 0.4s,height 0.4s,opacity 0.4s,border-color 0.3s,box-shadow 0.3s;border:5px solid #fff;box-shadow:0 0 20px rgba(255,255,255,0.3);}
-.fc-ring .fc-center{width:15px;height:15px;border-radius:50%;background:#fff;position:absolute;transition:background 0.3s;}
-.fc-ring .fc-label{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.4);}
+.fc-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
 .fc-hint{position:absolute;top:1rem;left:50%;transform:translateX(-50%);font-size:0.78rem;color:var(--muted);text-align:center;pointer-events:none;width:90%;}
 /* JA/NEIN */
 .jn-txt{font-family:'DM Serif Display',serif;font-size:clamp(2.2rem,12vw,3.2rem);color:var(--accent);text-align:center;min-height:1.3em;}
@@ -116,6 +114,7 @@ textarea:focus{border-color:var(--accent);}
   </div>
   <div class="ov-body" style="padding:0;" id="ob-finger">
     <div class="fc-area" id="fcArea">
+      <canvas class="fc-canvas" id="fcCanvas"></canvas>
       <div class="fc-hint" id="fcHint">Alle legen einen Finger auf den Bildschirm und halten still …</div>
     </div>
   </div>
@@ -227,9 +226,11 @@ window.addEventListener('resize',()=>{
   if(document.getElementById('ov-arrow').classList.contains('active')){fitCanvas(document.getElementById('arrowC'));arrowDraw();}
 });
 
-/* ---------- FINGER CHOOSER ---------- */
+/* ---------- FINGER CHOOSER (Canvas + Pointer Events) ---------- */
 let fcMode='single';
 const FC_TEAM_COLORS=['#4ade80','#f87171','#60a5fa','#fde047'];
+const FC_WAIT_COLOR='#f1f0f5';
+function getCSSVar(name,fallback){try{const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();return v||fallback;}catch(e){return fallback;}}
 function shuffleArr(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function fcSetMode(m){
   fcMode=m;
@@ -237,59 +238,36 @@ function fcSetMode(m){
   document.getElementById('fcTeamRow').style.display=m==='teams'?'flex':'none';
   fcResetAll();
 }
-let fcTouches={},fcRings={},fcStableTimer=null,fcChosen=false,fcListenersAttached=false,fcMouseDown=false;
-function fcMakeRing(x,y){
-  const area=document.getElementById('fcArea');
-  const el=document.createElement('div');el.className='fc-ring';el.style.left=x+'px';el.style.top=y+'px';
-  const center=document.createElement('div');center.className='fc-center';el.appendChild(center);
-  const label=document.createElement('div');label.className='fc-label';el.appendChild(label);
-  area.appendChild(el);return{el,center,label};
-}
-function fcSetPoint(id,x,y){
-  fcTouches[id]={x,y};
-  if(!fcRings[id]){fcRings[id]=fcMakeRing(x,y);}
-  else{fcRings[id].el.style.left=x+'px';fcRings[id].el.style.top=y+'px';}
-}
-function fcRemovePoint(id){
-  if(fcRings[id]){fcRings[id].el.remove();delete fcRings[id];}
-  delete fcTouches[id];
-}
-function fcUpdatePositions(e){
-  const area=document.getElementById('fcArea');
-  const rect=area.getBoundingClientRect();
-  const activeIds=[];
-  Array.from(e.touches).forEach(t=>{
-    const x=t.clientX-rect.left,y=t.clientY-rect.top;
-    activeIds.push(String(t.identifier));
-    fcSetPoint(String(t.identifier),x,y);
-  });
-  Object.keys(fcTouches).forEach(id=>{if(id!=='mouse'&&!activeIds.includes(id))fcRemovePoint(id);});
-}
+let fcCanvas,fcCtx;
+let fcTouches=new Map();   // id -> {x,y}  (aktuell aufliegende Finger/Pointer)
+let fcVisual=new Map();    // id -> {x,y,r,tr,color,op,top,label} (Render-/Animationsstatus)
+let fcStableTimer=null,fcResetTimer=null,fcChosen=false,fcListenersAttached=false,fcRafId=null;
+function fcMinNeeded(){return fcMode==='teams'?Math.max(2,Math.min(4,parseInt(document.getElementById('fcTeamCount').value)||2)):2;}
 function fcResetAll(){
-  fcChosen=false;clearTimeout(fcStableTimer);
-  const area=document.getElementById('fcArea');
-  if(!area)return;
-  area.querySelectorAll('.fc-ring').forEach(d=>d.remove());
-  fcRings={};fcTouches={};
+  fcChosen=false;
+  clearTimeout(fcStableTimer);clearTimeout(fcResetTimer);
+  fcTouches.clear();fcVisual.clear();
   const hint=document.getElementById('fcHint');
-  hint.style.display='block';hint.textContent='Alle legen einen Finger auf den Bildschirm und halten still …';
+  if(hint){hint.style.display='block';hint.textContent='Alle legen einen Finger auf den Bildschirm und halten still …';}
 }
 function fcApplyResult(){
   const hint=document.getElementById('fcHint');
-  const ids=Object.keys(fcTouches);
+  const ids=Array.from(fcTouches.keys());
   hint.style.display='none';
+  const accent=getCSSVar('--accent','#4ade80');
   if(fcMode==='single'){
     const winner=ids[Math.floor(Math.random()*ids.length)];
     ids.forEach(id=>{
-      const r=fcRings[id];
-      if(id===winner){r.el.style.width='104px';r.el.style.height='104px';r.el.style.borderColor='var(--accent)';r.el.style.boxShadow='0 0 30px rgba(var(--aRGB),0.7)';r.center.style.display='none';}
-      else{r.el.style.opacity='0.18';r.el.style.width='46px';r.el.style.height='46px';}
+      const v=fcVisual.get(id);
+      if(id===winner){v.tr=52;v.tcolor=accent;v.top=1;}
+      else{v.tr=23;v.top=0.18;}
     });
   }else if(fcMode==='order'){
     const order=shuffleArr(ids);
     order.forEach((id,i)=>{
-      const r=fcRings[id];r.center.style.display='none';r.label.textContent=String(i+1);
-      if(i===0){r.el.style.borderColor='var(--accent)';r.el.style.boxShadow='0 0 24px rgba(var(--aRGB),0.6)';r.el.style.width='84px';r.el.style.height='84px';}
+      const v=fcVisual.get(id);
+      v.label=String(i+1);v.top=1;
+      if(i===0){v.tr=44;v.tcolor=accent;}
     });
   }else if(fcMode==='teams'){
     const tc=Math.max(2,Math.min(4,parseInt(document.getElementById('fcTeamCount').value)||2));
@@ -298,7 +276,7 @@ function fcApplyResult(){
     shuffled.forEach((id,i)=>teams[i%tc].push(id));
     teams.forEach((members,ti)=>{
       const col=FC_TEAM_COLORS[ti%FC_TEAM_COLORS.length];
-      members.forEach(id=>{const r=fcRings[id];r.el.style.borderColor=col;r.el.style.boxShadow='0 0 22px '+col+'aa';r.center.style.background=col;r.label.textContent=String(ti+1);});
+      members.forEach(id=>{const v=fcVisual.get(id);v.tcolor=col;v.label=String(ti+1);v.top=1;});
     });
   }
   beep(880,0.25,0.25,'sine');vib(50);
@@ -307,70 +285,108 @@ function fcScheduleChoice(){
   clearTimeout(fcStableTimer);
   if(fcChosen)return;
   const hint=document.getElementById('fcHint');
-  const n=Object.keys(fcTouches).length;
-  const minNeeded=fcMode==='teams'?Math.max(2,Math.min(4,parseInt(document.getElementById('fcTeamCount').value)||2)):2;
+  const n=fcTouches.size;
+  const minNeeded=fcMinNeeded();
   if(n<minNeeded){hint.textContent='Mindestens '+minNeeded+' Finger auflegen …';return;}
   hint.textContent=n+' Finger erkannt – still halten …';
   fcStableTimer=setTimeout(()=>{
     if(fcChosen)return;
-    if(Object.keys(fcTouches).length<minNeeded)return;
+    if(fcTouches.size<minNeeded)return;
     fcChosen=true;
     fcApplyResult();
   },1400);
 }
+function fcPointerDown(e){
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  e.preventDefault();
+  clearTimeout(fcResetTimer);
+  if(fcChosen)fcResetAll();
+  const rect=fcCanvas.getBoundingClientRect();
+  const id=String(e.pointerId);
+  const x=e.clientX-rect.left,y=e.clientY-rect.top;
+  fcTouches.set(id,{x,y});
+  fcVisual.set(id,{x,y,r:0,tr:37,color:FC_WAIT_COLOR,tcolor:FC_WAIT_COLOR,op:0,top:1,label:''});
+  fcScheduleChoice();
+}
+function fcPointerMove(e){
+  const id=String(e.pointerId);
+  if(!fcTouches.has(id))return;
+  const rect=fcCanvas.getBoundingClientRect();
+  const x=e.clientX-rect.left,y=e.clientY-rect.top;
+  fcTouches.set(id,{x,y});
+  const v=fcVisual.get(id);
+  if(v&&!fcChosen){v.x=x;v.y=y;}
+}
+function fcPointerUp(e){
+  const id=String(e.pointerId);
+  if(!fcTouches.has(id))return;
+  fcTouches.delete(id);
+  if(fcChosen){
+    if(fcTouches.size===0)fcResetTimer=setTimeout(fcResetAll,2200);
+    return;
+  }
+  fcVisual.delete(id);
+  if(fcTouches.size===0){
+    const hint=document.getElementById('fcHint');
+    hint.style.display='block';hint.textContent='Alle legen einen Finger auf den Bildschirm und halten still …';
+    fcResetTimer=setTimeout(fcResetAll,300);
+  }else{fcScheduleChoice();}
+}
 function fcInitListeners(){
   if(fcListenersAttached)return;
   fcListenersAttached=true;
-  const area=document.getElementById('fcArea');
-  area.addEventListener('touchstart',e=>{
-    e.preventDefault();
-    if(fcChosen)fcResetAll();
-    fcUpdatePositions(e);
-    fcScheduleChoice();
-  },{passive:false});
-  area.addEventListener('touchmove',e=>{
-    e.preventDefault();
-    if(fcChosen)return;
-    fcUpdatePositions(e);
-  },{passive:false});
-  area.addEventListener('touchend',e=>{
-    e.preventDefault();
-    if(fcChosen){
-      if(e.touches.length===0){setTimeout(fcResetAll,2200);}
-      return;
-    }
-    fcUpdatePositions(e);
-    if(e.touches.length===0){setTimeout(fcResetAll,600);}
-    else{fcScheduleChoice();}
-  },{passive:false});
-  /* Maus-Fallback fuer Desktop-Tests (nur pointerType mouse, Touch laeuft ueber die Handler oben) */
-  area.addEventListener('pointerdown',e=>{
-    if(e.pointerType!=='mouse')return;
-    if(fcChosen)fcResetAll();
-    fcMouseDown=true;
-    const rect=area.getBoundingClientRect();
-    fcSetPoint('mouse',e.clientX-rect.left,e.clientY-rect.top);
-    fcScheduleChoice();
-  });
-  area.addEventListener('pointermove',e=>{
-    if(e.pointerType!=='mouse'||!fcMouseDown||fcChosen)return;
-    const rect=area.getBoundingClientRect();
-    fcSetPoint('mouse',e.clientX-rect.left,e.clientY-rect.top);
-  });
-  window.addEventListener('pointerup',e=>{
-    if(e.pointerType!=='mouse'||!fcMouseDown)return;
-    fcMouseDown=false;
-    if(fcChosen)return;
-    fcRemovePoint('mouse');
-    if(Object.keys(fcTouches).length===0)setTimeout(fcResetAll,600);
-    else fcScheduleChoice();
-  });
+  fcCanvas=document.getElementById('fcCanvas');
+  fcCtx=fcCanvas.getContext('2d');
+  fcCanvas.addEventListener('pointerdown',fcPointerDown);
+  fcCanvas.addEventListener('pointermove',fcPointerMove);
+  fcCanvas.addEventListener('pointerup',fcPointerUp);
+  fcCanvas.addEventListener('pointercancel',fcPointerUp);
+}
+function fcFitCanvas(){
+  const rect=fcCanvas.getBoundingClientRect();
+  const dpr=window.devicePixelRatio||1;
+  const w=Math.max(50,Math.round(rect.width)),h=Math.max(50,Math.round(rect.height));
+  fcCanvas.width=Math.round(w*dpr);fcCanvas.height=Math.round(h*dpr);
+  fcCtx.setTransform(dpr,0,0,dpr,0,0);
+  fcCanvas._cssW=w;fcCanvas._cssH=h;
+}
+function fcLoop(){
+  if(fcCanvas&&fcCtx){
+    fcCtx.clearRect(0,0,fcCanvas._cssW||fcCanvas.clientWidth,fcCanvas._cssH||fcCanvas.clientHeight);
+    fcVisual.forEach(v=>{
+      v.r+=(v.tr-v.r)*0.2;
+      v.op+=((v.top!==undefined?v.top:1)-v.op)*0.2;
+      v.color=v.tcolor||v.color;
+      if(v.r<0.5)return;
+      fcCtx.save();
+      fcCtx.globalAlpha=Math.max(0,Math.min(1,v.op));
+      fcCtx.beginPath();fcCtx.arc(v.x,v.y,v.r,0,Math.PI*2);
+      fcCtx.fillStyle=v.color;fcCtx.shadowColor=v.color;fcCtx.shadowBlur=22;
+      fcCtx.fill();
+      fcCtx.restore();
+      if(v.label){
+        fcCtx.save();
+        fcCtx.globalAlpha=Math.max(0,Math.min(1,v.op));
+        fcCtx.fillStyle='#12121f';
+        fcCtx.font='700 '+Math.max(10,Math.round(v.r*0.62))+'px DM Sans, sans-serif';
+        fcCtx.textAlign='center';fcCtx.textBaseline='middle';
+        fcCtx.fillText(v.label,v.x,v.y+1);
+        fcCtx.restore();
+      }
+    });
+  }
+  fcRafId=requestAnimationFrame(fcLoop);
 }
 function iFinger(){
   fcInitListeners();
   fcResetAll();
-  OVC.finger=()=>{clearTimeout(fcStableTimer);};
+  fcFitCanvas();
+  if(!fcRafId)fcLoop();
+  OVC.finger=()=>{clearTimeout(fcStableTimer);clearTimeout(fcResetTimer);if(fcRafId){cancelAnimationFrame(fcRafId);fcRafId=null;}};
 }
+window.addEventListener('resize',()=>{
+  if(fcCanvas&&document.getElementById('ov-finger').classList.contains('active'))fcFitCanvas();
+});
 
 /* ---------- ROULETTE ---------- */
 let roulOpts=['Uli','Kevin'];
