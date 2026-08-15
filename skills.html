@@ -99,6 +99,58 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
 .zf-blk{margin-bottom:0.85rem;}
 .zf-blk:last-child{margin-bottom:0;}
 .done-ic{font-size:2.6rem;text-align:center;}
+
+/* ---------- SPIELE ---------- */
+.kat-info{font-size:0.7rem;color:var(--muted);line-height:1.5;padding:0 0.15rem 0.35rem;font-weight:300;}
+.gm-wrap{display:flex;flex-direction:column;height:100%;width:100%;max-width:540px;margin:0 auto;padding:0.9rem 1rem 1.2rem;gap:0.7rem;}
+.gm-top{display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-shrink:0;}
+.gm-stat{font-size:0.66rem;color:var(--muted);letter-spacing:0.03em;}
+.gm-lvl{font-size:0.62rem;color:var(--accent);background:rgba(var(--aRGB),0.1);border-radius:100px;padding:0.22em 0.7em;font-weight:500;flex-shrink:0;}
+.gm-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;min-height:0;position:relative;width:100%;}
+.gm-stage.voll{align-items:stretch;justify-content:stretch;gap:0;}
+.gm-hint{font-size:0.76rem;color:var(--muted2);text-align:center;line-height:1.5;min-height:2.3em;flex-shrink:0;}
+.gm-foot{display:flex;gap:0.45rem;flex-shrink:0;}
+.gm-anleitung{display:flex;flex-direction:column;gap:0.85rem;align-items:center;text-align:center;}
+.gm-anl-ic{font-size:2.8rem;}
+.gm-anl-t{font-family:'DM Serif Display',serif;font-size:1.45rem;line-height:1.25;}
+.gm-anl-p{font-size:0.86rem;color:var(--muted2);line-height:1.7;font-weight:300;max-width:360px;}
+.gm-q{font-family:'DM Serif Display',serif;font-size:2.9rem;text-align:center;line-height:1.15;letter-spacing:0.02em;}
+.gm-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem;width:100%;max-width:320px;}
+.gm-opt{border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:1.15rem;font-weight:500;cursor:pointer;transition:transform 0.08s,border-color 0.15s,background 0.15s;display:flex;align-items:center;justify-content:center;padding:0.95rem 0.5rem;touch-action:manipulation;}
+.gm-opt:active{transform:scale(0.95);}
+.gm-opt.gut{border-color:var(--accent);background:rgba(var(--aRGB),0.18);color:var(--accent);}
+.gm-opt.falsch{border-color:var(--danger);opacity:0.45;}
+.gm-farben{display:grid;grid-template-columns:repeat(3,1fr);gap:0.7rem;width:100%;max-width:250px;}
+.gm-farbe{aspect-ratio:1;border-radius:50%;border:2px solid rgba(255,255,255,0.08);cursor:pointer;transition:transform 0.08s,box-shadow 0.15s;touch-action:manipulation;}
+.gm-farbe:active{transform:scale(0.9);}
+.gm-farbe.gut{box-shadow:0 0 0 3px #fff;}
+.gm-pad{width:100%;max-width:300px;min-height:120px;border-radius:20px;border:2px solid rgba(var(--aRGB),0.35);background:rgba(var(--aRGB),0.1);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--accent);cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation;transition:transform 0.06s,background 0.1s;text-align:center;padding:1rem;}
+.gm-pad.an{transform:scale(0.97);background:rgba(var(--aRGB),0.3);}
+.gm-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:290px;}
+.gm-cell{aspect-ratio:1;border-radius:14px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:transform 0.08s,background 0.12s,border-color 0.12s;touch-action:manipulation;}
+.gm-cell.an{background:var(--accent);border-color:var(--accent);transform:scale(1.06);}
+.gm-cell.miss{border-color:var(--danger);}
+.gm-tiles{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;max-width:340px;}
+.gm-tile{width:54px;height:54px;border-radius:14px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:1.55rem;cursor:pointer;transition:transform 0.08s,border-color 0.15s,background 0.15s;touch-action:manipulation;}
+.gm-tile:active{transform:scale(0.92);}
+.gm-tile.gut{border-color:var(--accent);background:rgba(var(--aRGB),0.2);}
+.gm-tile.falsch{border-color:var(--danger);opacity:0.5;}
+.gm-drums{display:flex;gap:0.5rem;width:100%;max-width:320px;}
+.gm-drum{flex:1;border-radius:16px;border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;font-size:1.6rem;cursor:pointer;transition:transform 0.07s,background 0.1s,border-color 0.1s;touch-action:manipulation;padding:1.4rem 0.4rem;}
+.gm-drum span{font-size:0.6rem;color:var(--muted);letter-spacing:0.05em;}
+.gm-drum.an{background:rgba(var(--aRGB),0.28);border-color:var(--accent);transform:scale(0.95);}
+.gm-morse{display:flex;gap:0.45rem;justify-content:center;flex-wrap:wrap;min-height:2.2rem;align-items:center;}
+.gm-sym{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--accent);line-height:1;}
+.gm-sym.leer{color:rgba(255,255,255,0.13);}
+.gm-slider-wrap{width:100%;max-width:320px;display:flex;flex-direction:column;gap:0.4rem;}
+.gm-big{font-family:'DM Serif Display',serif;font-size:3.2rem;color:var(--accent);text-align:center;line-height:1;}
+.gm-mid{font-family:'DM Serif Display',serif;font-size:1.6rem;text-align:center;line-height:1.3;}
+.gm-canvas{width:100%;height:100%;display:block;touch-action:none;border-radius:14px;}
+.gm-key{display:flex;gap:0.9rem;justify-content:center;flex-wrap:wrap;font-size:0.9rem;color:var(--muted2);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.6rem 0.8rem;}
+.gm-key-item{display:flex;align-items:center;gap:0.32rem;}
+.gm-key-dot{width:15px;height:15px;border-radius:50%;display:inline-block;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.shake{animation:shake 0.32s;}
 </style>
 </head>
 <body>
@@ -167,7 +219,8 @@ try{
 const KAT={
   st:{name:'Stresstoleranz',info:'Durch den Sturm kommen, ohne dass es hinterher schlimmer ist.'},
   er:{name:'Emotionsregulation',info:'Gefühle verstehen und beeinflussen, statt von ihnen gefahren zu werden.'},
-  zw:{name:'Zwischenmenschliche Fertigkeiten',info:'Sagen, was du brauchst – ohne dich oder die Beziehung zu verlieren.'}
+  zw:{name:'Zwischenmenschliche Fertigkeiten',info:'Sagen, was du brauchst – ohne dich oder die Beziehung zu verlieren.'},
+  sp:{name:'Spiele',info:'Aufmerksamkeit über Sinne und Motorik binden, bis die Welle vorbei ist. Kein Gewinnen, kein Verlieren – die Schwierigkeit wächst mit dir mit.'}
 };
 
 const SKILLS=[
@@ -408,6 +461,545 @@ const SKILLS=[
 }
 ];
 
+/* ============ SPIELE ============ */
+const GAMES=[
+{id:'stroop',kat:'sp',typ:'game',icon:'🎨',titel:'Farbkreislauf',sub:'Lesen und Farbe sehen gleichzeitig – zwei Hirnregionen auf einmal.',min:5,max:10,dauer:'offen',
+ anl:{t:'Farbe schlägt Wort',p:'Ein Farbwort erscheint – aber in einer anderen Farbe geschrieben. Tippe die Farbe, in der es geschrieben steht, nicht das, was dasteht. Später dreht sich die Aufgabe manchmal um.'}},
+{id:'bubbles',kat:'sp',typ:'game',icon:'🫧',titel:'Seifenblasen-Pop',sub:'Blasen zerplatzen lassen, bis die Anspannung mitgeht.',min:6,max:10,dauer:'offen',
+ anl:{t:'Einfach platzen lassen',p:'Blasen steigen auf. Tippe sie an. Verpasste steigen weiter und verschwinden – es gibt nichts zu verpassen, nichts zu verlieren.'}},
+{id:'quadrat',kat:'sp',typ:'game',icon:'⬜',titel:'Quadratisches Muster',sub:'Auf Licht und Ton reagieren – wird schneller, je besser du wirst.',min:5,max:9,dauer:'offen',
+ anl:{t:'Leuchten antippen',p:'Ein Feld leuchtet auf und gibt einen Ton. Tipp es an, bevor es ausgeht. Je sicherer du wirst, desto kürzer bleibt es.'}},
+{id:'morse',kat:'sp',typ:'game',icon:'📡',titel:'Schnelles Morsen',sub:'Gedächtnis und Rhythmus gleichzeitig – bindet viel Aufmerksamkeit.',min:4,max:8,dauer:'offen',
+ anl:{t:'Kurz und lang',p:'Du hörst eine Folge aus kurzen und langen Tönen. Tippe sie nach: kurz antippen für einen Punkt, gedrückt halten für einen Strich.'}},
+{id:'perc',kat:'sp',typ:'game',icon:'🥁',titel:'Percussion-Muster',sub:'Ein Trommelmuster hören und zurückspielen.',min:3,max:8,dauer:'offen',
+ anl:{t:'Erst hören, dann spielen',p:'Drei Trommeln spielen ein Muster vor. Tippe es in derselben Reihenfolge nach. Wenn es nicht klappt, hörst du es einfach noch einmal.'}},
+{id:'pitch',kat:'sp',typ:'game',icon:'🎵',titel:'Pitch Matching',sub:'Einen Ton im Ohr behalten und wiederfinden.',min:2,max:7,dauer:'offen',
+ anl:{t:'Den Ton treffen',p:'Du hörst einen Ton. Schieb den Regler, bis deiner genauso klingt, und bestätige. Die Toleranz wird mit der Zeit kleiner.'}},
+{id:'zuletzt',kat:'sp',typ:'game',icon:'🧠',titel:'Zuletzt hinzugefügt',sub:'Merken, was neu ist – und den Rest um dich herum ausblenden.',min:2,max:7,dauer:'offen',
+ anl:{t:'Was ist neu?',p:'Jede Runde kommt ein Symbol dazu und alles wird neu gemischt. Tippe das Symbol an, das vorher noch nicht da war.'}},
+{id:'rechnen',kat:'sp',typ:'game',icon:'🔢',titel:'Arithmetik',sub:'Kopfrechnen als Anker, wenn die Gedanken kreisen.',min:3,max:8,dauer:'offen',
+ anl:{t:'Schnell rechnen',p:'Eine Aufgabe, vier Antworten. Bei einem Fehler siehst du kurz die richtige Lösung, dann geht es weiter.'}},
+{id:'countdown',kat:'sp',typ:'game',icon:'⏱️',titel:'Countdown',sub:'Die innere Uhr kalibrieren – ruhig und ohne Hektik.',min:1,max:6,dauer:'offen',
+ anl:{t:'Zeit im Gefühl',p:'Du bekommst eine Sekundenzahl. Starte, warte – und tippe, wenn du glaubst, die Zeit ist um. Ohne Anzeige, nur nach Gefühl.'}},
+{id:'farblogik',kat:'sp',typ:'game',icon:'🔷',titel:'Farb-Logik',sub:'Zeichen und Farben zuordnen – einfach genug für stressige Momente.',min:4,max:9,dauer:'offen',
+ anl:{t:'Zuordnen',p:'Oben siehst du, welches Zeichen zu welcher Farbe gehört. Tippe die passende Farbe zum gezeigten Zeichen. Später verschwindet die Zuordnung kurz.'}}
+];
+
+/* --- Hilfen --- */
+function rnd(n){return Math.floor(Math.random()*n);}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function ton(f,dur,typ,vol){beep(f,dur,vol||0.1,typ||'sine');}
+function rausch(dur,vol,typ){
+  try{const c=gCtx();const len=Math.max(1,Math.floor(c.sampleRate*dur));const b=c.createBuffer(1,len,c.sampleRate);const d=b.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+  const s=c.createBufferSource();s.buffer=b;
+  const f=c.createBiquadFilter();f.type=typ==='hat'?'highpass':'bandpass';f.frequency.value=typ==='hat'?7000:1900;
+  const g=c.createGain();g.gain.value=vol;
+  s.connect(f);f.connect(g);g.connect(c.destination);s.start();}catch(e){}
+}
+function kick(){try{const c=gCtx();const o=c.createOscillator(),g=c.createGain();o.type='sine';
+  o.frequency.setValueAtTime(155,c.currentTime);o.frequency.exponentialRampToValueAtTime(45,c.currentTime+0.22);
+  g.gain.setValueAtTime(0.3,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.25);
+  o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+0.28);}catch(e){}}
+let PO=null;
+function poStart(f){poStop();try{const c=gCtx();if(c.state==='suspended')c.resume();const o=c.createOscillator(),g=c.createGain();
+  o.type='sine';o.frequency.value=f;g.gain.value=0.001;o.connect(g);g.connect(c.destination);o.start();
+  g.gain.setTargetAtTime(0.1,c.currentTime,0.02);PO={o:o,g:g};}catch(e){}}
+function poSet(f){if(PO)try{PO.o.frequency.setTargetAtTime(f,gCtx().currentTime,0.015);}catch(e){}}
+function poStop(){if(!PO)return;const p=PO;PO=null;try{p.g.gain.setTargetAtTime(0,gCtx().currentTime,0.03);setTimeout(()=>{try{p.o.stop();}catch(e){}},180);}catch(e){}}
+
+/* --- Spiel-Rahmen --- */
+let GAME=null;
+function gClear(){
+  if(!GAME)return;
+  (GAME.iv||[]).forEach(clearInterval);
+  (GAME.to||[]).forEach(clearTimeout);
+  if(GAME.raf)cancelAnimationFrame(GAME.raf);
+  GAME.iv=[];GAME.to=[];GAME.raf=null;
+}
+function stopGame(){gClear();poStop();GAME=null;}
+function gI(fn,ms){if(!GAME)return;const i=setInterval(fn,ms);GAME.iv.push(i);return i;}
+function gT(fn,ms){if(!GAME)return;const t=setTimeout(()=>{if(GAME)fn();},ms);GAME.to.push(t);return t;}
+function gStat(){
+  if(!GAME)return;
+  const s=document.getElementById('gmStat');
+  if(s)s.textContent='Runde '+GAME.runde+' · '+GAME.ok+' geschafft';
+  const l=document.getElementById('gmLvl');
+  if(l)l.textContent='Stufe '+GAME.stufe;
+}
+function gHint(t){const h=document.getElementById('gmHint');if(h)h.textContent=t;}
+function gGut(){
+  if(!GAME)return;
+  GAME.ok++;GAME.streak++;GAME.miss=0;
+  if(GAME.streak>=3&&GAME.stufe<8){GAME.stufe++;GAME.streak=0;}
+  beep(760,0.13,0.09,'sine');vib(14);gStat();
+}
+function gNaja(){
+  if(!GAME)return;
+  GAME.streak=0;GAME.miss=(GAME.miss||0)+1;
+  if(GAME.miss>=2&&GAME.stufe>1){GAME.stufe--;GAME.miss=0;}
+  beep(280,0.18,0.07,'sine');gStat();
+}
+function startGame(id){
+  const g=GAMES.find(x=>x.id===id);
+  if(!g)return;
+  stopGame();stopTimers();RUN=null;
+  GAME={g:g,iv:[],to:[],raf:null,stufe:1,runde:0,ok:0,streak:0,miss:0,sperre:false};
+  openSkillDetail(g.titel,'<div class="gm-wrap" id="gmWrap"></div>');
+  document.getElementById('gmWrap').innerHTML=
+    '<div class="gm-stage"><div class="gm-anleitung"><div class="gm-anl-ic">'+g.icon+'</div>'
+    +'<div class="gm-anl-t">'+esc(g.anl.t)+'</div><div class="gm-anl-p">'+esc(g.anl.p)+'</div></div></div>'
+    +'<div class="gm-hint">Hier kann man nichts verlieren und nichts falsch machen. Hör auf, wann du willst.</div>'
+    +'<div class="gm-foot"><button class="btn btn-p" onclick="losGehts()">Los geht\'s</button></div>';
+}
+function losGehts(){
+  if(!GAME)return;
+  document.getElementById('gmWrap').innerHTML=
+    '<div class="gm-top"><div class="gm-stat" id="gmStat">Runde 0 · 0 geschafft</div><div class="gm-lvl" id="gmLvl">Stufe 1</div></div>'
+    +'<div class="gm-stage" id="gmStage"></div>'
+    +'<div class="gm-hint" id="gmHint"></div>'
+    +'<div class="gm-foot"><button class="btn btn-g" onclick="closeSkillDetail()">Beenden</button></div>';
+  try{const c=gCtx();if(c.state==='suspended')c.resume();}catch(e){}
+  const f=SPIEL_START[GAME.g.id];
+  if(f)f();
+}
+window.startGame=startGame;window.losGehts=losGehts;
+
+/* --- 1. Farbkreislauf --- */
+const SPF=[['Rot','#f87171'],['Blau','#60a5fa'],['Grün','#4ade80'],['Gelb','#fbbf24'],['Lila','#c084fc'],['Orange','#fb923c']];
+function stroopStart(){stroopRunde();}
+function stroopRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.sperre=false;
+  const n=Math.min(3+Math.floor((GAME.stufe-1)/2),6);
+  const wort=rnd(n);let tinte=rnd(n);
+  while(tinte===wort)tinte=rnd(n);
+  const nachTinte=GAME.stufe<5?true:(Math.random()<0.5);
+  GAME.loesung=nachTinte?tinte:wort;
+  let h='<div class="gm-q" id="stroopWort" style="color:'+SPF[tinte][1]+'">'+SPF[wort][0].toUpperCase()+'</div><div class="gm-farben">';
+  for(let i=0;i<n;i++)h+='<div class="gm-farbe" data-i="'+i+'" style="background:'+SPF[i][1]+'" onclick="stroopTipp('+i+')"></div>';
+  h+='</div>';
+  document.getElementById('gmStage').innerHTML=h;
+  gHint(nachTinte?'Tippe die Farbe, in der das Wort geschrieben ist.':'Umgekehrt: tippe die Farbe, die das Wort bedeutet.');
+}
+function stroopTipp(i){
+  if(!GAME||GAME.sperre)return;GAME.sperre=true;
+  const richtig=i===GAME.loesung;
+  const els=document.querySelectorAll('.gm-farbe');
+  if(els[GAME.loesung])els[GAME.loesung].classList.add('gut');
+  if(richtig)gGut();
+  else{gNaja();const w=document.getElementById('stroopWort');if(w)w.classList.add('shake');}
+  gT(stroopRunde,richtig?420:1050);
+}
+window.stroopTipp=stroopTipp;
+
+/* --- 2. Seifenblasen-Pop --- */
+function bubStart(){
+  const st=document.getElementById('gmStage');
+  st.classList.add('voll');
+  st.innerHTML='<canvas class="gm-canvas" id="gmC"></canvas>';
+  gHint('Tippe die Blasen an. Verpasste steigen einfach weiter.');
+  const cv=document.getElementById('gmC');
+  const r=cv.getBoundingClientRect();
+  const W=Math.max(r.width||300,160),H=Math.max(r.height||360,200);
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  const cx=cv.getContext('2d');
+  if(cx)cx.scale(dpr,dpr);
+  GAME.bub=[];GAME.W=W;GAME.H=H;
+  const spawn=()=>{
+    if(!GAME)return;
+    const anz=1+Math.floor(GAME.stufe/3);
+    for(let k=0;k<anz;k++){
+      const rr=15+Math.random()*22;
+      GAME.bub.push({x:rr+Math.random()*Math.max(1,W-2*rr),y:H+rr,r:rr,vy:(0.4+Math.random()*0.5)*(1+GAME.stufe*0.1),hue:Math.random()*360,ph:Math.random()*6.3});
+    }
+  };
+  spawn();
+  gI(spawn,Math.max(430,1300-GAME.stufe*90));
+  const loop=()=>{
+    if(!GAME||!cx)return;
+    cx.clearRect(0,0,W,H);
+    GAME.bub=GAME.bub.filter(b=>b.y+b.r>-12);
+    GAME.bub.forEach(b=>{
+      b.y-=b.vy;b.ph+=0.03;b.x+=Math.sin(b.ph)*0.45;
+      const g=cx.createRadialGradient(b.x-b.r*0.3,b.y-b.r*0.3,b.r*0.1,b.x,b.y,b.r);
+      g.addColorStop(0,'hsla('+b.hue+',75%,78%,0.5)');
+      g.addColorStop(1,'hsla('+b.hue+',65%,55%,0.14)');
+      cx.fillStyle=g;cx.beginPath();cx.arc(b.x,b.y,b.r,0,6.2832);cx.fill();
+      cx.strokeStyle='hsla('+b.hue+',80%,80%,0.4)';cx.lineWidth=1.2;cx.stroke();
+    });
+    GAME.raf=requestAnimationFrame(loop);
+  };
+  loop();
+  cv.addEventListener('pointerdown',function(e){
+    if(!GAME)return;
+    const r2=cv.getBoundingClientRect();
+    const px=e.clientX-r2.left,py=e.clientY-r2.top;
+    for(let i=GAME.bub.length-1;i>=0;i--){
+      const b=GAME.bub[i];
+      if((px-b.x)*(px-b.x)+(py-b.y)*(py-b.y)<=(b.r+10)*(b.r+10)){
+        GAME.bub.splice(i,1);
+        beep(400+Math.random()*520,0.11,0.08,'sine');vib(11);
+        GAME.ok++;GAME.runde++;
+        if(GAME.ok%12===0&&GAME.stufe<8)GAME.stufe++;
+        gStat();break;
+      }
+    }
+  });
+}
+
+/* --- 3. Quadratisches Muster --- */
+function qmStart(){
+  let h='<div class="gm-grid3">';
+  for(let i=0;i<9;i++)h+='<div class="gm-cell" onclick="qmTipp('+i+')"></div>';
+  h+='</div>';
+  document.getElementById('gmStage').innerHTML=h;
+  gHint('Tippe das Feld, das aufleuchtet – bevor es wieder ausgeht.');
+  qmRunde();
+}
+function qmRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();
+  const cells=document.querySelectorAll('.gm-cell');
+  if(!cells.length)return;
+  cells.forEach(c=>{c.classList.remove('an','miss');});
+  const i=rnd(9);GAME.ziel=i;GAME.aktiv=true;
+  cells[i].classList.add('an');
+  beep(300+i*45,0.12,0.09,'triangle');
+  gT(()=>{
+    if(!GAME||!GAME.aktiv)return;
+    GAME.aktiv=false;
+    const c=document.querySelectorAll('.gm-cell')[i];
+    if(c){c.classList.remove('an');c.classList.add('miss');}
+    gNaja();gT(qmRunde,620);
+  },Math.max(560,1900-GAME.stufe*170));
+}
+function qmTipp(i){
+  if(!GAME||!GAME.aktiv)return;
+  const cells=document.querySelectorAll('.gm-cell');
+  if(i!==GAME.ziel){gNaja();if(cells[i])cells[i].classList.add('miss');return;}
+  GAME.aktiv=false;
+  if(cells[i])cells[i].classList.remove('an');
+  gGut();gT(qmRunde,330);
+}
+window.qmTipp=qmTipp;
+
+/* --- 4. Schnelles Morsen --- */
+function moStart(){
+  document.getElementById('gmStage').innerHTML=
+    '<div class="gm-mid" id="moTxt">Hör zu …</div><div class="gm-morse" id="moZeile"></div>'
+    +'<div class="gm-pad" id="moPad">kurz tippen = ·<br>halten = –</div>';
+  const p=document.getElementById('moPad');
+  p.addEventListener('pointerdown',moDown);
+  p.addEventListener('pointerup',moUp);
+  p.addEventListener('pointerleave',moUp);
+  p.addEventListener('pointercancel',moUp);
+  gHint('Kurzer Tipp ist ein Punkt, längeres Halten ein Strich.');
+  moRunde();
+}
+function moRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();
+  const len=Math.min(2+Math.floor(GAME.stufe*0.6),6);
+  GAME.seq=[];for(let i=0;i<len;i++)GAME.seq.push(rnd(2));
+  moSpiel();
+}
+function moSlots(){
+  const z=document.getElementById('moZeile');if(!z||!GAME)return;
+  let h='';
+  for(let i=0;i<GAME.seq.length;i++){
+    if(i<GAME.ein.length)h+='<span class="gm-sym">'+(GAME.ein[i]===0?'·':'–')+'</span>';
+    else h+='<span class="gm-sym leer">·</span>';
+  }
+  z.innerHTML=h;
+}
+function moLoesung(){
+  const z=document.getElementById('moZeile');if(!z||!GAME)return;
+  z.innerHTML=GAME.seq.map(s=>'<span class="gm-sym">'+(s===0?'·':'–')+'</span>').join('');
+}
+function moSpiel(){
+  if(!GAME)return;
+  GAME.sperre=true;GAME.ein=[];GAME.tStart=null;moSlots();
+  const t=document.getElementById('moTxt');if(t)t.textContent='Hör zu …';
+  let zeit=400;
+  GAME.seq.forEach(s=>{
+    const d=s===0?110:330;
+    gT(()=>{
+      const p=document.getElementById('moPad');
+      if(p){p.classList.add('an');gT(()=>{const q=document.getElementById('moPad');if(q)q.classList.remove('an');},d);}
+      ton(620,d/1000,'square',0.09);
+    },zeit);
+    zeit+=d+170;
+  });
+  gT(()=>{GAME.sperre=false;const t2=document.getElementById('moTxt');if(t2)t2.textContent='Jetzt du';},zeit+220);
+}
+function moDown(){
+  if(!GAME||GAME.sperre)return;
+  GAME.tStart=Date.now();
+  const p=document.getElementById('moPad');if(p)p.classList.add('an');
+  poStart(620);
+}
+function moUp(){
+  if(!GAME||GAME.sperre||!GAME.tStart)return;
+  const dauer=Date.now()-GAME.tStart;GAME.tStart=null;
+  poStop();
+  const p=document.getElementById('moPad');if(p)p.classList.remove('an');
+  GAME.ein.push(dauer<260?0:1);
+  moSlots();
+  if(GAME.ein.length>=GAME.seq.length){
+    GAME.sperre=true;
+    const ok=GAME.ein.every((v,i)=>v===GAME.seq[i]);
+    const t=document.getElementById('moTxt');
+    if(ok){gGut();if(t)t.textContent='Genau so';gT(moRunde,900);}
+    else{gNaja();if(t)t.textContent='So war es';moLoesung();gT(moSpiel,1700);}
+  }
+}
+
+/* --- 5. Percussion-Muster --- */
+const DRUMS=[['🥁','Bass'],['🪘','Snare'],['🎩','Hat']];
+function drumSound(i){if(i===0)kick();else if(i===1)rausch(0.17,0.2,'snare');else rausch(0.05,0.14,'hat');}
+function perStart(){
+  let h='<div class="gm-mid" id="perTxt">Hör zu …</div><div class="gm-drums">';
+  DRUMS.forEach((d,i)=>{h+='<div class="gm-drum" onclick="perTipp('+i+')">'+d[0]+'<span>'+d[1]+'</span></div>';});
+  h+='</div>';
+  document.getElementById('gmStage').innerHTML=h;
+  gHint('Erst zuhören, dann in derselben Reihenfolge nachtippen.');
+  perRunde();
+}
+function perRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();
+  const len=Math.min(2+Math.floor(GAME.stufe*0.7),7);
+  GAME.seq=[];for(let i=0;i<len;i++)GAME.seq.push(rnd(3));
+  perSpiel();
+}
+function perSpiel(){
+  if(!GAME)return;
+  GAME.sperre=true;GAME.pos=0;
+  const t=document.getElementById('perTxt');if(t)t.textContent='Hör zu …';
+  GAME.seq.forEach((d,i)=>{
+    gT(()=>{
+      const el=document.querySelectorAll('.gm-drum')[d];
+      if(el){el.classList.add('an');gT(()=>{el.classList.remove('an');},170);}
+      drumSound(d);
+    },420+i*470);
+  });
+  gT(()=>{GAME.sperre=false;GAME.pos=0;const t2=document.getElementById('perTxt');if(t2)t2.textContent='Jetzt du';},420+GAME.seq.length*470+250);
+}
+function perTipp(i){
+  if(!GAME||GAME.sperre)return;
+  const el=document.querySelectorAll('.gm-drum')[i];
+  if(el){el.classList.add('an');gT(()=>{el.classList.remove('an');},150);}
+  drumSound(i);
+  const t=document.getElementById('perTxt');
+  if(i===GAME.seq[GAME.pos]){
+    GAME.pos++;
+    if(GAME.pos>=GAME.seq.length){
+      GAME.sperre=true;gGut();
+      if(t)t.textContent='Sitzt';
+      gT(perRunde,950);
+    }
+  }else{
+    GAME.sperre=true;gNaja();
+    if(t)t.textContent='Nochmal hören';
+    gT(perSpiel,950);
+  }
+}
+window.perTipp=perTipp;
+
+/* --- 6. Pitch Matching --- */
+function pmF(v){return 196*Math.pow(2,(v/100)*2.2);}
+function pmStart(){
+  document.getElementById('gmStage').innerHTML=
+    '<div class="gm-mid" id="pmTxt">Hör dir den Ton an</div>'
+    +'<button class="tm-b prim" onclick="pmZiel()">Ton abspielen</button>'
+    +'<div class="gm-slider-wrap"><input type="range" min="0" max="100" value="50" id="pmS"><div class="scale-marks"><span>tief</span><span>hoch</span></div></div>'
+    +'<button class="btn btn-p" style="max-width:320px" onclick="pmPruef()">Das passt</button>';
+  const s=document.getElementById('pmS');
+  s.addEventListener('pointerdown',function(){poStart(pmF(s.value));});
+  s.addEventListener('input',function(){poSet(pmF(s.value));});
+  s.addEventListener('pointerup',poStop);
+  s.addEventListener('pointercancel',poStop);
+  s.addEventListener('blur',poStop);
+  gHint('Schieb den Regler, bis dein Ton genauso klingt.');
+  pmRunde();
+}
+function pmRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();
+  GAME.zielV=8+rnd(85);
+  pmZiel();
+}
+function pmZiel(){if(GAME)ton(pmF(GAME.zielV),0.9,'sine',0.13);}
+function pmPruef(){
+  if(!GAME||GAME.sperre)return;
+  const el=document.getElementById('pmS');if(!el)return;
+  const v=parseFloat(el.value);
+  const diff=Math.abs(v-GAME.zielV);
+  const tol=Math.max(2,11-GAME.stufe);
+  const t=document.getElementById('pmTxt');
+  if(diff<=tol){
+    GAME.sperre=true;gGut();
+    if(t)t.textContent='Getroffen';
+    gT(()=>{GAME.sperre=false;const t2=document.getElementById('pmTxt');if(t2)t2.textContent='Neuer Ton';pmRunde();},1000);
+  }else{
+    gNaja();
+    if(t)t.textContent=(v<GAME.zielV?'Etwas zu tief':'Etwas zu hoch');
+    gT(pmZiel,550);
+  }
+}
+window.pmZiel=pmZiel;window.pmPruef=pmPruef;
+
+/* --- 7. Zuletzt hinzugefügt --- */
+const ZH=['🍋','🌸','🐟','🎈','🔑','🌙','🍀','⚡','🎧','🕯','🪁','🐚','🍄','🧊','🎲','🪶','🍒','🧵','🦋','🌵','☂','🔔','🧭','🪴','🐌','🌰'];
+function zhStart(){
+  GAME.pool=shuffle(ZH.slice());
+  GAME.gezeigt=[GAME.pool.pop(),GAME.pool.pop()];
+  gHint('Ein Symbol ist neu dazugekommen. Tippe es an.');
+  zhRunde();
+}
+function zhRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.sperre=false;
+  const max=Math.min(4+GAME.stufe,14);
+  while(GAME.gezeigt.length>=max)GAME.gezeigt.shift();
+  if(!GAME.pool.length)GAME.pool=shuffle(ZH.filter(x=>GAME.gezeigt.indexOf(x)<0));
+  GAME.neu=GAME.pool.pop();
+  GAME.gezeigt.push(GAME.neu);
+  const anz=shuffle(GAME.gezeigt.slice());
+  document.getElementById('gmStage').innerHTML=
+    '<div class="gm-mid">Welches ist neu?</div><div class="gm-tiles">'
+    +anz.map(s=>'<div class="gm-tile" data-s="'+s+'" onclick="zhTipp(this)">'+s+'</div>').join('')+'</div>';
+}
+function zhTipp(el){
+  if(!GAME||GAME.sperre)return;GAME.sperre=true;
+  const s=el.getAttribute('data-s');
+  const richtig=s===GAME.neu;
+  document.querySelectorAll('.gm-tile').forEach(t=>{if(t.getAttribute('data-s')===GAME.neu)t.classList.add('gut');});
+  if(richtig)gGut();else{el.classList.add('falsch');gNaja();}
+  gT(zhRunde,richtig?620:1350);
+}
+window.zhTipp=zhTipp;
+
+/* --- 8. Arithmetik --- */
+function arStart(){
+  gHint('Tippe das richtige Ergebnis. Bei einem Fehler geht es einfach weiter.');
+  arRunde();
+}
+function arRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.sperre=false;
+  const s=GAME.stufe;
+  let a,b,op;
+  if(s<=2){a=2+rnd(9);b=2+rnd(9);op=Math.random()<0.5?'+':'−';}
+  else if(s<=4){a=5+rnd(25);b=2+rnd(15);op=Math.random()<0.5?'+':'−';}
+  else if(s<=6){a=2+rnd(9);b=2+rnd(9);op='×';}
+  else{a=10+rnd(40);b=2+rnd(12);op=['+','−','×'][rnd(3)];}
+  if(op==='−'&&b>=a){const t=a;a=b+1+rnd(4);b=t;}
+  const erg=op==='+'?a+b:(op==='−'?a-b:a*b);
+  GAME.loesung=erg;
+  const opts=[erg];
+  let schutz=0;
+  while(opts.length<4&&schutz++<80){
+    const spann=Math.max(3,Math.round(Math.abs(erg)*0.22));
+    const d=erg+(rnd(2)?1:-1)*(1+rnd(spann));
+    if(opts.indexOf(d)<0)opts.push(d);
+  }
+  while(opts.length<4)opts.push(erg+opts.length*7);
+  shuffle(opts);
+  document.getElementById('gmStage').innerHTML=
+    '<div class="gm-q">'+a+' '+op+' '+b+'</div><div class="gm-opts">'
+    +opts.map(o=>'<button class="gm-opt" data-v="'+o+'" onclick="arTipp('+o+')">'+o+'</button>').join('')+'</div>';
+}
+function arTipp(v){
+  if(!GAME||GAME.sperre)return;GAME.sperre=true;
+  document.querySelectorAll('.gm-opt').forEach(b=>{
+    const bv=parseInt(b.getAttribute('data-v'),10);
+    if(bv===GAME.loesung)b.classList.add('gut');
+    else if(bv===v)b.classList.add('falsch');
+  });
+  const richtig=v===GAME.loesung;
+  if(richtig)gGut();else gNaja();
+  gT(arRunde,richtig?460:1150);
+}
+window.arTipp=arTipp;
+
+/* --- 9. Countdown --- */
+function cdStart(){
+  gHint('Ohne Anzeige, nur nach Gefühl. Ruhig atmen dabei.');
+  cdRunde();
+}
+function cdRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.phase=0;
+  document.getElementById('gmStage').innerHTML=
+    '<div class="gm-mid">Warte <span style="color:var(--accent)">'+(GAME.ziel=4+rnd(12))+'</span> Sekunden</div>'
+    +'<div class="gm-pad" id="cdPad" onclick="cdTipp()">Starten</div>'
+    +'<div class="gm-hint" id="cdFb" style="min-height:1.4em"></div>';
+}
+function cdTipp(){
+  if(!GAME)return;
+  const pad=document.getElementById('cdPad');
+  if(GAME.phase===0){
+    GAME.phase=1;GAME.t0=Date.now();
+    if(pad)pad.textContent='Tippen, wenn die Zeit um ist';
+    beep(520,0.12,0.09,'sine');
+    return;
+  }
+  if(GAME.phase!==1)return;
+  GAME.phase=2;
+  const ist=(Date.now()-GAME.t0)/1000;
+  const ab=Math.abs(ist-GAME.ziel);
+  const tol=Math.max(0.45,2.4-GAME.stufe*0.24);
+  const fb=document.getElementById('cdFb');
+  if(pad)pad.textContent=ist.toFixed(1)+' s';
+  if(ab<=tol){gGut();if(fb)fb.textContent='Treffer – '+ab.toFixed(1)+' s daneben.';}
+  else{gNaja();if(fb)fb.textContent=(ist<GAME.ziel?'Etwas zu früh':'Etwas zu spät')+' – '+ab.toFixed(1)+' s daneben.';}
+  gT(cdRunde,1900);
+}
+window.cdTipp=cdTipp;
+
+/* --- 10. Farb-Logik --- */
+const FLS=['▲','●','■','★','◆','♥'];
+function flStart(){flNeu();}
+function flNeu(){
+  if(!GAME)return;
+  const n=Math.min(3+Math.floor((GAME.stufe-1)/2),6);
+  const farben=shuffle(SPF.slice()).slice(0,n);
+  const formen=shuffle(FLS.slice()).slice(0,n);
+  GAME.map=formen.map((f,i)=>[f,farben[i]]);
+  GAME.frei=GAME.stufe>=4;
+  flRunde();
+}
+function flRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.sperre=false;
+  const i=rnd(GAME.map.length);GAME.loesung=i;
+  const key='<div class="gm-key" id="flKey">'
+    +GAME.map.map(m=>'<div class="gm-key-item"><span>'+m[0]+'</span><span class="gm-key-dot" style="background:'+m[1][1]+'"></span></div>').join('')
+    +'</div>';
+  const reihe=shuffle(GAME.map.map((m,j)=>j));
+  document.getElementById('gmStage').innerHTML=key
+    +'<div class="gm-q">'+GAME.map[i][0]+'</div>'
+    +'<div class="gm-farben">'+reihe.map(j=>'<div class="gm-farbe" data-j="'+j+'" style="background:'+GAME.map[j][1][1]+'" onclick="flTipp('+j+')"></div>').join('')+'</div>';
+  gHint(GAME.frei?'Die Zuordnung verschwindet gleich – merk sie dir.':'Tippe die Farbe, die zu diesem Zeichen gehört.');
+  if(GAME.frei)gT(()=>{const k=document.getElementById('flKey');if(k)k.style.visibility='hidden';},2300);
+}
+function flTipp(j){
+  if(!GAME||GAME.sperre)return;GAME.sperre=true;
+  const k=document.getElementById('flKey');if(k)k.style.visibility='visible';
+  document.querySelectorAll('.gm-farbe').forEach(e=>{
+    if(parseInt(e.getAttribute('data-j'),10)===GAME.loesung)e.classList.add('gut');
+  });
+  const richtig=j===GAME.loesung;
+  if(richtig)gGut();else gNaja();
+  gT(()=>{if(GAME.runde%6===0)flNeu();else flRunde();},richtig?560:1250);
+}
+window.flTipp=flTipp;
+
+const SPIEL_START={stroop:stroopStart,bubbles:bubStart,quadrat:qmStart,morse:moStart,perc:perStart,pitch:pmStart,zuletzt:zhStart,rechnen:arStart,countdown:cdStart,farblogik:flStart};
+
 /* ============ LISTE & FILTER ============ */
 let LVL=5, FILTER_AN=true;
 try{const s=localStorage.getItem('skl_lvl');if(s!==null)LVL=parseInt(s);const f=localStorage.getItem('skl_filter');if(f!==null)FILTER_AN=(f==='1');}catch(e){}
@@ -437,18 +1029,21 @@ window.setModus=setModus;
 
 function renderListe(){
   const host=document.getElementById('skillsList');
-  const liste=FILTER_AN?SKILLS.filter(s=>LVL>=s.min&&LVL<=s.max):SKILLS;
+  const alle=SKILLS.concat(GAMES);
+  const liste=FILTER_AN?alle.filter(s=>LVL>=s.min&&LVL<=s.max):alle;
   if(!liste.length){
     host.innerHTML='<div class="empty-state">Für diesen Wert ist gerade nichts hinterlegt.<br>Schau dir alle Skills an oder verschiebe den Regler.</div>';
     return;
   }
   let html='';
-  ['st','er','zw'].forEach(k=>{
+  ['st','er','zw','sp'].forEach(k=>{
     const grp=liste.filter(s=>s.kat===k);
     if(!grp.length)return;
     html+='<div class="kat-head">'+KAT[k].name+'</div>';
+    if(k==='sp')html+='<div class="kat-info">'+esc(KAT.sp.info)+'</div>';
     grp.forEach(s=>{
-      html+='<div class="skill-card" onclick="startSkill(\''+s.id+'\')">'
+      const fn=s.typ==='game'?'startGame':'startSkill';
+      html+='<div class="skill-card" onclick="'+fn+'(\''+s.id+'\')">'
         +'<div class="skill-ic">'+s.icon+'</div>'
         +'<div class="skill-body">'
         +'<div class="skill-title">'+esc(s.titel)+'</div>'
@@ -483,7 +1078,7 @@ function openSkillDetail(title,html){
   document.getElementById('ov-skill-detail').classList.add('active');
 }
 function closeSkillDetail(){
-  stopTimers();
+  stopTimers();stopGame();
   RUN=null;
   document.getElementById('ov-skill-detail').classList.remove('active');
   document.getElementById('skillDetailBody').innerHTML='';
@@ -494,6 +1089,7 @@ window.closeSkillDetail=closeSkillDetail;
 function startSkill(id){
   const s=SKILLS.find(x=>x.id===id);
   if(!s)return;
+  stopGame();
   RUN={s:s,i:0,d:{},iv:null,to:null};
   openSkillDetail(s.titel,'<div class="st-wrap" id="stHost"></div>');
   renderStep();
