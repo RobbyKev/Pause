@@ -139,9 +139,14 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
 .gm-drum{flex:1;border-radius:16px;border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;font-size:1.6rem;cursor:pointer;transition:transform 0.07s,background 0.1s,border-color 0.1s;touch-action:manipulation;padding:1.4rem 0.4rem;}
 .gm-drum span{font-size:0.6rem;color:var(--muted);letter-spacing:0.05em;}
 .gm-drum.an{background:rgba(var(--aRGB),0.28);border-color:var(--accent);transform:scale(0.95);}
-.gm-morse{display:flex;gap:0.45rem;justify-content:center;flex-wrap:wrap;min-height:2.2rem;align-items:center;}
-.gm-sym{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--accent);line-height:1;}
+.gm-morse{display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;min-height:2.2rem;align-items:center;}
+.gm-sym{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--accent);line-height:1;transition:color 0.12s,transform 0.12s;}
 .gm-sym.leer{color:rgba(255,255,255,0.13);}
+.gm-sym.jetzt{transform:scale(1.35);color:#fff;}
+.gm-sym.live{opacity:0.55;}
+.mo-row{display:flex;align-items:center;gap:0.7rem;width:100%;max-width:330px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.5rem 0.75rem;}
+.mo-lbl{font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);width:54px;flex-shrink:0;}
+.mo-row .gm-morse{flex:1;justify-content:flex-start;min-height:2rem;}
 .gm-slider-wrap{width:100%;max-width:320px;display:flex;flex-direction:column;gap:0.4rem;}
 .gm-big{font-family:'DM Serif Display',serif;font-size:3.2rem;color:var(--accent);text-align:center;line-height:1;}
 .gm-mid{font-family:'DM Serif Display',serif;font-size:1.6rem;text-align:center;line-height:1.3;}
@@ -151,6 +156,30 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
 .gm-key-dot{width:15px;height:15px;border-radius:50%;display:inline-block;}
 @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
 .shake{animation:shake 0.32s;}
+
+/* Raster, Birnen, Zähler, Räder */
+.gm-stage.roll{justify-content:flex-start;overflow-y:auto;padding:0.2rem 0;-webkit-overflow-scrolling:touch;}
+.gm-raster{display:grid;gap:4px;width:100%;max-width:320px;margin:0 auto;flex-shrink:0;}
+.gm-zelle{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--surface);border:1px solid var(--border);cursor:pointer;font-family:'DM Serif Display',serif;color:var(--text);line-height:1;transition:transform 0.08s,border-color 0.15s,background 0.15s;overflow:hidden;touch-action:manipulation;}
+.gm-zelle:active{transform:scale(0.9);}
+.gm-zelle.gut{border-color:var(--accent);background:rgba(var(--aRGB),0.25);color:var(--accent);}
+.gm-zelle.falsch{border-color:var(--danger);}
+.gm-birnen{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:250px;}
+.gm-birne{aspect-ratio:1;border-radius:50%;border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;transition:background 0.2s,border-color 0.2s,box-shadow 0.25s,transform 0.08s,filter 0.2s;filter:grayscale(1) brightness(0.55);touch-action:manipulation;}
+.gm-birne:active{transform:scale(0.93);}
+.gm-birne.an{filter:none;background:rgba(var(--aRGB),0.18);border-color:var(--accent);box-shadow:0 0 18px rgba(var(--aRGB),0.35);}
+.gm-zaehler{display:flex;align-items:center;gap:1rem;justify-content:center;flex-shrink:0;}
+.gm-zbtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;touch-action:manipulation;transition:transform 0.08s;}
+.gm-zbtn:active{transform:scale(0.9);}
+.gm-zwert{font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent);min-width:74px;text-align:center;line-height:1;}
+.gm-raeder{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:280px;}
+.gm-rad{aspect-ratio:1;border-radius:50%;border:2px solid var(--border);background:var(--surface);position:relative;cursor:pointer;overflow:hidden;touch-action:manipulation;transition:border-color 0.15s,box-shadow 0.15s;}
+.gm-rad-in{position:absolute;inset:0;animation-name:drehen;animation-timing-function:linear;animation-iteration-count:infinite;}
+.gm-rad-in::before{content:'';position:absolute;top:9%;left:50%;width:22%;height:22%;margin-left:-11%;border-radius:50%;background:var(--accent);}
+.gm-rad-in::after{content:'';position:absolute;top:20%;bottom:50%;left:50%;width:2px;margin-left:-1px;background:rgba(var(--aRGB),0.3);}
+.gm-rad.gut{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent);}
+.gm-rad.falsch{border-color:var(--danger);}
+@keyframes drehen{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
@@ -470,7 +499,7 @@ const GAMES=[
 {id:'quadrat',kat:'sp',typ:'game',icon:'⬜',titel:'Quadratisches Muster',sub:'Auf Licht und Ton reagieren – wird schneller, je besser du wirst.',min:5,max:9,dauer:'offen',
  anl:{t:'Leuchten antippen',p:'Ein Feld leuchtet auf und gibt einen Ton. Tipp es an, bevor es ausgeht. Je sicherer du wirst, desto kürzer bleibt es.'}},
 {id:'morse',kat:'sp',typ:'game',icon:'📡',titel:'Schnelles Morsen',sub:'Gedächtnis und Rhythmus gleichzeitig – bindet viel Aufmerksamkeit.',min:4,max:8,dauer:'offen',
- anl:{t:'Kurz und lang',p:'Du hörst eine Folge aus kurzen und langen Tönen. Tippe sie nach: kurz antippen für einen Punkt, gedrückt halten für einen Strich.'}},
+ anl:{t:'Kurz und lang',p:'Du hörst eine Folge aus hohen kurzen und tiefen langen Tönen – und siehst sie gleichzeitig als Punkte und Striche. Tippe sie nach: kurz antippen für einen Punkt, gedrückt halten für einen Strich. Ab Stufe 4 verschwindet das Muster, dann geht es aus dem Kopf.'}},
 {id:'perc',kat:'sp',typ:'game',icon:'🥁',titel:'Percussion-Muster',sub:'Ein Trommelmuster hören und zurückspielen.',min:3,max:8,dauer:'offen',
  anl:{t:'Erst hören, dann spielen',p:'Drei Trommeln spielen ein Muster vor. Tippe es in derselben Reihenfolge nach. Wenn es nicht klappt, hörst du es einfach noch einmal.'}},
 {id:'pitch',kat:'sp',typ:'game',icon:'🎵',titel:'Pitch Matching',sub:'Einen Ton im Ohr behalten und wiederfinden.',min:2,max:7,dauer:'offen',
@@ -482,7 +511,15 @@ const GAMES=[
 {id:'countdown',kat:'sp',typ:'game',icon:'⏱️',titel:'Countdown',sub:'Die innere Uhr kalibrieren – ruhig und ohne Hektik.',min:1,max:6,dauer:'offen',
  anl:{t:'Zeit im Gefühl',p:'Du bekommst eine Sekundenzahl. Starte, warte – und tippe, wenn du glaubst, die Zeit ist um. Ohne Anzeige, nur nach Gefühl.'}},
 {id:'farblogik',kat:'sp',typ:'game',icon:'🔷',titel:'Farb-Logik',sub:'Zeichen und Farben zuordnen – einfach genug für stressige Momente.',min:4,max:9,dauer:'offen',
- anl:{t:'Zuordnen',p:'Oben siehst du, welches Zeichen zu welcher Farbe gehört. Tippe die passende Farbe zum gezeigten Zeichen. Später verschwindet die Zuordnung kurz.'}}
+ anl:{t:'Zuordnen',p:'Oben siehst du, welches Zeichen zu welcher Farbe gehört. Tippe die passende Farbe zum gezeigten Zeichen. Später verschwindet die Zuordnung kurz.'}},
+{id:'anders',kat:'sp',typ:'game',icon:'🔎',titel:'Das eine andere',sub:'Ein Feld im Raster passt nicht zu den anderen. Simpelste Regel, hohe Bindung.',min:6,max:10,dauer:'offen',
+ anl:{t:'Finde das eine',p:'Ein Raster voller gleicher Zeichen – eines weicht ab. Mal ist es ein anderes Zeichen, mal ein anderes Gesicht, mal das größte oder kleinste Dreieck. Keine Zeit läuft, du kannst in Ruhe suchen.'}},
+{id:'birnen',kat:'sp',typ:'game',icon:'💡',titel:'Glühbirnen',sub:'Eine Lampe schaltet andere mit. Reines Nachdenken, ganz ohne Eile.',min:1,max:6,dauer:'offen',
+ anl:{t:'Alle zum Leuchten bringen',p:'Neun Lampen. Tippst du eine an, schaltet sie sich um – und ein oder zwei andere gleich mit. Welche das sind, findest du beim Ausprobieren heraus. Ziel: alle leuchten. Es gibt immer einen Weg zurück, du kannst dich nicht festfahren.'}},
+{id:'zaehlen',kat:'sp',typ:'game',icon:'🧮',titel:'Zählen',sub:'Wie viele blaue Felder? Wie viele verschiedene Zeichen? Bindet viel Aufmerksamkeit.',min:3,max:8,dauer:'offen',
+ anl:{t:'Zählen und einstellen',p:'Zähl in Ruhe durch, stell die Zahl mit Plus und Minus ein und bestätige. Bei einem Fehler siehst du die richtige Zahl und es geht weiter.'}},
+{id:'raeder',kat:'sp',typ:'game',icon:'🎡',titel:'Das schnellste Rad',sub:'Neun Kreise drehen sich unterschiedlich schnell. Rein visuell, kein Text.',min:5,max:9,dauer:'offen',
+ anl:{t:'Geschwindigkeit vergleichen',p:'Neun Räder drehen sich, jedes in seinem eigenen Tempo. Tippe das schnellste an. Die Unterschiede werden kleiner, später drehen manche rückwärts – und manchmal wird das langsamste gesucht.'}}
 ];
 
 /* --- Hilfen --- */
@@ -686,75 +723,104 @@ function qmTipp(i){
 window.qmTipp=qmTipp;
 
 /* --- 4. Schnelles Morsen --- */
+const MO_GRENZE=280;
 function moStart(){
   document.getElementById('gmStage').innerHTML=
-    '<div class="gm-mid" id="moTxt">Hör zu …</div><div class="gm-morse" id="moZeile"></div>'
-    +'<div class="gm-pad" id="moPad">kurz tippen = ·<br>halten = –</div>';
+    '<div class="gm-mid" id="moTxt">Hör zu …</div>'
+    +'<div class="mo-row"><span class="mo-lbl">Muster</span><div class="gm-morse" id="moMus"></div></div>'
+    +'<div class="mo-row"><span class="mo-lbl">Du</span><div class="gm-morse" id="moZeile"></div></div>'
+    +'<div class="gm-pad" id="moPad">kurz tippen&nbsp;=&nbsp;·<br>halten&nbsp;=&nbsp;–</div>'
+    +'<button class="tm-b" onclick="moSpiel()">Nochmal hören</button>';
   const p=document.getElementById('moPad');
   p.addEventListener('pointerdown',moDown);
   p.addEventListener('pointerup',moUp);
   p.addEventListener('pointerleave',moUp);
   p.addEventListener('pointercancel',moUp);
-  gHint('Kurzer Tipp ist ein Punkt, längeres Halten ein Strich.');
+  gHint('Punkt klingt hoch und kurz, Strich tief und lang.');
   moRunde();
 }
 function moRunde(){
   if(!GAME)return;
-  GAME.runde++;gStat();
+  GAME.runde++;gStat();GAME.sperre=false;
   const len=Math.min(2+Math.floor(GAME.stufe*0.6),6);
   GAME.seq=[];for(let i=0;i<len;i++)GAME.seq.push(rnd(2));
   moSpiel();
 }
-function moSlots(){
+function moMus(n){
+  const z=document.getElementById('moMus');if(!z||!GAME)return;
+  let h='';
+  for(let i=0;i<GAME.seq.length;i++){
+    const auf=(n<0)||(i<n);
+    h+='<span class="gm-sym'+(auf?'':' leer')+(i===n-1&&n>=0?' jetzt':'')+'">'+(auf?(GAME.seq[i]===0?'·':'–'):'·')+'</span>';
+  }
+  z.innerHTML=h;
+}
+function moEin(live){
   const z=document.getElementById('moZeile');if(!z||!GAME)return;
   let h='';
   for(let i=0;i<GAME.seq.length;i++){
     if(i<GAME.ein.length)h+='<span class="gm-sym">'+(GAME.ein[i]===0?'·':'–')+'</span>';
+    else if(i===GAME.ein.length&&live!=null)h+='<span class="gm-sym live">'+(live===0?'·':'–')+'</span>';
     else h+='<span class="gm-sym leer">·</span>';
   }
   z.innerHTML=h;
 }
-function moLoesung(){
-  const z=document.getElementById('moZeile');if(!z||!GAME)return;
-  z.innerHTML=GAME.seq.map(s=>'<span class="gm-sym">'+(s===0?'·':'–')+'</span>').join('');
-}
 function moSpiel(){
-  if(!GAME)return;
-  GAME.sperre=true;GAME.ein=[];GAME.tStart=null;moSlots();
+  if(!GAME||GAME.abspielen)return;
+  GAME.abspielen=true;GAME.sperre=true;GAME.ein=[];GAME.tStart=null;
+  moEin();moMus(0);
   const t=document.getElementById('moTxt');if(t)t.textContent='Hör zu …';
-  let zeit=400;
-  GAME.seq.forEach(s=>{
-    const d=s===0?110:330;
+  let zeit=500;
+  GAME.seq.forEach((s,i)=>{
+    const d=s===0?150:440;
     gT(()=>{
+      moMus(i+1);
       const p=document.getElementById('moPad');
       if(p){p.classList.add('an');gT(()=>{const q=document.getElementById('moPad');if(q)q.classList.remove('an');},d);}
-      ton(620,d/1000,'square',0.09);
+      ton(s===0?880:415,d/1000,'sine',0.12);
+      vib(s===0?25:95);
     },zeit);
-    zeit+=d+170;
+    zeit+=d+280;
   });
-  gT(()=>{GAME.sperre=false;const t2=document.getElementById('moTxt');if(t2)t2.textContent='Jetzt du';},zeit+220);
+  gT(()=>{
+    GAME.abspielen=false;GAME.sperre=false;
+    const t2=document.getElementById('moTxt');
+    if(GAME.stufe>=4){moMus(0);if(t2)t2.textContent='Jetzt du – aus dem Kopf';}
+    else{moMus(-1);if(t2)t2.textContent='Jetzt du';}
+  },zeit+300);
 }
-function moDown(){
-  if(!GAME||GAME.sperre)return;
+function moDown(e){
+  if(!GAME||GAME.sperre||GAME.abspielen)return;
+  if(e&&e.preventDefault)e.preventDefault();
   GAME.tStart=Date.now();
   const p=document.getElementById('moPad');if(p)p.classList.add('an');
-  poStart(620);
+  poStart(880);
+  moEin(0);
+  if(GAME.liveIv)clearInterval(GAME.liveIv);
+  GAME.liveIv=setInterval(()=>{
+    if(!GAME||!GAME.tStart){return;}
+    if(Date.now()-GAME.tStart>=MO_GRENZE){poSet(415);moEin(1);}
+  },50);
+  GAME.iv.push(GAME.liveIv);
 }
 function moUp(){
-  if(!GAME||GAME.sperre||!GAME.tStart)return;
+  if(!GAME||!GAME.tStart)return;
+  if(GAME.liveIv){clearInterval(GAME.liveIv);GAME.liveIv=null;}
   const dauer=Date.now()-GAME.tStart;GAME.tStart=null;
   poStop();
   const p=document.getElementById('moPad');if(p)p.classList.remove('an');
-  GAME.ein.push(dauer<260?0:1);
-  moSlots();
+  GAME.ein.push(dauer<MO_GRENZE?0:1);
+  moEin();
   if(GAME.ein.length>=GAME.seq.length){
     GAME.sperre=true;
     const ok=GAME.ein.every((v,i)=>v===GAME.seq[i]);
     const t=document.getElementById('moTxt');
-    if(ok){gGut();if(t)t.textContent='Genau so';gT(moRunde,900);}
-    else{gNaja();if(t)t.textContent='So war es';moLoesung();gT(moSpiel,1700);}
+    moMus(-1);
+    if(ok){gGut();if(t)t.textContent='Genau so';gT(moRunde,1100);}
+    else{gNaja();if(t)t.textContent='So war es gemeint';gT(()=>{GAME.sperre=false;moSpiel();},2100);}
   }
 }
+window.moSpiel=moSpiel;
 
 /* --- 5. Percussion-Muster --- */
 const DRUMS=[['🥁','Bass'],['🪘','Snare'],['🎩','Hat']];
@@ -998,7 +1064,212 @@ function flTipp(j){
 }
 window.flTipp=flTipp;
 
-const SPIEL_START={stroop:stroopStart,bubbles:bubStart,quadrat:qmStart,morse:moStart,perc:perStart,pitch:pmStart,zuletzt:zhStart,rechnen:arStart,countdown:cdStart,farblogik:flStart};
+/* --- 11. Das eine andere --- */
+const AND_PAARE=[['7','1'],['3','8'],['O','Q'],['B','8'],['M','N'],['C','G'],['5','S'],['U','V'],['E','F'],['9','6'],['i','j'],['V','Y']];
+function andStart(){andRunde();}
+function andRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.sperre=false;
+  const s=GAME.stufe;
+  const cols=Math.min(4+Math.floor((s-1)*0.6),8);
+  const rows=Math.min(cols+1,9);
+  const n=cols*rows;
+  GAME.ziel=rnd(n);
+  const zellPx=(320-4*(cols-1))/cols;
+  const basis=zellPx*0.55;
+  const arten=['zeichen','gesicht','groesse'];
+  const art=arten[GAME.runde%3];
+  let zellen=[],hinweis='';
+  if(art==='zeichen'){
+    const p=AND_PAARE[rnd(AND_PAARE.length)];
+    const dreh=rnd(2);
+    const fuell=p[dreh],ziel=p[1-dreh];
+    for(let i=0;i<n;i++)zellen.push({t:i===GAME.ziel?ziel:fuell,g:100});
+    hinweis='Ein Zeichen ist anders als alle anderen.';
+  }else if(art==='gesicht'){
+    const um=rnd(2);
+    const a=um?'☹':'☺',b=um?'☺':'☹';
+    for(let i=0;i<n;i++)zellen.push({t:i===GAME.ziel?b:a,g:100});
+    hinweis='Ein Gesicht passt nicht zu den anderen.';
+  }else{
+    const gross=rnd(2);
+    const delta=Math.max(4,15-s);
+    for(let i=0;i<n;i++){
+      let g;
+      if(i===GAME.ziel)g=gross?100:42;
+      else g=gross?(100-delta-rnd(10)):(42+delta+rnd(10));
+      zellen.push({t:'▲',g:g});
+    }
+    hinweis=gross?'Tippe das größte Dreieck.':'Tippe das kleinste Dreieck.';
+  }
+  const st=document.getElementById('gmStage');
+  st.classList.add('roll');
+  let h='<div class="gm-raster" style="grid-template-columns:repeat('+cols+',1fr)">';
+  zellen.forEach((z,i)=>{
+    h+='<div class="gm-zelle" style="font-size:'+(basis*z.g/100).toFixed(1)+'px" onclick="andTipp('+i+')">'+z.t+'</div>';
+  });
+  h+='</div>';
+  st.innerHTML=h;
+  gHint(hinweis);
+}
+function andTipp(i){
+  if(!GAME||GAME.sperre)return;GAME.sperre=true;
+  const zellen=document.querySelectorAll('.gm-zelle');
+  const richtig=i===GAME.ziel;
+  if(zellen[GAME.ziel])zellen[GAME.ziel].classList.add('gut');
+  if(richtig)gGut();
+  else{gNaja();if(zellen[i])zellen[i].classList.add('falsch');}
+  gT(andRunde,richtig?520:1300);
+}
+window.andTipp=andTipp;
+
+/* --- 12. Glühbirnen --- */
+function glStart(){glNeu();}
+function glNeu(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.sperre=false;
+  const s=GAME.stufe;
+  GAME.netz=[];
+  for(let i=0;i<9;i++){
+    const menge=[i];
+    const anz=s<=2?1:(s<=5?1+rnd(2):2);
+    const kand=shuffle([0,1,2,3,4,5,6,7,8].filter(x=>x!==i));
+    for(let k=0;k<anz&&k<kand.length;k++)menge.push(kand[k]);
+    GAME.netz.push(menge);
+  }
+  const zuege=Math.min(2+s,8);
+  let versuch=0;
+  do{
+    GAME.an=[1,1,1,1,1,1,1,1,1];
+    for(let z=0;z<zuege;z++)glSchalte(rnd(9));
+    versuch++;
+  }while(GAME.an.every(x=>x===1)&&versuch<25);
+  GAME.zuege=0;
+  glRender('Alle zum Leuchten bringen');
+}
+function glSchalte(i){
+  GAME.netz[i].forEach(j=>{GAME.an[j]=GAME.an[j]?0:1;});
+}
+function glRender(text){
+  const st=document.getElementById('gmStage');
+  if(!st)return;
+  let h='<div class="gm-mid" id="glTxt">'+esc(text)+'</div><div class="gm-birnen">';
+  for(let i=0;i<9;i++)h+='<div class="gm-birne'+(GAME.an[i]?' an':'')+'" onclick="glTipp('+i+')">💡</div>';
+  h+='</div><div class="gm-stat">'+GAME.zuege+' Züge</div><button class="tm-b" onclick="glNeu()">Neu mischen</button>';
+  st.innerHTML=h;
+  gHint('Jede Lampe schaltet noch andere mit. Probier aus, welche.');
+}
+function glTipp(i){
+  if(!GAME||GAME.sperre)return;
+  glSchalte(i);GAME.zuege++;
+  beep(420+i*35,0.09,0.07,'triangle');vib(10);
+  const fertig=GAME.an.every(x=>x===1);
+  glRender(fertig?('Alle an – in '+GAME.zuege+' Zügen'):'Alle zum Leuchten bringen');
+  if(fertig){
+    GAME.sperre=true;gGut();
+    gT(glNeu,1500);
+  }
+}
+window.glTipp=glTipp;window.glNeu=glNeu;
+
+/* --- 13. Zählen --- */
+const ZFARBEN=[['blaue','#60a5fa'],['grüne','#4ade80'],['rote','#f87171'],['gelbe','#fbbf24'],['lila','#c084fc']];
+const ZSYM=['▲','●','■','★','◆','♥','✦','▼'];
+function zaStart(){zaRunde();}
+function zaRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.sperre=false;GAME.wert=0;
+  const s=GAME.stufe;
+  const cols=Math.min(4+Math.floor((s-1)*0.5),7);
+  const rows=Math.min(cols+1,8);
+  const n=cols*rows;
+  const zellPx=(320-4*(cols-1))/cols;
+  const modus=(s>=3&&GAME.runde%2===0)?'verschieden':'farbe';
+  let zellen='',frage='';
+  if(modus==='farbe'){
+    const anzF=Math.min(2+Math.floor(s/3),5);
+    const farben=shuffle(ZFARBEN.slice()).slice(0,anzF);
+    const zielF=farben[rnd(anzF)];
+    let treffer=0;
+    for(let i=0;i<n;i++){
+      const f=farben[rnd(anzF)];
+      if(f===zielF)treffer++;
+      zellen+='<div class="gm-zelle" style="background:'+f[1]+';border-color:transparent"></div>';
+    }
+    GAME.loesung=treffer;
+    frage='Wie viele '+zielF[0]+' Felder?';
+  }else{
+    const anz=Math.min(3+rnd(1+Math.floor(s/2)),8);
+    const syms=shuffle(ZSYM.slice()).slice(0,anz);
+    const feld=syms.slice();
+    while(feld.length<n)feld.push(syms[rnd(anz)]);
+    shuffle(feld);
+    GAME.loesung=anz;
+    frage='Wie viele verschiedene Zeichen?';
+    feld.forEach(x=>{zellen+='<div class="gm-zelle" style="font-size:'+(zellPx*0.5).toFixed(1)+'px">'+x+'</div>';});
+  }
+  const st=document.getElementById('gmStage');
+  st.classList.add('roll');
+  st.innerHTML='<div class="gm-mid" id="zaFrage">'+esc(frage)+'</div>'
+    +'<div class="gm-raster" style="grid-template-columns:repeat('+cols+',1fr)">'+zellen+'</div>'
+    +'<div class="gm-zaehler"><button class="gm-zbtn" onclick="zaAdd(-1)">−</button>'
+    +'<div class="gm-zwert" id="zaWert">0</div>'
+    +'<button class="gm-zbtn" onclick="zaAdd(1)">+</button></div>'
+    +'<button class="btn btn-p" style="max-width:320px" onclick="zaPruef()">Stimmt</button>';
+  gHint('Zähl in Ruhe – es läuft keine Zeit.');
+}
+function zaAdd(d){
+  if(!GAME||GAME.sperre)return;
+  GAME.wert=Math.max(0,(GAME.wert||0)+d);
+  const el=document.getElementById('zaWert');
+  if(el)el.textContent=GAME.wert;
+  beep(d>0?560:420,0.05,0.05,'sine');
+}
+function zaPruef(){
+  if(!GAME||GAME.sperre)return;GAME.sperre=true;
+  const richtig=GAME.wert===GAME.loesung;
+  const f=document.getElementById('zaFrage');
+  if(richtig){gGut();if(f)f.textContent='Stimmt – '+GAME.loesung;}
+  else{gNaja();if(f)f.textContent='Es waren '+GAME.loesung+', du hattest '+GAME.wert;}
+  gT(zaRunde,richtig?900:2000);
+}
+window.zaAdd=zaAdd;window.zaPruef=zaPruef;
+
+/* --- 14. Das schnellste Rad --- */
+function raStart(){raRunde();}
+function raRunde(){
+  if(!GAME)return;
+  GAME.runde++;gStat();GAME.sperre=false;
+  const s=GAME.stufe;
+  const langsam=(s>=5&&GAME.runde%3===0);
+  const basis=1.4+Math.random()*0.7;
+  const spanne=Math.max(0.18,1.15-s*0.12);
+  const zeiten=[];
+  for(let i=0;i<9;i++)zeiten.push(basis*(1+spanne*(i/8)));
+  const idx=shuffle([0,1,2,3,4,5,6,7,8]);
+  const gesucht=langsam?8:0;
+  GAME.loesung=idx.indexOf(gesucht);
+  let h='<div class="gm-mid">'+(langsam?'Tippe das <span style="color:var(--accent)">langsamste</span> Rad':'Tippe das <span style="color:var(--accent)">schnellste</span> Rad')+'</div><div class="gm-raeder">';
+  for(let j=0;j<9;j++){
+    const rueck=(s>=3&&j%2===1)?'animation-direction:reverse;':'';
+    h+='<div class="gm-rad" onclick="raTipp('+j+')"><div class="gm-rad-in" style="animation-duration:'+zeiten[idx[j]].toFixed(2)+'s;'+rueck+'"></div></div>';
+  }
+  h+='</div>';
+  document.getElementById('gmStage').innerHTML=h;
+  gHint(s>=3?'Manche drehen rückwärts – die Richtung zählt nicht, nur das Tempo.':'Schau in Ruhe, es läuft keine Zeit.');
+}
+function raTipp(j){
+  if(!GAME||GAME.sperre)return;GAME.sperre=true;
+  const raeder=document.querySelectorAll('.gm-rad');
+  const richtig=j===GAME.loesung;
+  if(raeder[GAME.loesung])raeder[GAME.loesung].classList.add('gut');
+  if(richtig)gGut();
+  else{gNaja();if(raeder[j])raeder[j].classList.add('falsch');}
+  gT(raRunde,richtig?700:1600);
+}
+window.raTipp=raTipp;
+
+const SPIEL_START={stroop:stroopStart,bubbles:bubStart,quadrat:qmStart,morse:moStart,perc:perStart,pitch:pmStart,zuletzt:zhStart,rechnen:arStart,countdown:cdStart,farblogik:flStart,anders:andStart,birnen:glStart,zaehlen:zaStart,raeder:raStart};
 
 /* ============ LISTE & FILTER ============ */
 let LVL=5, FILTER_AN=true;
