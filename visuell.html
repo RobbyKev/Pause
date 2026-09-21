@@ -499,7 +499,9 @@ function iBlob(){
       });
       if(nearest){
         const str=Math.min(Math.sqrt(Math.pow(px-oldX,2)+Math.pow(py-oldY,2))*10,100)/100;
-        nearest.acc=str*(hovering?-1:1)*3;
+        const push=str*(hovering?-1:1);
+        nearest.re+=push*22;
+        nearest.spd+=push*1.4;
       }
     }
     oldX=px;oldY=py;
