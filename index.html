@@ -1376,7 +1376,7 @@ function rHoroskop(){
       const periodDE=period==='daily'?'tägliches':period==='weekly'?'wöchentliches':'monatliches';
       const tr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},
-        body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:250,
+        body:JSON.stringify({model:'openai/gpt-oss-120b',max_tokens:250,
           messages:[
             {role:'system',content:'Du bist ein warmherziger Astrologe. Schreibe inspirierende Horoskope auf Deutsch.'},
             {role:'user',content:'Schreibe ein '+periodDE+' Horoskop für '+s.name+'. 3-4 Sätze, warmherzig und inspirierend auf Deutsch. Kein Datum nennen.'}
@@ -1420,7 +1420,7 @@ async function uebersetzeTarot(text){
   if(!key&&typeof fbGet!=='undefined'){const fbD=await fbGet('groq');if(fbD?.key)key=fbD.key;}
   if(!key)return text;
   try{
-    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:150,messages:[{role:'system',content:'Übersetze diesen Tarot-Bedeutungstext ins Deutsche. Kurz und prägnant, nur die Übersetzung.'},{role:'user',content:text}]})});
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},body:JSON.stringify({model:'openai/gpt-oss-120b',max_tokens:150,messages:[{role:'system',content:'Übersetze diesen Tarot-Bedeutungstext ins Deutsche. Kurz und prägnant, nur die Übersetzung.'},{role:'user',content:text}]})});
     const d=await r.json();return d.choices?.[0]?.message?.content||text;
   }catch(e){return text;}
 }
@@ -1925,7 +1925,7 @@ function initMsgTab(){
           method:'POST',
           headers:{'Content-Type':'application/json','Authorization':'Bearer '+key.trim()},
           body:JSON.stringify({
-            model:'llama-3.3-70b-versatile',
+            model:'openai/gpt-oss-120b',
             max_tokens:300,
             temperature:0.85,
             messages:[
