@@ -931,7 +931,7 @@ let activeSoundId=localStorage.getItem(LSS)||'chime';
 /* STARTSCREEN */
 function goTab(name){hideStart();document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const tab=document.querySelector(`[data-tab="${name}"]`);if(tab)tab.classList.add('active');const screen=document.getElementById('screen-'+name);if(screen)screen.classList.add('active');if(name==='uebung')uebungGoStep(1);if(name==='alle'){rFA();rL();}if(name==='editor'){rEL();pKS();}if(name==='einst'){rEinst();setTimeout(rEmbedList,100);}if(name==='inspo')rInspo();if(name==='audio'){rAudio();setTimeout(rAudioEmbeds,100);}if(name==='messenger')initMsgTab();if(name==='inspo-edit')rInspoEdit();if(name==='karten')rKarten();if(name==='horoskop')rHoroskop();}
 function hideStart(){document.getElementById('startScreen').classList.add('hidden');}
-function showStart(){document.getElementById('startScreen').classList.remove('hidden');}
+function showStart(){const s=document.getElementById('startScreen');s.classList.remove('hidden');s.scrollTop=0;}
 window.goTab=goTab;window.hideStart=hideStart;window.showStart=showStart;
 
 /* TABS */
@@ -999,6 +999,8 @@ function initPomodoro(){
   pomUpdate();
 }
 window.addEventListener('DOMContentLoaded',initPomodoro);
+window.addEventListener('DOMContentLoaded',()=>{const s=document.getElementById('startScreen');if(s)s.scrollTop=0;});
+window.addEventListener('pageshow',()=>{const s=document.getElementById('startScreen');if(s&&!s.classList.contains('hidden'))s.scrollTop=0;});
 
 function pomUpdate(){
   const m=Math.floor(pomLeft/60),s=pomLeft%60;
