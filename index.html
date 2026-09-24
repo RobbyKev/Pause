@@ -1505,7 +1505,7 @@ const LS_EMBEDS='pause_embeds_v1';
 function loadEmbeds(){try{return JSON.parse(localStorage.getItem(LS_EMBEDS)||'[]');}catch(e){return[];}}
 function saveEmbeds(d){try{localStorage.setItem(LS_EMBEDS,JSON.stringify(d));}catch(e){}fbSet('embeds',{data:JSON.stringify(d)});}
 function urlToEmbed(code){
-  if(code.includes('<iframe'))return code;
+  if(code.includes('<iframe')||code.includes('<audio'))return code;
   if(code.includes('spotify.com')){
     const parts=code.split('/');const id=parts[parts.length-1].split('?')[0];
     const type=code.includes('/playlist/')?'playlist':code.includes('/artist/')?'artist':code.includes('/album/')?'album':'track';
@@ -1516,6 +1516,14 @@ function urlToEmbed(code){
     try{const url=new URL(code);v=url.searchParams.get('v')||url.pathname.split('/').pop();list=url.searchParams.get('list')||'';}catch(e){}
     const src=list?'https://www.youtube.com/embed/videoseries?list='+list:'https://www.youtube.com/embed/'+v;
     return '<iframe width="100%" height="152" src="'+src+'&autoplay=0" frameborder="0" allow="encrypted-media" allowfullscreen style="border-radius:12px;"></iframe>';
+  }
+  if(code.includes('radio.mynoise.net')){
+    const httpsUrl=code.replace(/^http:\/\//,'https://').trim();
+    return '<audio controls preload="none" style="width:100%;" src="'+httpsUrl+'" onerror="this.insertAdjacentHTML(\'afterend\',\'<div style=&quot;font-size:0.68rem;color:var(--danger);margin-top:0.3rem;&quot;>⚠️ Stream lässt sich hier nicht laden (evtl. Mixed-Content-Sperre). Versuch es ggf. direkt über die myNoise-App.</div>\')"></audio>';
+  }
+  // Direkter Audio-Stream (endet auf typische Stream-Formate)
+  if(/\.(mp3|aac|ogg|m3u8)(\?|$)/i.test(code)){
+    return '<audio controls preload="none" style="width:100%;" src="'+code.trim()+'"></audio>';
   }
   return code;
 }
