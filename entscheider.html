@@ -104,12 +104,17 @@ textarea:focus{border-color:var(--accent);}
 <div class="overlay" id="ov-finger">
   <div class="ov-hdr"><div class="ov-title">Finger Chooser 👆</div><button class="ov-close" onclick="closeOv('finger')">✕</button></div>
   <div class="fc-mode-bar">
-    <button class="fc-mode-btn active" data-mode="single" onclick="fcSetMode('single')">Einzeln</button>
+    <button class="fc-mode-btn active" data-mode="single" onclick="fcSetMode('single')">Gewinner</button>
+    <button class="fc-mode-btn" data-mode="loser" onclick="fcSetMode('loser')">Verlierer</button>
     <button class="fc-mode-btn" data-mode="order" onclick="fcSetMode('order')">Reihenfolge</button>
     <button class="fc-mode-btn" data-mode="teams" onclick="fcSetMode('teams')">Teams</button>
+    <div class="fc-team-row" id="fcPickRow">
+      <span>Anzahl:</span>
+      <input type="number" id="fcPickCount" value="1" min="1" max="5" onchange="fcScheduleChoice()">
+    </div>
     <div class="fc-team-row" id="fcTeamRow" style="display:none;">
       <span>Teams:</span>
-      <input type="number" id="fcTeamCount" value="2" min="2" max="4">
+      <input type="number" id="fcTeamCount" value="2" min="2" max="4" onchange="fcScheduleChoice()">
     </div>
   </div>
   <div class="ov-body" style="padding:0;" id="ob-finger">
@@ -231,38 +236,49 @@ let fcMode='single';
 const FC_TEAM_COLORS=['#4ade80','#f87171','#60a5fa','#fde047'];
 const FC_WAIT_COLOR='#f1f0f5';
 function getCSSVar(name,fallback){try{const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();return v||fallback;}catch(e){return fallback;}}
-function shuffleArr(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function rndInt(n){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n;}
+function shuffleArr(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=rndInt(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
 function fcSetMode(m){
   fcMode=m;
   document.querySelectorAll('.fc-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
   document.getElementById('fcTeamRow').style.display=m==='teams'?'flex':'none';
+  document.getElementById('fcPickRow').style.display=(m==='single'||m==='loser')?'flex':'none';
   fcResetAll();
 }
 let fcCanvas,fcCtx;
 let fcTouches=new Map();   // id -> {x,y}  (aktuell aufliegende Finger/Pointer)
 let fcVisual=new Map();    // id -> {x,y,r,tr,color,op,top,label} (Render-/Animationsstatus)
-let fcStableTimer=null,fcResetTimer=null,fcChosen=false,fcListenersAttached=false,fcRafId=null;
-function fcMinNeeded(){return fcMode==='teams'?Math.max(2,Math.min(4,parseInt(document.getElementById('fcTeamCount').value)||2)):2;}
+let fcStableTimer=null,fcResetTimer=null,fcChosen=false,fcListenersAttached=false,fcRafId=null,fcArming=false,fcCountStart=0,fcLastBeat=-1;
+function fcPickCount(){return Math.max(1,Math.min(5,parseInt(document.getElementById('fcPickCount').value)||1));}
+function fcMinNeeded(){
+  if(fcMode==='teams')return Math.max(2,Math.min(4,parseInt(document.getElementById('fcTeamCount').value)||2));
+  if(fcMode==='single'||fcMode==='loser')return fcPickCount()+1;
+  return 2;
+}
 function fcResetAll(){
-  fcChosen=false;
+  fcChosen=false;fcArming=false;
   clearTimeout(fcStableTimer);clearTimeout(fcResetTimer);
   fcTouches.clear();fcVisual.clear();
   const hint=document.getElementById('fcHint');
-  if(hint){hint.style.display='block';hint.textContent='Alle legen einen Finger auf den Bildschirm und halten still …';}
+  if(hint){hint.style.display='block';hint.style.color='';hint.textContent='Alle legen einen Finger auf den Bildschirm und halten still …';}
 }
 function fcApplyResult(){
   const hint=document.getElementById('fcHint');
   const ids=Array.from(fcTouches.keys());
-  hint.style.display='none';
   const accent=getCSSVar('--accent','#4ade80');
-  if(fcMode==='single'){
-    const winner=ids[Math.floor(Math.random()*ids.length)];
+  let msg='';
+  if(fcMode==='single'||fcMode==='loser'){
+    const n=Math.min(fcPickCount(),ids.length-1);
+    const picked=new Set(shuffleArr(ids).slice(0,n));
+    const col=fcMode==='loser'?'#f87171':accent;
     ids.forEach(id=>{
       const v=fcVisual.get(id);
-      if(id===winner){v.tr=52;v.tcolor=accent;v.top=1;}
+      if(picked.has(id)){v.tr=52;v.tcolor=col;v.top=1;v.label=fcMode==='loser'?'✕':'★';}
       else{v.tr=23;v.top=0.18;}
     });
+    msg=fcMode==='loser'?(n===1?'Verloren!':n+' Verlierer!'):(n===1?'Gewinner!':n+' Gewinner!');
   }else if(fcMode==='order'){
+    msg='Reihenfolge steht';
     const order=shuffleArr(ids);
     order.forEach((id,i)=>{
       const v=fcVisual.get(id);
@@ -278,11 +294,14 @@ function fcApplyResult(){
       const col=FC_TEAM_COLORS[ti%FC_TEAM_COLORS.length];
       members.forEach(id=>{const v=fcVisual.get(id);v.tcolor=col;v.label=String(ti+1);v.top=1;});
     });
+    msg=tc+' Teams gebildet';
   }
+  hint.style.display='block';hint.style.color='var(--text)';hint.textContent=msg;
   beep(880,0.25,0.25,'sine');vib(50);
 }
 function fcScheduleChoice(){
   clearTimeout(fcStableTimer);
+  fcArming=false;
   if(fcChosen)return;
   const hint=document.getElementById('fcHint');
   const n=fcTouches.size;
@@ -290,11 +309,9 @@ function fcScheduleChoice(){
   if(n<minNeeded){hint.textContent='Mindestens '+minNeeded+' Finger auflegen …';return;}
   hint.textContent=n+' Finger erkannt – still halten …';
   fcStableTimer=setTimeout(()=>{
-    if(fcChosen)return;
-    if(fcTouches.size<minNeeded)return;
-    fcChosen=true;
-    fcApplyResult();
-  },1400);
+    if(fcChosen||fcTouches.size<fcMinNeeded())return;
+    fcArming=true;fcCountStart=performance.now();fcLastBeat=-1;
+  },350);
 }
 function fcPointerDown(e){
   if(e.pointerType==='mouse'&&e.button!==0)return;
@@ -353,6 +370,14 @@ function fcFitCanvas(){
 function fcLoop(){
   if(fcCanvas&&fcCtx){
     fcCtx.clearRect(0,0,fcCanvas._cssW||fcCanvas.clientWidth,fcCanvas._cssH||fcCanvas.clientHeight);
+    let prog=0;
+    if(fcArming){
+      prog=Math.min(1,(performance.now()-fcCountStart)/3000);
+      const beat=Math.floor(prog*3);
+      if(beat!==fcLastBeat&&beat<3){fcLastBeat=beat;beep(440+beat*110,0.12,0.16,'square');vib(6);document.getElementById('fcHint').textContent='Noch '+(3-beat)+' …';}
+      if(prog>=1){fcArming=false;fcChosen=true;prog=0;fcApplyResult();}
+    }
+    const pulse=fcArming?1+0.06*Math.sin(performance.now()/180):1;
     fcVisual.forEach(v=>{
       v.r+=(v.tr-v.r)*0.2;
       v.op+=((v.top!==undefined?v.top:1)-v.op)*0.2;
@@ -360,10 +385,17 @@ function fcLoop(){
       if(v.r<0.5)return;
       fcCtx.save();
       fcCtx.globalAlpha=Math.max(0,Math.min(1,v.op));
-      fcCtx.beginPath();fcCtx.arc(v.x,v.y,v.r,0,Math.PI*2);
+      fcCtx.beginPath();fcCtx.arc(v.x,v.y,v.r*pulse,0,Math.PI*2);
       fcCtx.fillStyle=v.color;fcCtx.shadowColor=v.color;fcCtx.shadowBlur=22;
       fcCtx.fill();
       fcCtx.restore();
+      if(fcArming&&prog>0){
+        fcCtx.save();
+        fcCtx.beginPath();fcCtx.arc(v.x,v.y,v.r*pulse+10,-Math.PI/2,-Math.PI/2+prog*Math.PI*2);
+        fcCtx.strokeStyle=v.color;fcCtx.lineWidth=4;fcCtx.lineCap='round';fcCtx.shadowColor=v.color;fcCtx.shadowBlur=12;
+        fcCtx.stroke();
+        fcCtx.restore();
+      }
       if(v.label){
         fcCtx.save();
         fcCtx.globalAlpha=Math.max(0,Math.min(1,v.op));
